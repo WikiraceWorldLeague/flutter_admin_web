@@ -5,6 +5,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../reservations/data/simple_models.dart';
 import '../../data/guides_providers.dart';
 import '../../data/guides_repository.dart';
+import '../../data/language_specialty_models.dart';
 
 class GuidesPage extends ConsumerStatefulWidget {
   const GuidesPage({super.key});
@@ -160,20 +161,12 @@ class _GuidesPageState extends ConsumerState<GuidesPage> {
             ),
             const SizedBox(width: 16),
             
-            // Language Filter (임시)
-            _buildFilterDropdown(
-              label: '언어',
-              value: ref.watch(guideLanguageFilterProvider),
-              items: const [
-                DropdownMenuItem(value: 'korean', child: Text('한국어')),
-                DropdownMenuItem(value: 'english', child: Text('영어')),
-                DropdownMenuItem(value: 'chinese', child: Text('중국어')),
-                DropdownMenuItem(value: 'japanese', child: Text('일본어')),
-              ],
-              onChanged: (value) {
-                ref.read(guideLanguageFilterProvider.notifier).state = value;
-              },
-            ),
+            // Language Filter (실제 데이터)
+            _buildLanguageFilter(),
+            const SizedBox(width: 16),
+            
+            // Specialty Filter (실제 데이터)
+            _buildSpecialtyFilter(),
             
             const Spacer(),
             
@@ -340,6 +333,104 @@ class _GuidesPageState extends ConsumerState<GuidesPage> {
           ...items,
         ],
         onChanged: onChanged,
+      ),
+    );
+  }
+
+  Widget _buildLanguageFilter() {
+    final languagesAsync = ref.watch(activeLanguagesProvider);
+    final selectedLanguage = ref.watch(guideLanguageFilterProvider);
+
+    return languagesAsync.when(
+      data: (languages) => _buildFilterDropdown(
+        label: '언어',
+        value: selectedLanguage,
+        items: languages
+            .map((language) => DropdownMenuItem(
+                  value: language.id,
+                  child: Text(language.name),
+                ))
+            .toList(),
+        onChanged: (value) {
+          ref.read(guideLanguageFilterProvider.notifier).state = value;
+        },
+      ),
+      loading: () => SizedBox(
+        width: 120,
+        height: 56,
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: AppColors.grey300),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: const Center(
+            child: SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          ),
+        ),
+      ),
+      error: (_, __) => _buildFilterDropdown(
+        label: '언어',
+        value: selectedLanguage,
+        items: const [
+          DropdownMenuItem(value: 'mock-ko', child: Text('한국어')),
+          DropdownMenuItem(value: 'mock-en', child: Text('영어')),
+        ],
+        onChanged: (value) {
+          ref.read(guideLanguageFilterProvider.notifier).state = value;
+        },
+      ),
+    );
+  }
+
+  Widget _buildSpecialtyFilter() {
+    final specialtiesAsync = ref.watch(activeSpecialtiesProvider);
+    final selectedSpecialty = ref.watch(guideSpecialtyFilterProvider);
+
+    return specialtiesAsync.when(
+      data: (specialties) => _buildFilterDropdown(
+        label: '전문분야',
+        value: selectedSpecialty,
+        items: specialties
+            .map((specialty) => DropdownMenuItem(
+                  value: specialty.id,
+                  child: Text(specialty.name),
+                ))
+            .toList(),
+        onChanged: (value) {
+          ref.read(guideSpecialtyFilterProvider.notifier).state = value;
+        },
+      ),
+      loading: () => SizedBox(
+        width: 120,
+        height: 56,
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: AppColors.grey300),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: const Center(
+            child: SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          ),
+        ),
+      ),
+      error: (_, __) => _buildFilterDropdown(
+        label: '전문분야',
+        value: selectedSpecialty,
+        items: const [
+          DropdownMenuItem(value: 'mock-plastic', child: Text('성형외과')),
+          DropdownMenuItem(value: 'mock-derma', child: Text('피부과')),
+        ],
+        onChanged: (value) {
+          ref.read(guideSpecialtyFilterProvider.notifier).state = value;
+        },
       ),
     );
   }
@@ -621,26 +712,12 @@ class _GuideCard extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               
-              // 언어 (임시)
-              Text(
-                '언어: 한국어, 영어',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppColors.grey600,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+              // 언어 (실제 데이터)
+              _GuideLanguagesWidget(guideId: guide.id),
               const SizedBox(height: 4),
               
-              // 전문분야 (임시)
-              Text(
-                '전문분야: 성형외과',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppColors.grey600,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+              // 전문분야 (실제 데이터)
+              _GuideSpecialtiesWidget(guideId: guide.id),
               const SizedBox(height: 8),
               
               // 상태
@@ -950,6 +1027,124 @@ class _GuideDetailModal extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// 가이드 언어 표시 위젯
+class _GuideLanguagesWidget extends ConsumerWidget {
+  final String guideId;
+
+  const _GuideLanguagesWidget({required this.guideId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final languagesAsync = ref.watch(guideLanguagesProvider(guideId));
+
+    return languagesAsync.when(
+      data: (guideLanguages) {
+        if (guideLanguages.isEmpty) {
+          return Text(
+            '언어: 정보 없음',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: AppColors.grey600,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          );
+        }
+
+        final languageNames = guideLanguages
+            .map((gl) => gl.language.name)
+            .take(2) // 최대 2개만 표시
+            .join(', ');
+
+        final displayText = guideLanguages.length > 2
+            ? '$languageNames 외 ${guideLanguages.length - 2}개'
+            : languageNames;
+
+        return Text(
+          '언어: $displayText',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: AppColors.grey600,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        );
+      },
+      loading: () => Text(
+        '언어: 로딩중...',
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: AppColors.grey600,
+        ),
+      ),
+      error: (_, __) => Text(
+        '언어: 한국어, 영어', // 기본값
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: AppColors.grey600,
+        ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+}
+
+// 가이드 전문분야 표시 위젯
+class _GuideSpecialtiesWidget extends ConsumerWidget {
+  final String guideId;
+
+  const _GuideSpecialtiesWidget({required this.guideId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final specialtiesAsync = ref.watch(guideSpecialtiesProvider(guideId));
+
+    return specialtiesAsync.when(
+      data: (guideSpecialties) {
+        if (guideSpecialties.isEmpty) {
+          return Text(
+            '전문분야: 정보 없음',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: AppColors.grey600,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          );
+        }
+
+        final specialtyNames = guideSpecialties
+            .map((gs) => gs.specialty.name)
+            .take(2) // 최대 2개만 표시
+            .join(', ');
+
+        final displayText = guideSpecialties.length > 2
+            ? '$specialtyNames 외 ${guideSpecialties.length - 2}개'
+            : specialtyNames;
+
+        return Text(
+          '전문분야: $displayText',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: AppColors.grey600,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        );
+      },
+      loading: () => Text(
+        '전문분야: 로딩중...',
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: AppColors.grey600,
+        ),
+      ),
+      error: (_, __) => Text(
+        '전문분야: 성형외과', // 기본값
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: AppColors.grey600,
+        ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
       ),
     );
   }
