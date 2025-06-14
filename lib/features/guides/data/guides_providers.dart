@@ -1,8 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../reservations/data/providers.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../core/config/supabase_config.dart';
+import '../../reservations/domain/reservation_models.dart' hide Language, Specialty;
+import 'language_specialty_models.dart';
 import 'guides_repository.dart';
 import 'language_specialty_repository.dart';
-import 'language_specialty_models.dart';
+
+// Supabase 클라이언트 프로바이더
+final supabaseClientProvider = Provider<SupabaseClient>((ref) {
+  return Supabase.instance.client;
+});
 
 // 가이드 저장소 프로바이더
 final guidesRepositoryProvider = Provider<GuidesRepository>((ref) {
@@ -60,13 +67,13 @@ final specialtiesByCategoryProvider = FutureProvider.autoDispose<Map<String, Lis
 // 가이드 목록 프로바이더
 final guidesProvider = FutureProvider.autoDispose<PaginatedGuides>((ref) async {
   final repository = ref.watch(guidesRepositoryProvider);
-  final page = ref.watch(guidePageProvider);
-  final pageSize = ref.watch(guidePageSizeProvider);
   final searchQuery = ref.watch(guideSearchQueryProvider);
   final status = ref.watch(guideStatusFilterProvider);
   final language = ref.watch(guideLanguageFilterProvider);
   final specialty = ref.watch(guideSpecialtyFilterProvider);
   final grade = ref.watch(guideGradeFilterProvider);
+  final page = ref.watch(guidePageProvider);
+  final pageSize = ref.watch(guidePageSizeProvider);
 
   return await repository.getGuides(
     page: page,
@@ -104,4 +111,10 @@ final guideSpecialtiesProvider = FutureProvider.autoDispose.family<List<GuideSpe
 enum GuideViewMode {
   grid,
   list,
-} 
+}
+
+// 가이드 상세 프로바이더
+final guideProvider = FutureProvider.family<Guide?, String>((ref, id) async {
+  final repository = ref.watch(guidesRepositoryProvider);
+  return await repository.getGuide(id);
+}); 

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/app_theme.dart';
-import '../../data/simple_models.dart';
+import '../../domain/reservation_models.dart';
 import '../../data/providers.dart';
 
 class ReservationsPage extends ConsumerStatefulWidget {
@@ -210,18 +210,18 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
       children: [
         Expanded(
           child: _buildStatCard(
-            title: '할당 대기',
-            count: stats.pendingAssignment,
-            color: AppColors.warning,
+            title: '배정 대기',
+            count: stats.pendingReservations,
+            color: const Color(0xFFC0C0C0),
             icon: Icons.schedule,
           ),
         ),
         const SizedBox(width: 16),
         Expanded(
           child: _buildStatCard(
-            title: '할당 완료',
-            count: stats.assigned,
-            color: AppColors.info,
+            title: '배정 완료',
+            count: stats.assignedReservations,
+            color: const Color(0xFFB2C7D9),
             icon: Icons.assignment_turned_in,
           ),
         ),
@@ -229,17 +229,17 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
         Expanded(
           child: _buildStatCard(
             title: '진행 중',
-            count: stats.inProgress,
-            color: AppColors.primary,
-            icon: Icons.play_circle,
+            count: stats.inProgressReservations,
+            color: const Color(0xFFF3D6A4),
+            icon: Icons.play_arrow,
           ),
         ),
         const SizedBox(width: 16),
         Expanded(
           child: _buildStatCard(
             title: '완료',
-            count: stats.completed,
-            color: AppColors.success,
+            count: stats.completedReservations,
+            color: const Color(0xFFA7C8A1),
             icon: Icons.check_circle,
           ),
         ),
@@ -461,19 +461,19 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
           // 가이드
           Expanded(
             flex: 2,
-            child: reservation.guide != null
+            child: reservation.assignedGuide != null
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        reservation.guide!.koreanName,
+                        reservation.assignedGuide!.koreanName,
                         style: const TextStyle(fontWeight: FontWeight.w500),
                       ),
                       Text(
-                        reservation.guide!.languages.map((l) => l.name).join(', '),
+                        reservation.assignedGuide!.languages.map((l) => l.name).join(', '),
                         style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.grey600,
+                          color: Colors.grey[600],
                         ),
                       ),
                     ],
@@ -568,19 +568,19 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
     
     switch (status) {
       case ReservationStatus.pendingAssignment:
-        color = AppColors.warning;
+        color = const Color(0xFFC0C0C0);
         break;
       case ReservationStatus.assigned:
-        color = AppColors.info;
+        color = const Color(0xFFB2C7D9);
         break;
       case ReservationStatus.inProgress:
-        color = AppColors.primary;
+        color = const Color(0xFFF3D6A4);
         break;
       case ReservationStatus.completed:
-        color = AppColors.success;
+        color = const Color(0xFFA7C8A1);
         break;
       case ReservationStatus.cancelled:
-        color = AppColors.error;
+        color = const Color(0xFFE5B5B5);
         break;
     }
     
@@ -959,9 +959,9 @@ class _GuideAssignmentDialog extends ConsumerWidget {
               children: [
                 Text('언어: ${guide.languages.map((l) => l.name).join(', ')}'),
                 Text('전문분야: ${guide.specialties.map((s) => s.name).join(', ')}'),
-                if (!recommendation.isAvailable && recommendation.unavailabilityReason != null)
+                if (!recommendation.isAvailable)
                   Text(
-                    '사유: ${recommendation.unavailabilityReason}',
+                    '사유: 해당 시간대 불가능',
                     style: TextStyle(color: AppColors.error, fontSize: 12),
                   ),
               ],

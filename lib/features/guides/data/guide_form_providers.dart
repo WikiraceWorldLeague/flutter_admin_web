@@ -1,10 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../reservations/data/providers.dart';
+
+import 'guides_providers.dart' show supabaseClientProvider;
 import 'guide_form_models.dart';
 import 'guide_form_notifier.dart';
 import 'language_specialty_models.dart';
-import 'guides_providers.dart';
+import 'language_specialty_repository.dart';
+
+// 언어/전문분야 저장소 프로바이더
+final languageSpecialtyRepositoryProvider = Provider<LanguageSpecialtyRepository>((ref) {
+  final supabase = ref.watch(supabaseClientProvider);
+  return LanguageSpecialtyRepository(supabase);
+});
 
 // 가이드 폼 상태 관리 Provider
 final guideFormProvider = StateNotifierProvider<GuideFormNotifier, GuideFormState>((ref) {

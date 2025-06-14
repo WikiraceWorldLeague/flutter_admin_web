@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/config/supabase_config.dart';
-import 'simple_models.dart';
+import '../domain/reservation_models.dart';
 import 'reservations_repository.dart';
 
 // Supabase 클라이언트 프로바이더 (직접 생성)
@@ -164,7 +164,7 @@ final reservationDateProvider = StateProvider<DateTime?>((ref) => null);
 final startTimeProvider = StateProvider<DateTime?>((ref) => null);
 final durationProvider = StateProvider<int>((ref) => 180); // 기본 3시간
 final selectedClinicProvider = StateProvider<Clinic?>((ref) => null);
-final selectedGuideProvider = StateProvider<Guide?>((ref) => null);
+final selectedGuideProvider = StateProvider<ReservationGuide?>((ref) => null);
 final selectedServiceTypesProvider = StateProvider<List<ServiceType>>((ref) => []);
 final reservationNotesProvider = StateProvider<String>((ref) => '');
 
@@ -191,9 +191,9 @@ final activeFilterProvider = Provider<ReservationFilter>((ref) {
     searchQuery: searchQuery.isEmpty ? null : searchQuery,
     status: status,
     clinicId: clinic?.id,
-    serviceTypeId: serviceType?.id,
-    dateFrom: dateFrom,
-    dateTo: dateTo,
+    guideId: null, // serviceType는 guideId가 아니므로 null로 설정
+    startDate: dateFrom,
+    endDate: dateTo,
   );
 });
 

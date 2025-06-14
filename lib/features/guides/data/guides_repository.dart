@@ -1,15 +1,16 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../reservations/data/simple_models.dart';
+import '../../reservations/domain/reservation_models.dart';
+import 'dart:developer' as dev;
 
 class GuidesRepository {
   final SupabaseClient _supabase;
 
   GuidesRepository(this._supabase);
 
-  // 가이드 목록 조회 (페이지네이션 및 필터링)
+  // 가이드 목록 조회
   Future<PaginatedGuides> getGuides({
     int page = 1,
-    int pageSize = 12,
+    int pageSize = 20,
     String? searchQuery,
     String? status,
     String? language,
@@ -17,73 +18,42 @@ class GuidesRepository {
     String? grade,
   }) async {
     try {
-      print('🔍 Starting getGuides...');
-      print('📊 Parameters: page=$page, pageSize=$pageSize, search=$searchQuery');
-      
-      // 1. 기본 가이드 데이터 조회 (페이징)
-      print('📊 Step 1: Fetching guides...');
-      final offset = (page - 1) * pageSize;
-      
-      // 단순한 쿼리로 시작 (필터링은 나중에 추가)
-      final response = await _supabase
+      // 기본 쿼리
+      var query = _supabase
           .from('guides')
-          .select('*')
-          .order('created_at', ascending: false)
-          .range(offset, offset + pageSize - 1);
-      
-      print('📊 Raw response: $response');
-      print('📊 Response length: ${response?.length ?? 'null'}');
+          .select('*');
 
-      if (response == null || response.isEmpty) {
-        print('⚠️ No guides found');
-        return PaginatedGuides(
-          guides: [],
-          totalCount: 0,
-          page: page,
-          pageSize: pageSize,
-          hasNextPage: false,
-        );
+      // 필터 적용
+      if (searchQuery != null && searchQuery.isNotEmpty) {
+        query = query.or('nickname.ilike.%$searchQuery%,korean_name.ilike.%$searchQuery%');
       }
 
-      // 2. 데이터 변환
-      print('📊 Step 2: Converting to Guide objects...');
+      if (status != null && status != 'all') {
+        query = query.eq('is_active', status == 'active');
+      }
+
+      // 페이지네이션
+      final response = await query
+          .order('created_at', ascending: false)
+          .range((page - 1) * pageSize, page * pageSize - 1);
+
+      final data = response as List<dynamic>;
+
       final guides = <Guide>[];
-      
-      for (int i = 0; i < response.length; i++) {
+      for (final item in data) {
         try {
-          final item = response[i] as Map<String, dynamic>;
-          print('📊 Processing guide $i: ${item['nickname']}');
-          
-          final guide = Guide(
-            id: item['id'] as String,
-            koreanName: item['nickname'] as String? ?? '이름 없음',
-            englishName: item['passport_first_name'] as String? ?? '',
-            nationality: item['nationality'] as String? ?? 'Unknown',
-            gender: item['gender'] as String? ?? 'other',
-            experienceYears: _calculateExperienceYears(item['started_at']),
-            phoneNumber: item['phone'] as String?,
-            email: item['email'] as String?,
-            notes: null,
-            createdAt: DateTime.parse(item['created_at'] as String),
-            // 관계 데이터는 임시로 빈 리스트 (나중에 구현)
-            languages: [],
-            specialties: [],
-          );
-          
+          final guide = Guide.fromJson(item);
           guides.add(guide);
-          print('✅ Successfully converted guide $i');
         } catch (e) {
-          print('❌ Error converting guide $i: $e');
+          dev.log('Error parsing guide: $e', error: e);
         }
       }
 
-      print('✅ Successfully loaded ${guides.length} guides');
-      
-      // 총 개수는 현재 페이지 데이터 기준으로 추정
+      // 총 개수는 현재 결과 기반으로 추정 (간단화)
       final totalCount = guides.length < pageSize ? 
           (page - 1) * pageSize + guides.length : 
           page * pageSize + 1;
-      
+
       return PaginatedGuides(
         guides: guides,
         totalCount: totalCount,
@@ -91,50 +61,85 @@ class GuidesRepository {
         pageSize: pageSize,
         hasNextPage: guides.length == pageSize,
       );
-      
-    } catch (e, stackTrace) {
-      print('❌ Error in getGuides: $e');
-      print('❌ Stack trace: $stackTrace');
-      rethrow;
+    } catch (e) {
+      dev.log('Error fetching guides: $e', error: e);
+      throw Exception('가이드 목록 조회 실패: $e');
     }
   }
 
-  // 가이드 통계 조회
-  Future<GuideStats> getGuideStats() async {
+  // 가이드 상세 조회
+  Future<Guide?> getGuide(String id) async {
     try {
-      print('🔍 Getting guide stats...');
-      
-      // 전체 가이드 수 (단순화)
-      final totalResponse = await _supabase
+      final response = await _supabase
           .from('guides')
-          .select('id');
-      
-      // 활성 가이드 수 (임시로 전체의 80%로 계산)
-      final totalCount = totalResponse.length;
-      final activeCount = (totalCount * 0.8).round();
-      
-      // 이번 달 신규 가이드 수 (임시로 전체의 10%로 계산)
-      final newThisMonth = (totalCount * 0.1).round();
+          .select('*')
+          .eq('id', id)
+          .single();
 
-      // 이번 달 예약 건수 (임시로 0)
-      final thisMonthReservations = totalCount * 5; // 가이드당 평균 5건
-
-      return GuideStats(
-        total: totalCount,
-        active: activeCount,
-        newThisMonth: newThisMonth,
-        thisMonthReservations: thisMonthReservations,
-      );
-      
+      return Guide.fromJson(response);
     } catch (e) {
-      print('❌ Error getting guide stats: $e');
-      return const GuideStats(
-        total: 0,
-        active: 0,
-        newThisMonth: 0,
-        thisMonthReservations: 0,
-      );
+      if (e.toString().contains('No rows found')) {
+        return null;
+      }
+      dev.log('Error fetching guide: $e', error: e);
+      throw Exception('가이드 조회 실패: $e');
     }
+  }
+
+  // 가이드 생성
+  Future<Guide> createGuide(Map<String, dynamic> guideData) async {
+    try {
+      final response = await _supabase
+          .from('guides')
+          .insert(guideData)
+          .select()
+          .single();
+
+      return Guide.fromJson(response);
+    } catch (e) {
+      dev.log('Error creating guide: $e', error: e);
+      throw Exception('가이드 생성 실패: $e');
+    }
+  }
+
+  // 가이드 수정
+  Future<Guide> updateGuide(String id, Map<String, dynamic> updates) async {
+    try {
+      final response = await _supabase
+          .from('guides')
+          .update(updates)
+          .eq('id', id)
+          .select()
+          .single();
+
+      return Guide.fromJson(response);
+    } catch (e) {
+      dev.log('Error updating guide: $e', error: e);
+      throw Exception('가이드 수정 실패: $e');
+    }
+  }
+
+  // 가이드 삭제 (비활성화)
+  Future<void> deleteGuide(String id) async {
+    try {
+      await _supabase
+          .from('guides')
+          .update({'is_active': false})
+          .eq('id', id);
+    } catch (e) {
+      dev.log('Error deleting guide: $e', error: e);
+      throw Exception('가이드 삭제 실패: $e');
+    }
+  }
+
+  // 가이드 통계 조회 (임시)
+  Future<GuideStats> getGuideStats() async {
+    return const GuideStats(
+      totalGuides: 0,
+      activeGuides: 0,
+      inactiveGuides: 0,
+      averageRating: 0.0,
+    );
   }
 
   // 경력 년수 계산
@@ -168,17 +173,40 @@ class PaginatedGuides {
   });
 }
 
+// 가이드 검색 결과 모델
+class GuideSearchResult {
+  final List<Guide> guides;
+  final int totalCount;
+  final int page;
+  final int pageSize;
+  final bool hasNextPage;
+
+  const GuideSearchResult({
+    required this.guides,
+    required this.totalCount,
+    required this.page,
+    required this.pageSize,
+    required this.hasNextPage,
+  });
+}
+
 // 가이드 통계 모델
 class GuideStats {
-  final int total;
-  final int active;
-  final int newThisMonth;
-  final int thisMonthReservations;
+  final int totalGuides;
+  final int activeGuides;
+  final int inactiveGuides;
+  final double averageRating;
 
   const GuideStats({
-    required this.total,
-    required this.active,
-    required this.newThisMonth,
-    required this.thisMonthReservations,
+    required this.totalGuides,
+    required this.activeGuides,
+    required this.inactiveGuides,
+    required this.averageRating,
   });
+
+  // UI에서 사용하는 getter들
+  int get total => totalGuides;
+  int get active => activeGuides;
+  int get newThisMonth => 0; // 임시값
+  int get thisMonthReservations => 0; // 임시값
 } 

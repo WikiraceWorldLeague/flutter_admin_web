@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
-import '../../../reservations/data/simple_models.dart';
-import '../../data/guides_providers.dart';
+import '../../../reservations/domain/reservation_models.dart';
 import '../../data/guides_repository.dart';
+import '../../data/guides_providers.dart';
 import '../../data/language_specialty_models.dart';
 
 class GuidesPage extends ConsumerStatefulWidget {
