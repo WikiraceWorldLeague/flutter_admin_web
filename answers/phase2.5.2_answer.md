@@ -185,3 +185,38 @@ ref.read(guideFormProvider.notifier).submit() 구조 연동
 유효성 통과 + Snackbar → 리스트 페이지 이동
 
 📌 이 구조가 완성되면 👉 각 섹션 위젯에 세부 필드/폼 추가하기 훨씬 수월해집니다.
+
+🎯 Phase 2.5.3 Step 3: 개별 섹션 구현 — 최종 선택안
+✅ 선택: A) 📋 기본 정보 섹션부터 - 폼 필드와 유효성 검증 구현
+이유:
+
+기본 정보는 모든 입력 흐름의 시작점이며,
+👉 이후의 언어/전문분야/프로필 입력은 기본 정보가 먼저 저장된 상태여야 의미 있음
+
+실시간 유효성 검증(이메일 형식, 전화번호 형식, 중복 체크) 로직도
+👉 이후 섹션에서 재사용하거나 연계되므로 가장 먼저 구현하는 것이 구조상 유리
+
+🧩 기본 정보 섹션 구현 항목
+필드 목록:
+
+닉네임 (TextFormField)
+
+성별 (DropdownButtonFormField)
+
+생년월일 (DatePicker or TextFormField)
+
+전화번호 (TextFormField) + 실시간 형식/중복 검증
+
+이메일 (TextFormField) + 실시간 형식/중복 검증
+
+검증 방식:
+
+guideFormNotifier.validateEmail() / validatePhone()
+
+오류 메시지는 각 필드 하단에 실시간 표시 (Q12-A 방식)
+
+스타일 적용:
+
+Material 3 + 비즈니스 스타일 (Gray theme)
+
+좌우 여백 + 섹션 제목 고정: "기본 정보"

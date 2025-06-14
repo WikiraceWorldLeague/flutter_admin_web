@@ -9,6 +9,11 @@ class GuideFormState {
   final String phoneNumber;
   final String email;
   
+  // 여권 정보 (필수)
+  final String passportFirstName;
+  final String passportLastName;
+  final String nationality;
+  
   // 언어 능력 (동적 추가)
   final List<GuideLanguageForm> languages;
   
@@ -33,6 +38,9 @@ class GuideFormState {
     this.birthDate,
     this.phoneNumber = '',
     this.email = '',
+    this.passportFirstName = '',
+    this.passportLastName = '',
+    this.nationality = '',
     this.languages = const [],
     this.selectedSpecialtyIds = const [],
     this.profileImageUrl,
@@ -49,6 +57,9 @@ class GuideFormState {
     DateTime? birthDate,
     String? phoneNumber,
     String? email,
+    String? passportFirstName,
+    String? passportLastName,
+    String? nationality,
     List<GuideLanguageForm>? languages,
     List<String>? selectedSpecialtyIds,
     String? profileImageUrl,
@@ -64,6 +75,9 @@ class GuideFormState {
       birthDate: birthDate ?? this.birthDate,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       email: email ?? this.email,
+      passportFirstName: passportFirstName ?? this.passportFirstName,
+      passportLastName: passportLastName ?? this.passportLastName,
+      nationality: nationality ?? this.nationality,
       languages: languages ?? this.languages,
       selectedSpecialtyIds: selectedSpecialtyIds ?? this.selectedSpecialtyIds,
       profileImageUrl: profileImageUrl ?? this.profileImageUrl,
@@ -81,6 +95,9 @@ class GuideFormState {
            nickname.isNotEmpty && 
            phoneNumber.isNotEmpty && 
            email.isNotEmpty &&
+           passportFirstName.isNotEmpty &&
+           passportLastName.isNotEmpty &&
+           nationality.isNotEmpty &&
            languages.isNotEmpty &&
            selectedSpecialtyIds.isNotEmpty;
   }
@@ -90,6 +107,9 @@ class GuideFormState {
     return nickname.isNotEmpty || 
            phoneNumber.isNotEmpty || 
            email.isNotEmpty ||
+           passportFirstName.isNotEmpty ||
+           passportLastName.isNotEmpty ||
+           nationality.isNotEmpty ||
            languages.isNotEmpty ||
            selectedSpecialtyIds.isNotEmpty;
   }

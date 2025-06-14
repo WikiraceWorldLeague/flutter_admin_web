@@ -37,6 +37,23 @@ class GuideFormNotifier extends StateNotifier<GuideFormState> {
     _validateField('email', email);
   }
 
+  // 여권 정보 업데이트
+  void updatePassportFirstName(String passportFirstName) {
+    state = state.copyWith(passportFirstName: passportFirstName);
+    _validateField('passportFirstName', passportFirstName);
+  }
+
+  void updatePassportLastName(String passportLastName) {
+    state = state.copyWith(passportLastName: passportLastName);
+    _validateField('passportLastName', passportLastName);
+  }
+
+  // 국적 정보 업데이트
+  void updateNationality(String nationality) {
+    state = state.copyWith(nationality: nationality);
+    _validateField('nationality', nationality);
+  }
+
   // 프로필 정보 업데이트
   void updateProfileImageUrl(String? profileImageUrl) {
     state = state.copyWith(profileImageUrl: profileImageUrl);
@@ -122,6 +139,15 @@ class GuideFormNotifier extends StateNotifier<GuideFormState> {
       case 'email':
         result = _validateEmail(value);
         break;
+      case 'passportFirstName':
+        result = _validatePassportFirstName(value);
+        break;
+      case 'passportLastName':
+        result = _validatePassportLastName(value);
+        break;
+      case 'nationality':
+        result = _validateNationality(value);
+        break;
       default:
         result = ValidationResult.valid;
     }
@@ -170,6 +196,55 @@ class GuideFormNotifier extends StateNotifier<GuideFormState> {
       return ValidationResult.invalid('올바른 이메일 형식이 아닙니다.');
     }
     
+    return ValidationResult.valid;
+  }
+
+  ValidationResult _validatePassportFirstName(String passportFirstName) {
+    if (passportFirstName.isEmpty) {
+      return ValidationResult.invalid('여권 이름을 입력해주세요.');
+    }
+    if (passportFirstName.length < 1) {
+      return ValidationResult.invalid('여권 이름을 입력해주세요.');
+    }
+    if (passportFirstName.length > 50) {
+      return ValidationResult.invalid('여권 이름은 50자 이하로 입력해주세요.');
+    }
+    // 영문만 허용 (여권은 영문 표기)
+    final nameRegex = RegExp(r'^[a-zA-Z\s]+$');
+    if (!nameRegex.hasMatch(passportFirstName)) {
+      return ValidationResult.invalid('여권 이름은 영문만 입력 가능합니다.');
+    }
+    return ValidationResult.valid;
+  }
+
+  ValidationResult _validatePassportLastName(String passportLastName) {
+    if (passportLastName.isEmpty) {
+      return ValidationResult.invalid('여권 성을 입력해주세요.');
+    }
+    if (passportLastName.length < 1) {
+      return ValidationResult.invalid('여권 성을 입력해주세요.');
+    }
+    if (passportLastName.length > 50) {
+      return ValidationResult.invalid('여권 성은 50자 이하로 입력해주세요.');
+    }
+    // 영문만 허용 (여권은 영문 표기)
+    final nameRegex = RegExp(r'^[a-zA-Z\s]+$');
+    if (!nameRegex.hasMatch(passportLastName)) {
+      return ValidationResult.invalid('여권 성은 영문만 입력 가능합니다.');
+    }
+    return ValidationResult.valid;
+  }
+
+  ValidationResult _validateNationality(String nationality) {
+    if (nationality.isEmpty) {
+      return ValidationResult.invalid('국적을 입력해주세요.');
+    }
+    if (nationality.length < 2) {
+      return ValidationResult.invalid('국적은 2자 이상 입력해주세요.');
+    }
+    if (nationality.length > 50) {
+      return ValidationResult.invalid('국적은 50자 이하로 입력해주세요.');
+    }
     return ValidationResult.valid;
   }
 
@@ -232,6 +307,9 @@ class GuideFormNotifier extends StateNotifier<GuideFormState> {
     _validateField('nickname', state.nickname);
     _validateField('phoneNumber', state.phoneNumber);
     _validateField('email', state.email);
+    _validateField('passportFirstName', state.passportFirstName);
+    _validateField('passportLastName', state.passportLastName);
+    _validateField('nationality', state.nationality);
     
     // 언어 검증
     if (state.languages.isEmpty) {
@@ -277,7 +355,10 @@ class GuideFormNotifier extends StateNotifier<GuideFormState> {
     try {
       // 1. 가이드 기본 정보 저장
       final guideData = {
+        'passport_first_name': state.passportFirstName,
+        'passport_last_name': state.passportLastName,
         'nickname': state.nickname,
+        'nationality': state.nationality,
         'gender': state.gender,
         'birth_date': state.birthDate?.toIso8601String(),
         'phone': state.phoneNumber,
@@ -334,7 +415,10 @@ class GuideFormNotifier extends StateNotifier<GuideFormState> {
       
       // 1. 가이드 기본 정보 업데이트
       final guideData = {
+        'passport_first_name': state.passportFirstName,
+        'passport_last_name': state.passportLastName,
         'nickname': state.nickname,
+        'nationality': state.nationality,
         'gender': state.gender,
         'birth_date': state.birthDate?.toIso8601String(),
         'phone': state.phoneNumber,
