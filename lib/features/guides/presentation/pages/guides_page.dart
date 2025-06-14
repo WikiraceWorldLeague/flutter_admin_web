@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../reservations/data/simple_models.dart';
@@ -77,7 +78,7 @@ class _GuidesPageState extends ConsumerState<GuidesPage> {
             const Spacer(),
             ElevatedButton.icon(
               onPressed: () {
-                // TODO: Add new guide
+                context.go('/guides/new');
               },
               icon: const Icon(Icons.person_add),
               label: const Text('가이드 등록'),
