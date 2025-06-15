@@ -251,9 +251,14 @@ class ReservationsRepository {
       // 1. 예약 번호 생성
       final reservationNumber = await _generateReservationNumber();
 
-      // 2. 예약자 찾기
+      // 2. 예약자 정보 확인 및 처리
       final booker = request.booker;
       final bookerName = booker?.name ?? '';
+
+      // 예약자가 없으면 에러
+      if (booker == null) {
+        throw Exception('예약자를 선택해주세요.');
+      }
 
       // 3. 고객 데이터 먼저 생성 (booker_id를 얻기 위해)
       final List<Map<String, dynamic>> customerDataList =
@@ -267,7 +272,10 @@ class ReservationsRepository {
                   'gender': customer.gender,
                   'customer_note': customer.notes,
                   'is_booker': customer.isBooker,
-                  'booker': bookerName, // 모든 고객에게 예약자 이름 저장
+                  'booker':
+                      customer.isBooker
+                          ? customer.name
+                          : bookerName, // 예약자는 자기 이름, 다른 사람은 예약자 이름
                   'age': customer.calculateAge(
                     request.reservationDate,
                   ), // 나이 계산하여 저장
@@ -304,7 +312,7 @@ class ReservationsRepository {
         'special_notes': request.notes,
         'contact_info': request.contactInfo,
         'booker_id': bookerId,
-        'group_size': request.groupSize,
+        'group_size': request.customers.length, // 실제 고객 수로 설정
         'total_amount': 0,
         'commission_rate': 4.5,
         'commission_amount': 0,

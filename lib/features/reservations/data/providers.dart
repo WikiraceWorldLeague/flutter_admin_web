@@ -4,7 +4,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/config/supabase_config.dart';
 import '../domain/reservation_models.dart';
 import 'reservations_repository.dart';
-import 'reservation_service.dart';
 
 // Supabase 클라이언트 프로바이더 (직접 생성)
 final supabaseClientProvider = Provider<SupabaseClient>((ref) {
@@ -52,21 +51,18 @@ final reservationProvider = FutureProvider.autoDispose
       return await repository.getReservation(id);
     });
 
-// ReservationService 인스턴스 프로바이더
-final reservationServiceProvider = Provider<ReservationService>((ref) {
-  return ReservationService();
-});
+// ReservationsRepository 인스턴스 프로바이더는 이미 위에 정의됨
 
 // 클리닉 목록 프로바이더
 final clinicsProvider = FutureProvider<List<Clinic>>((ref) async {
-  final service = ref.read(reservationServiceProvider);
-  return service.getClinics();
+  final repository = ref.read(reservationsRepositoryProvider);
+  return repository.getClinics();
 });
 
 // 서비스 타입 목록 프로바이더 (더 이상 비동기가 아님)
 final serviceTypesProvider = Provider<List<ServiceTypeEnum>>((ref) {
-  final service = ref.read(reservationServiceProvider);
-  return service.getServiceTypes();
+  final repository = ref.read(reservationsRepositoryProvider);
+  return repository.getServiceTypes();
 });
 
 // 가이드 추천 프로바이더
@@ -86,8 +82,8 @@ class ReservationFormNotifier extends Notifier<AsyncValue<void>> {
   Future<void> createReservation(CreateReservationRequestNew request) async {
     state = const AsyncValue.loading();
     try {
-      final service = ref.read(reservationServiceProvider);
-      await service.createReservation(request);
+      final repository = ref.read(reservationsRepositoryProvider);
+      await repository.createReservation(request);
       state = const AsyncValue.data(null);
     } catch (error, stackTrace) {
       state = AsyncValue.error(error, stackTrace);
@@ -250,10 +246,10 @@ final upcomingReservationsProvider =
 
 // 예약 생성 프로바이더
 final createReservationProvider =
-    FutureProvider.family<String, CreateReservationRequestNew>((
+    FutureProvider.family<Reservation, CreateReservationRequestNew>((
       ref,
       request,
     ) async {
-      final service = ref.read(reservationServiceProvider);
-      return service.createReservation(request);
+      final repository = ref.read(reservationsRepositoryProvider);
+      return repository.createReservation(request);
     });

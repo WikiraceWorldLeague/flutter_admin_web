@@ -379,8 +379,12 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
                   child: Text('예약번호', style: _headerTextStyle()),
                 ),
                 Expanded(
+                  flex: 2,
+                  child: Text('병원명', style: _headerTextStyle()),
+                ),
+                Expanded(
                   flex: 3,
-                  child: Text('고객 정보', style: _headerTextStyle()),
+                  child: Text('예약자', style: _headerTextStyle()),
                 ),
                 Expanded(
                   flex: 2,
@@ -390,7 +394,7 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
                   flex: 2,
                   child: Text('예약 일시', style: _headerTextStyle()),
                 ),
-                Expanded(flex: 2, child: Text('상태', style: _headerTextStyle())),
+                Expanded(flex: 1, child: Text('상태', style: _headerTextStyle())),
                 const SizedBox(
                   width: 100,
                   child: Text('작업', textAlign: TextAlign.center),
@@ -433,96 +437,94 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
           // 예약번호
           Expanded(
             flex: 2,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  reservation.reservationNumber,
-                  style: const TextStyle(fontWeight: FontWeight.w500),
-                ),
-                Text(
-                  reservation.clinic?.name ?? '알 수 없음',
-                  style: TextStyle(fontSize: 12, color: AppColors.grey600),
-                ),
-              ],
+            child: Text(
+              reservation.reservationNumber,
+              style: const TextStyle(fontWeight: FontWeight.w500),
             ),
           ),
 
-          // 고객 정보
+          // 병원명
           Expanded(
-            flex: 3,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  reservation.customers.map((c) => c.name).join(', '),
-                  style: const TextStyle(fontWeight: FontWeight.w500),
-                ),
-                Text(
-                  '${reservation.customers.length}명 · ${reservation.customers.map((c) => c.nationality).toSet().join(', ')}',
-                  style: TextStyle(fontSize: 12, color: AppColors.grey600),
-                ),
-              ],
+            flex: 2,
+            child: Text(
+              reservation.clinic?.name ?? '알 수 없음',
+              style: const TextStyle(fontWeight: FontWeight.w500),
             ),
           ),
+
+          // 예약자 정보
+          Expanded(flex: 3, child: _buildBookerInfo(reservation)),
 
           // 가이드
           Expanded(
             flex: 2,
-            child:
-                reservation.assignedGuide != null
-                    ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          reservation.assignedGuide!.koreanName,
-                          style: const TextStyle(fontWeight: FontWeight.w500),
-                        ),
-                        Text(
-                          reservation.assignedGuide!.languages
-                              .map((l) => l.name)
-                              .join(', '),
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey[600],
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child:
+                  reservation.assignedGuide != null
+                      ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            reservation.assignedGuide!.koreanName,
+                            style: const TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                          Text(
+                            reservation.assignedGuide!.languages
+                                .map((l) => l.name)
+                                .join(', '),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      )
+                      : SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed:
+                              () => _showGuideAssignmentDialog(reservation),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange[600],
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                          ),
+                          child: const Text(
+                            '가이드 할당',
+                            style: TextStyle(fontSize: 12),
                           ),
                         ),
-                      ],
-                    )
-                    : ElevatedButton(
-                      onPressed: () => _showGuideAssignmentDialog(reservation),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.warning,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
                       ),
-                      child: const Text('가이드 할당'),
-                    ),
+            ),
           ),
 
           // 예약 일시
           Expanded(
             flex: 2,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  DateFormat('MM/dd').format(reservation.reservationDate),
-                  style: const TextStyle(fontWeight: FontWeight.w500),
-                ),
-                Text(
-                  DateFormat('HH:mm').format(reservation.startTime),
-                  style: TextStyle(fontSize: 12, color: AppColors.grey600),
-                ),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    DateFormat('MM/dd').format(reservation.reservationDate),
+                    style: const TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                  Text(
+                    DateFormat('HH:mm').format(reservation.startTime),
+                    style: TextStyle(fontSize: 12, color: AppColors.grey600),
+                  ),
+                ],
+              ),
             ),
           ),
 
           // 상태
-          Expanded(flex: 2, child: _buildStatusChip(reservation.status)),
+          Expanded(flex: 1, child: _buildStatusChip(reservation.status)),
 
           // 작업 버튼
           SizedBox(
@@ -577,36 +579,37 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
 
     switch (status) {
       case ReservationStatus.pendingAssignment:
-        color = const Color(0xFFC0C0C0);
+        color = const Color(0xFF808080); // 더 진한 회색
         break;
       case ReservationStatus.assigned:
-        color = const Color(0xFFB2C7D9);
+        color = const Color(0xFF2E7D32); // 더 진한 파란색 계열
         break;
       case ReservationStatus.inProgress:
-        color = const Color(0xFFF3D6A4);
+        color = const Color(0xFFE65100); // 더 진한 오렌지
         break;
       case ReservationStatus.completed:
-        color = const Color(0xFFA7C8A1);
+        color = const Color(0xFF1B5E20); // 더 진한 초록
         break;
       case ReservationStatus.cancelled:
-        color = const Color(0xFFE5B5B5);
+        color = const Color(0xFFC62828); // 더 진한 빨강
         break;
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        color: color.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withOpacity(0.5)),
       ),
       child: Text(
         text,
         style: TextStyle(
           color: color,
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
         ),
+        textAlign: TextAlign.center,
       ),
     );
   }
@@ -747,6 +750,41 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
 
   TextStyle _headerTextStyle() {
     return const TextStyle(fontWeight: FontWeight.w600, fontSize: 14);
+  }
+
+  Widget _buildBookerInfo(Reservation reservation) {
+    // 예약자 찾기 (isBooker가 true인 고객)
+    final booker = reservation.customers.where((c) => c.isBooker).firstOrNull;
+
+    if (booker == null) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '예약자 정보 없음',
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              color: AppColors.error,
+            ),
+          ),
+          Text(
+            '총 ${reservation.customers.length}명',
+            style: TextStyle(fontSize: 12, color: AppColors.grey600),
+          ),
+        ],
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(booker.name, style: const TextStyle(fontWeight: FontWeight.w500)),
+        Text(
+          '${booker.nationality} · ${booker.birthDate != null ? DateFormat('yyyy-MM-dd').format(booker.birthDate!) : '생년월일 없음'}',
+          style: TextStyle(fontSize: 12, color: AppColors.grey600),
+        ),
+      ],
+    );
   }
 
   void _showCreateReservationDialog() {

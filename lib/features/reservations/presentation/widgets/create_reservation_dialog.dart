@@ -160,16 +160,16 @@ class CreateReservationDialog extends HookConsumerWidget {
                   .toList(),
         );
 
-        // ReservationService를 통해 실제 예약 생성
-        final service = ref.read(reservationServiceProvider);
-        final reservationId = await service.createReservation(request);
+        // ReservationsRepository를 통해 실제 예약 생성
+        final repository = ref.read(reservationsRepositoryProvider);
+        final reservation = await repository.createReservation(request);
 
         isLoading.value = false;
         if (context.mounted) {
           Navigator.of(context).pop(true); // 성공 시 true 반환
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('예약이 성공적으로 생성되었습니다. (ID: $reservationId)'),
+              content: Text('예약이 성공적으로 생성되었습니다. (ID: ${reservation.id})'),
               backgroundColor: Colors.green,
             ),
           );
@@ -552,6 +552,10 @@ class _CustomersSection extends StatelessWidget {
                   customers.value = [...customers.value];
                 }
               },
+              onCustomerDataChanged: () {
+                // 고객 데이터가 변경되었을 때 상태 업데이트
+                customers.value = [...customers.value];
+              },
             ),
           );
         }),
@@ -568,6 +572,7 @@ class _CustomerFormCard extends StatelessWidget {
     required this.canRemove,
     required this.onRemove,
     required this.onBookerChanged,
+    required this.onCustomerDataChanged,
   });
 
   final CustomerFormData customer;
@@ -575,6 +580,7 @@ class _CustomerFormCard extends StatelessWidget {
   final bool canRemove;
   final VoidCallback onRemove;
   final void Function(bool isBooker) onBookerChanged;
+  final VoidCallback onCustomerDataChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -658,12 +664,14 @@ class _CustomerFormCard extends StatelessWidget {
                     onTap: () async {
                       final date = await showDatePicker(
                         context: context,
-                        initialDate: DateTime(1990),
+                        initialDate: customer.birthDate ?? DateTime(1990),
                         firstDate: DateTime(1900),
                         lastDate: DateTime.now(),
                       );
                       if (date != null) {
                         customer.birthDate = date;
+                        // 상태 업데이트를 위해 부모에게 알림
+                        onCustomerDataChanged();
                       }
                     },
                     child: InputDecorator(

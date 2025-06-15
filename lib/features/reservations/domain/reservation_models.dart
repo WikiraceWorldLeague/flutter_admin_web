@@ -737,14 +737,13 @@ class CreateReservationRequestNew {
   });
 
   // 예약자 찾기
-  CustomerData? get booker => customers.firstWhere(
-    (customer) => customer.isBooker,
-    orElse:
-        () =>
-            customers.isNotEmpty
-                ? customers.first
-                : throw StateError('No customers found'),
-  );
+  CustomerData? get booker {
+    try {
+      return customers.firstWhere((customer) => customer.isBooker);
+    } catch (e) {
+      return null; // 예약자가 없으면 null 반환
+    }
+  }
 
   // 그룹 크기
   int get groupSize => customers.length;
