@@ -1,9 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../domain/models/settlement_item.dart';
+import '../providers/settlement_provider.dart';
+import '../widgets/create_settlement_dialog.dart';
 
-class SettlementsPage extends StatelessWidget {
+class SettlementsPage extends ConsumerStatefulWidget {
   const SettlementsPage({super.key});
+
+  @override
+  ConsumerState<SettlementsPage> createState() => _SettlementsPageState();
+}
+
+class _SettlementsPageState extends ConsumerState<SettlementsPage> {
+  Set<String> selectedItems = {};
 
   @override
   Widget build(BuildContext context) {
@@ -11,190 +23,290 @@ class SettlementsPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Header
-        Row(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '정산 관리',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '가이드별 정산 내역을 관리하고 현황을 확인하세요.',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.grey600,
-                  ),
-                ),
-              ],
-            ),
-            const Spacer(),
-            OutlinedButton.icon(
-              onPressed: () {
-                // TODO: Export settlements
-              },
-              icon: const Icon(Icons.download),
-              label: const Text('정산 내보내기'),
-            ),
-          ],
-        ),
-        
-        const SizedBox(height: 24),
-        
-        // Period Selection and Search
-        Row(
-          children: [
-            OutlinedButton.icon(
-              onPressed: () {
-                // TODO: Show date picker
-              },
-              icon: const Icon(Icons.calendar_today),
-              label: const Text('2024년 1월'),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: '가이드명 검색...',
-                  prefixIcon: const Icon(Icons.search),
-                  suffixIcon: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.clear),
-                  ),
+        Container(
+          padding: const EdgeInsets.all(24),
+          child: Row(
+            children: [
+              Text(
+                '정산 관리',
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-          ],
+              const Spacer(),
+              ElevatedButton.icon(
+                onPressed: () => _showCreateSettlementDialog(),
+                icon: const Icon(Icons.add),
+                label: const Text('정산 생성'),
+              ),
+            ],
+          ),
         ),
-        
-        const SizedBox(height: 24),
-        
-        // Settlement Summary Cards
-        Row(
-          children: [
-            Expanded(
-              child: _SummaryCard(
-                title: '총 정산 금액',
-                amount: '₩2,450,000',
-                color: AppColors.primary,
-                icon: Icons.account_balance_wallet,
+
+        // Summary Cards
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Row(
+            children: [
+              Expanded(
+                child: _SummaryCard(
+                  title: '총 정산 금액',
+                  amount: '₩12,500,000',
+                  color: AppColors.primary,
+                  icon: Icons.account_balance_wallet,
+                ),
               ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _SummaryCard(
-                title: '완료된 정산',
-                amount: '₩1,890,000',
-                color: AppColors.success,
-                icon: Icons.check_circle,
+              const SizedBox(width: 16),
+              Expanded(
+                child: _SummaryCard(
+                  title: '승인 대기',
+                  amount: '₩3,200,000',
+                  color: AppColors.warning,
+                  icon: Icons.pending_actions,
+                ),
               ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _SummaryCard(
-                title: '대기중 정산',
-                amount: '₩560,000',
-                color: AppColors.warning,
-                icon: Icons.pending,
+              const SizedBox(width: 16),
+              Expanded(
+                child: _SummaryCard(
+                  title: '지급 완료',
+                  amount: '₩9,300,000',
+                  color: AppColors.success,
+                  icon: Icons.check_circle,
+                ),
               ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _SummaryCard(
-                title: '평균 정산액',
-                amount: '₩102,000',
-                color: AppColors.info,
-                icon: Icons.trending_up,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
-        
+
         const SizedBox(height: 24),
-        
-        // Settlements Table
-        Expanded(
+
+        // Filters
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Card(
-            child: Column(
-              children: [
-                // Table Header
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: const BoxDecoration(
-                    color: AppColors.surfaceVariant,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(12),
-                      topRight: Radius.circular(12),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: DropdownButtonFormField<SettlementStatus?>(
+                      decoration: const InputDecoration(
+                        labelText: '상태',
+                        border: OutlineInputBorder(),
+                      ),
+                      value: null,
+                      items: [
+                        const DropdownMenuItem(value: null, child: Text('전체')),
+                        ...SettlementStatus.values.map(
+                          (status) => DropdownMenuItem(
+                            value: status,
+                            child: Text(_getStatusText(status)),
+                          ),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        // TODO: 필터 적용
+                      },
                     ),
                   ),
-                  child: Row(
-                    children: [
-                      const Expanded(flex: 2, child: Text('가이드')),
-                      const Expanded(flex: 1, child: Text('예약 건수')),
-                      const Expanded(flex: 2, child: Text('총 매출')),
-                      const Expanded(flex: 2, child: Text('정산 금액')),
-                      const Expanded(flex: 1, child: Text('상태')),
-                      const SizedBox(width: 100, child: Text('작업')),
-                    ],
-                  ),
-                ),
-                
-                // Table Content
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: 10, // Placeholder count
-                    itemBuilder: (context, index) {
-                      return _SettlementRow(
-                        guideName: '가이드 ${index + 1}',
-                        reservationCount: 8 + index,
-                        totalRevenue: (180000 + index * 15000),
-                        settlementAmount: (144000 + index * 12000),
-                        status: index % 3 == 0 ? '완료' : (index % 3 == 1 ? '대기' : '진행중'),
-                        onViewDetails: () {
-                          // TODO: Show settlement details
-                        },
-                        onProcess: () {
-                          // TODO: Process settlement
-                        },
-                      );
-                    },
-                  ),
-                ),
-                
-                // Pagination (Placeholder)
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: const BoxDecoration(
-                    border: Border(
-                      top: BorderSide(color: AppColors.grey200, width: 1),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: '가이드 검색',
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(Icons.search),
+                      ),
+                      onChanged: (value) {
+                        // TODO: 검색 적용
+                      },
                     ),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      TextButton(
-                        onPressed: () {},
-                        child: const Text('이전'),
-                      ),
-                      const SizedBox(width: 16),
-                      const Text('1 / 3'),
-                      const SizedBox(width: 16),
-                      TextButton(
-                        onPressed: () {},
-                        child: const Text('다음'),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
+
+        const SizedBox(height: 16),
+
+        // Settlement Table
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Card(
+              child: Column(
+                children: [
+                  // Table Header
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: AppColors.grey200),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Checkbox(
+                          value: false,
+                          onChanged: (value) {
+                            // TODO: 전체 선택
+                          },
+                        ),
+                        const SizedBox(width: 8),
+                        const Expanded(flex: 2, child: Text('예약번호')),
+                        const Expanded(flex: 2, child: Text('가이드')),
+                        const Expanded(flex: 2, child: Text('고객')),
+                        const Expanded(flex: 2, child: Text('결제금액')),
+                        const Expanded(flex: 2, child: Text('정산금액')),
+                        const Expanded(flex: 2, child: Text('상태')),
+                        const Expanded(flex: 1, child: Text('작업')),
+                      ],
+                    ),
+                  ),
+
+                  // Table Body
+                  Expanded(
+                    child: Consumer(
+                      builder: (context, ref, child) {
+                        final settlementItemsAsync = ref.watch(
+                          settlementItemsProvider,
+                        );
+
+                        return settlementItemsAsync.when(
+                          data: (items) {
+                            if (items.isEmpty) {
+                              return const Center(child: Text('정산 데이터가 없습니다.'));
+                            }
+
+                            return ListView.builder(
+                              itemCount: items.length,
+                              itemBuilder: (context, index) {
+                                final item = items[index];
+                                return _SettlementItemRow(
+                                  item: item,
+                                  isSelected: selectedItems.contains(item.id),
+                                  onSelected: (selected) {
+                                    setState(() {
+                                      if (selected) {
+                                        selectedItems.add(item.id);
+                                      } else {
+                                        selectedItems.remove(item.id);
+                                      }
+                                    });
+                                  },
+                                  onStatusUpdate: (status) {
+                                    _updateSettlementStatus(item.id, status);
+                                  },
+                                );
+                              },
+                            );
+                          },
+                          loading:
+                              () => const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                          error:
+                              (error, stack) => Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      Icons.error,
+                                      size: 48,
+                                      color: AppColors.error,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text('데이터 로딩 실패: $error'),
+                                    const SizedBox(height: 16),
+                                    ElevatedButton(
+                                      onPressed:
+                                          () => ref.refresh(
+                                            settlementItemsProvider,
+                                          ),
+                                      child: const Text('다시 시도'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 24),
       ],
     );
+  }
+
+  Future<void> _showCreateSettlementDialog() async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => const CreateSettlementDialog(),
+    );
+
+    if (result == true) {
+      // TODO: 목록 새로고침
+      setState(() {});
+    }
+  }
+
+  void _updateSettlementStatus(String id, SettlementStatus status) {
+    // TODO: 상태 업데이트 API 호출
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('정산 상태가 ${_getStatusText(status)}(으)로 변경되었습니다.'),
+        backgroundColor: AppColors.success,
+      ),
+    );
+  }
+
+  String _getStatusText(SettlementStatus status) {
+    switch (status) {
+      case SettlementStatus.pending:
+        return '승인 대기';
+      case SettlementStatus.approved:
+        return '승인됨';
+      case SettlementStatus.paid:
+        return '지급 완료';
+    }
+  }
+
+  List<Map<String, dynamic>> _getDummySettlements() {
+    return [
+      {
+        'id': '1',
+        'reservation_number': 'RES-2024-001',
+        'guide_name': '김가이드',
+        'customer_name': '홍길동',
+        'payment_amount': 1000000.0,
+        'settlement_amount': 100000.0,
+        'status': SettlementStatus.pending,
+      },
+      {
+        'id': '2',
+        'reservation_number': 'RES-2024-002',
+        'guide_name': '이가이드',
+        'customer_name': '김철수',
+        'payment_amount': 800000.0,
+        'settlement_amount': 96000.0,
+        'status': SettlementStatus.approved,
+      },
+      {
+        'id': '3',
+        'reservation_number': 'RES-2024-003',
+        'guide_name': '박가이드',
+        'customer_name': '이영희',
+        'payment_amount': 1200000.0,
+        'settlement_amount': 144000.0,
+        'status': SettlementStatus.paid,
+      },
+    ];
   }
 }
 
@@ -215,18 +327,20 @@ class _SummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                Icon(
-                  icon,
-                  color: color,
-                  size: 24,
+                Icon(icon, color: color, size: 24),
+                const SizedBox(width: 8),
+                Text(
+                  title,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleSmall?.copyWith(color: AppColors.grey600),
                 ),
-                const Spacer(),
               ],
             ),
             const SizedBox(height: 8),
@@ -237,11 +351,93 @@ class _SummaryCard extends StatelessWidget {
                 color: color,
               ),
             ),
-            const SizedBox(height: 4),
-            Text(
-              title,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppColors.grey600,
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SettlementItemRow extends StatelessWidget {
+  final SettlementItem item;
+  final bool isSelected;
+  final Function(bool) onSelected;
+  final Function(SettlementStatus) onStatusUpdate;
+
+  const _SettlementItemRow({
+    required this.item,
+    required this.isSelected,
+    required this.onSelected,
+    required this.onStatusUpdate,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final currencyFormat = NumberFormat.currency(
+      locale: 'ko_KR',
+      symbol: '₩',
+      decimalDigits: 0,
+    );
+
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: AppColors.grey200.withOpacity(0.5)),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Checkbox(
+              value: isSelected,
+              onChanged: (value) => onSelected(value ?? false),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              flex: 2,
+              child: Text(
+                item.reservationNumber ?? 'N/A',
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+            Expanded(flex: 2, child: Text(item.guideName ?? 'N/A')),
+            Expanded(flex: 2, child: Text(item.customerName ?? 'N/A')),
+            Expanded(
+              flex: 2,
+              child: Text(currencyFormat.format(item.paymentAmount)),
+            ),
+            Expanded(
+              flex: 2,
+              child: Text(
+                currencyFormat.format(item.settlementAmount),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
+            Expanded(flex: 2, child: _StatusBadge(status: item.status)),
+            Expanded(
+              flex: 1,
+              child: PopupMenuButton<SettlementStatus>(
+                icon: const Icon(Icons.more_vert),
+                onSelected: onStatusUpdate,
+                itemBuilder:
+                    (context) => [
+                      const PopupMenuItem(
+                        value: SettlementStatus.pending,
+                        child: Text('승인 대기'),
+                      ),
+                      const PopupMenuItem(
+                        value: SettlementStatus.approved,
+                        child: Text('승인'),
+                      ),
+                      const PopupMenuItem(
+                        value: SettlementStatus.paid,
+                        child: Text('지급 완료'),
+                      ),
+                    ],
               ),
             ),
           ],
@@ -252,133 +448,134 @@ class _SummaryCard extends StatelessWidget {
 }
 
 class _SettlementRow extends StatelessWidget {
-  final String guideName;
-  final int reservationCount;
-  final int totalRevenue;
-  final int settlementAmount;
-  final String status;
-  final VoidCallback onViewDetails;
-  final VoidCallback onProcess;
+  final Map<String, dynamic> item;
+  final bool isSelected;
+  final Function(bool) onSelected;
+  final Function(SettlementStatus) onStatusUpdate;
 
   const _SettlementRow({
-    required this.guideName,
-    required this.reservationCount,
-    required this.totalRevenue,
-    required this.settlementAmount,
-    required this.status,
-    required this.onViewDetails,
-    required this.onProcess,
+    required this.item,
+    required this.isSelected,
+    required this.onSelected,
+    required this.onStatusUpdate,
   });
-
-  Color get statusColor {
-    switch (status) {
-      case '완료':
-        return AppColors.success;
-      case '대기':
-        return AppColors.warning;
-      case '진행중':
-        return AppColors.info;
-      default:
-        return AppColors.grey400;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
+    final currencyFormat = NumberFormat.currency(
+      locale: 'ko_KR',
+      symbol: '₩',
+      decimalDigits: 0,
+    );
+
     return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: AppColors.grey200, width: 1),
+          bottom: BorderSide(color: AppColors.grey200.withOpacity(0.5)),
         ),
       ),
-      child: Row(
-        children: [
-          // Guide Name
-          Expanded(
-            flex: 2,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  guideName,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Checkbox(
+              value: isSelected,
+              onChanged: (value) => onSelected(value ?? false),
             ),
-          ),
-          
-          // Reservation Count
-          Expanded(
-            flex: 1,
-            child: Text('${reservationCount}건'),
-          ),
-          
-          // Total Revenue
-          Expanded(
-            flex: 2,
-            child: Text('₩${totalRevenue.toString().replaceAllMapped(
-              RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-              (Match m) => '${m[1]},',
-            )}'),
-          ),
-          
-          // Settlement Amount
-          Expanded(
-            flex: 2,
-            child: Text(
-              '₩${settlementAmount.toString().replaceAllMapped(
-                RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-                (Match m) => '${m[1]},',
-              )}',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          
-          // Status
-          Expanded(
-            flex: 1,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: statusColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
+            const SizedBox(width: 8),
+            Expanded(
+              flex: 2,
               child: Text(
-                status,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: statusColor,
-                  fontWeight: FontWeight.w600,
-                ),
-                textAlign: TextAlign.center,
+                item['reservation_number'],
+                style: const TextStyle(fontWeight: FontWeight.w600),
               ),
             ),
-          ),
-          
-          // Actions
-          SizedBox(
-            width: 100,
-            child: Row(
-              children: [
-                IconButton(
-                  onPressed: onViewDetails,
-                  icon: const Icon(Icons.visibility_outlined),
-                  tooltip: '상세보기',
-                ),
-                IconButton(
-                  onPressed: status != '완료' ? onProcess : null,
-                  icon: const Icon(Icons.payment_outlined),
-                  tooltip: '정산처리',
-                ),
-              ],
+            Expanded(flex: 2, child: Text(item['guide_name'])),
+            Expanded(flex: 2, child: Text(item['customer_name'])),
+            Expanded(
+              flex: 2,
+              child: Text(currencyFormat.format(item['payment_amount'])),
             ),
-          ),
-        ],
+            Expanded(
+              flex: 2,
+              child: Text(
+                currencyFormat.format(item['settlement_amount']),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
+            Expanded(flex: 2, child: _StatusBadge(status: item['status'])),
+            Expanded(
+              flex: 1,
+              child: PopupMenuButton<SettlementStatus>(
+                icon: const Icon(Icons.more_vert),
+                onSelected: onStatusUpdate,
+                itemBuilder:
+                    (context) => [
+                      const PopupMenuItem(
+                        value: SettlementStatus.pending,
+                        child: Text('승인 대기'),
+                      ),
+                      const PopupMenuItem(
+                        value: SettlementStatus.approved,
+                        child: Text('승인'),
+                      ),
+                      const PopupMenuItem(
+                        value: SettlementStatus.paid,
+                        child: Text('지급 완료'),
+                      ),
+                    ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
-} 
+}
+
+class _StatusBadge extends StatelessWidget {
+  final SettlementStatus status;
+
+  const _StatusBadge({required this.status});
+
+  @override
+  Widget build(BuildContext context) {
+    Color color;
+    String text;
+
+    switch (status) {
+      case SettlementStatus.pending:
+        color = AppColors.warning;
+        text = '승인 대기';
+        break;
+      case SettlementStatus.approved:
+        color = AppColors.info;
+        text = '승인됨';
+        break;
+      case SettlementStatus.paid:
+        color = AppColors.success;
+        text = '지급 완료';
+        break;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withOpacity(0.3)),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: color,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+}

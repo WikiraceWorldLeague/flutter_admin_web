@@ -28,17 +28,27 @@ class _BasicInfoSectionState extends ConsumerState<BasicInfoSection> {
     _passportFirstNameController = TextEditingController();
     _passportLastNameController = TextEditingController();
     _nationalityController = TextEditingController();
+  }
 
-    // 초기 상태에서 컨트롤러에 값 설정
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final formState = ref.read(guideFormProvider);
+  void _updateControllers(GuideFormState formState) {
+    if (_nicknameController.text != formState.nickname) {
       _nicknameController.text = formState.nickname;
+    }
+    if (_phoneController.text != formState.phoneNumber) {
       _phoneController.text = formState.phoneNumber;
+    }
+    if (_emailController.text != formState.email) {
       _emailController.text = formState.email;
+    }
+    if (_passportFirstNameController.text != formState.passportFirstName) {
       _passportFirstNameController.text = formState.passportFirstName;
+    }
+    if (_passportLastNameController.text != formState.passportLastName) {
       _passportLastNameController.text = formState.passportLastName;
+    }
+    if (_nationalityController.text != formState.nationality) {
       _nationalityController.text = formState.nationality;
-    });
+    }
   }
 
   @override
@@ -55,7 +65,14 @@ class _BasicInfoSectionState extends ConsumerState<BasicInfoSection> {
   @override
   Widget build(BuildContext context) {
     final formState = ref.watch(guideFormProvider);
-    
+
+    // 상태 변경을 감지하여 컨트롤러 업데이트
+    ref.listen<GuideFormState>(guideFormProvider, (previous, next) {
+      if (previous != next) {
+        _updateControllers(next);
+      }
+    });
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24.0),
@@ -122,7 +139,9 @@ class _BasicInfoSectionState extends ConsumerState<BasicInfoSection> {
             hintText: 'First Name',
             errorText: ref.watch(fieldErrorProvider('passportFirstName')),
             onChanged: (value) {
-              ref.read(guideFormProvider.notifier).updatePassportFirstName(value);
+              ref
+                  .read(guideFormProvider.notifier)
+                  .updatePassportFirstName(value);
             },
             isRequired: true,
           ),
@@ -135,7 +154,9 @@ class _BasicInfoSectionState extends ConsumerState<BasicInfoSection> {
             hintText: 'Last Name',
             errorText: ref.watch(fieldErrorProvider('passportLastName')),
             onChanged: (value) {
-              ref.read(guideFormProvider.notifier).updatePassportLastName(value);
+              ref
+                  .read(guideFormProvider.notifier)
+                  .updatePassportLastName(value);
             },
             isRequired: true,
           ),
@@ -199,10 +220,7 @@ class _BasicInfoSectionState extends ConsumerState<BasicInfoSection> {
           onChanged: onChanged,
           decoration: InputDecoration(
             hintText: hintText,
-            hintStyle: const TextStyle(
-              color: Color(0xFF6C757D),
-              fontSize: 14,
-            ),
+            hintStyle: const TextStyle(color: Color(0xFF6C757D), fontSize: 14),
             filled: true,
             fillColor: Colors.white,
             border: OutlineInputBorder(
@@ -225,12 +243,12 @@ class _BasicInfoSectionState extends ConsumerState<BasicInfoSection> {
               borderRadius: BorderRadius.circular(8),
               borderSide: const BorderSide(color: Color(0xFFDC3545), width: 2),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
           ),
-          style: const TextStyle(
-            fontSize: 14,
-            color: Color(0xFF212529),
-          ),
+          style: const TextStyle(fontSize: 14, color: Color(0xFF212529)),
         ),
         if (errorText != null) ...[
           const SizedBox(height: 6),
@@ -275,10 +293,7 @@ class _BasicInfoSectionState extends ConsumerState<BasicInfoSection> {
           value: selectedGender,
           decoration: InputDecoration(
             hintText: '성별을 선택해주세요',
-            hintStyle: const TextStyle(
-              color: Color(0xFF6C757D),
-              fontSize: 14,
-            ),
+            hintStyle: const TextStyle(color: Color(0xFF6C757D), fontSize: 14),
             filled: true,
             fillColor: Colors.white,
             border: OutlineInputBorder(
@@ -293,20 +308,24 @@ class _BasicInfoSectionState extends ConsumerState<BasicInfoSection> {
               borderRadius: BorderRadius.circular(8),
               borderSide: const BorderSide(color: Color(0xFF495057), width: 2),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
           ),
-          items: Gender.values.map((gender) {
-            return DropdownMenuItem<String>(
-              value: gender.value,
-              child: Text(
-                gender.displayName,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Color(0xFF212529),
-                ),
-              ),
-            );
-          }).toList(),
+          items:
+              Gender.values.map((gender) {
+                return DropdownMenuItem<String>(
+                  value: gender.value,
+                  child: Text(
+                    gender.displayName,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Color(0xFF212529),
+                    ),
+                  ),
+                );
+              }).toList(),
           onChanged: (value) {
             ref.read(guideFormProvider.notifier).updateGender(value);
           },
@@ -347,9 +366,10 @@ class _BasicInfoSectionState extends ConsumerState<BasicInfoSection> {
                         : '생년월일을 선택해주세요',
                     style: TextStyle(
                       fontSize: 14,
-                      color: selectedDate != null 
-                          ? const Color(0xFF212529)
-                          : const Color(0xFF6C757D),
+                      color:
+                          selectedDate != null
+                              ? const Color(0xFF212529)
+                              : const Color(0xFF6C757D),
                     ),
                   ),
                 ),
@@ -391,4 +411,4 @@ class _BasicInfoSectionState extends ConsumerState<BasicInfoSection> {
       ref.read(guideFormProvider.notifier).updateBirthDate(picked);
     }
   }
-} 
+}

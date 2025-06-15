@@ -3,23 +3,14 @@ class Language {
   final String code;
   final String name;
 
-  const Language({
-    required this.code,
-    required this.name,
-  });
+  const Language({required this.code, required this.name});
 
   factory Language.fromJson(Map<String, dynamic> json) {
-    return Language(
-      code: json['code'] as String,
-      name: json['name'] as String,
-    );
+    return Language(code: json['code'] as String, name: json['name'] as String);
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'code': code,
-      'name': name,
-    };
+    return {'code': code, 'name': name};
   }
 }
 
@@ -28,23 +19,14 @@ class Specialty {
   final String id;
   final String name;
 
-  const Specialty({
-    required this.id,
-    required this.name,
-  });
+  const Specialty({required this.id, required this.name});
 
   factory Specialty.fromJson(Map<String, dynamic> json) {
-    return Specialty(
-      id: json['id'] as String,
-      name: json['name'] as String,
-    );
+    return Specialty(id: json['id'] as String, name: json['name'] as String);
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-    };
+    return {'id': id, 'name': name};
   }
 }
 
@@ -96,11 +78,11 @@ enum ReservationStatus {
 // 예약 상태별 색상 정의 (beige 테마와 조화)
 class ReservationStatusColors {
   static const Map<ReservationStatus, int> colors = {
-    ReservationStatus.pendingAssignment: 0xFFC0C0C0,     // soft gray
-    ReservationStatus.assigned: 0xFFB2C7D9,    // warm blue gray
-    ReservationStatus.inProgress: 0xFFF3D6A4,  // soft amber
-    ReservationStatus.completed: 0xFFA7C8A1,   // sage green
-    ReservationStatus.cancelled: 0xFFE5B5B5,   // dusty rose
+    ReservationStatus.pendingAssignment: 0xFFC0C0C0, // soft gray
+    ReservationStatus.assigned: 0xFFB2C7D9, // warm blue gray
+    ReservationStatus.inProgress: 0xFFF3D6A4, // soft amber
+    ReservationStatus.completed: 0xFFA7C8A1, // sage green
+    ReservationStatus.cancelled: 0xFFE5B5B5, // dusty rose
   };
 
   static int getColor(ReservationStatus status) {
@@ -229,17 +211,18 @@ class ReservationGuide {
 
   // koreanName getter 추가 (호환성)
   String get koreanName => nickname;
-  
+
   // languages getter 추가 (호환성)
   List<Language> get languages => [];
-  
+
   // specialties getter 추가 (호환성)
   List<Specialty> get specialties => [];
 
   factory ReservationGuide.fromJson(Map<String, dynamic> json) {
     return ReservationGuide(
       id: json['id'] as String,
-      nickname: json['nickname'] as String? ?? json['korean_name'] as String? ?? '',
+      nickname:
+          json['nickname'] as String? ?? json['korean_name'] as String? ?? '',
       phoneNumber: json['phone'] as String? ?? json['phone_number'] as String?,
       email: json['email'] as String?,
     );
@@ -335,21 +318,27 @@ class Reservation {
     final reservationDate = DateTime.parse(json['reservation_date'] as String);
     final startTimeStr = json['start_time'] as String;
     final endTimeStr = json['end_time'] as String?;
-    
+
     // 시간 문자열을 DateTime으로 변환
-    final startTime = DateTime.parse('${reservationDate.toIso8601String().split('T')[0]}T$startTimeStr');
-    final endTime = endTimeStr != null 
-        ? DateTime.parse('${reservationDate.toIso8601String().split('T')[0]}T$endTimeStr')
-        : startTime.add(const Duration(hours: 3)); // 기본 3시간
+    final startTime = DateTime.parse(
+      '${reservationDate.toIso8601String().split('T')[0]}T$startTimeStr',
+    );
+    final endTime =
+        endTimeStr != null
+            ? DateTime.parse(
+              '${reservationDate.toIso8601String().split('T')[0]}T$endTimeStr',
+            )
+            : startTime.add(const Duration(hours: 3)); // 기본 3시간
 
     // customers 처리 - 직접 배열이거나 단일 객체일 수 있음
     List<Customer> customersList = [];
     final customersData = json['customers'];
     if (customersData != null) {
       if (customersData is List) {
-        customersList = customersData
-            .map((c) => Customer.fromJson(c as Map<String, dynamic>))
-            .toList();
+        customersList =
+            customersData
+                .map((c) => Customer.fromJson(c as Map<String, dynamic>))
+                .toList();
       } else if (customersData is Map<String, dynamic>) {
         customersList = [Customer.fromJson(customersData)];
       }
@@ -360,8 +349,13 @@ class Reservation {
     final serviceTypesData = json['service_types'];
     if (serviceTypesData != null && serviceTypesData is List) {
       for (final serviceData in serviceTypesData) {
-        if (serviceData is Map<String, dynamic> && serviceData['service_type'] != null) {
-          serviceTypesList.add(ServiceType.fromJson(serviceData['service_type'] as Map<String, dynamic>));
+        if (serviceData is Map<String, dynamic> &&
+            serviceData['service_type'] != null) {
+          serviceTypesList.add(
+            ServiceType.fromJson(
+              serviceData['service_type'] as Map<String, dynamic>,
+            ),
+          );
         }
       }
     }
@@ -372,13 +366,18 @@ class Reservation {
       reservationDate: reservationDate,
       startTime: startTime,
       endTime: endTime,
-      status: ReservationStatus.fromDbValue(json['status'] as String? ?? 'pending_assignment'),
+      status: ReservationStatus.fromDbValue(
+        json['status'] as String? ?? 'pending_assignment',
+      ),
       clinic: Clinic.fromJson(json['clinic'] as Map<String, dynamic>),
       customers: customersList,
       serviceTypes: serviceTypesList,
-      assignedGuide: json['assigned_guide'] != null
-          ? ReservationGuide.fromJson(json['assigned_guide'] as Map<String, dynamic>)
-          : null,
+      assignedGuide:
+          json['assigned_guide'] != null
+              ? ReservationGuide.fromJson(
+                json['assigned_guide'] as Map<String, dynamic>,
+              )
+              : null,
       totalAmount: (json['total_amount'] as num?)?.toDouble(),
       guideCommission: (json['commission_amount'] as num?)?.toDouble(),
       notes: json['special_notes'] as String?,
@@ -448,7 +447,7 @@ class Reservation {
   String get serviceTypeNames => serviceTypes.map((s) => s.name).join(', ');
   int get customerCount => customers.length;
   Duration get duration => endTime.difference(startTime);
-  
+
   bool get isPending => status == ReservationStatus.pendingAssignment;
   bool get isAssigned => status == ReservationStatus.assigned;
   bool get isInProgress => status == ReservationStatus.inProgress;
@@ -582,6 +581,10 @@ class Guide {
   final DateTime createdAt;
   final List<Language> languages;
   final List<Specialty> specialties;
+  final bool isActive;
+  final int completedCount;
+  final int totalCustomers;
+  final String? currentGrade;
 
   const Guide({
     required this.id,
@@ -596,12 +599,17 @@ class Guide {
     required this.createdAt,
     this.languages = const [],
     this.specialties = const [],
+    this.isActive = true,
+    this.completedCount = 0,
+    this.totalCustomers = 0,
+    this.currentGrade,
   });
 
   factory Guide.fromJson(Map<String, dynamic> json) {
     return Guide(
       id: json['id'] as String,
-      koreanName: json['korean_name'] as String? ?? json['nickname'] as String? ?? '',
+      koreanName:
+          json['korean_name'] as String? ?? json['nickname'] as String? ?? '',
       englishName: json['english_name'] as String? ?? '',
       nationality: json['nationality'] as String? ?? '',
       gender: json['gender'] as String? ?? 'other',
@@ -612,6 +620,10 @@ class Guide {
       createdAt: DateTime.parse(json['created_at'] as String),
       languages: [], // 관계 데이터는 별도 처리
       specialties: [], // 관계 데이터는 별도 처리
+      isActive: json['is_active'] as bool? ?? true,
+      completedCount: json['completed_count'] as int? ?? 0,
+      totalCustomers: json['total_customers'] as int? ?? 0,
+      currentGrade: json['current_grade'] as String?,
     );
   }
 
@@ -716,4 +728,4 @@ class GuideRecommendation {
       isAvailable: json['is_available'] ?? false,
     );
   }
-} 
+}

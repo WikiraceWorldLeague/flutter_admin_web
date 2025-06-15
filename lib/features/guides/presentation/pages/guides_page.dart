@@ -7,6 +7,7 @@ import '../../../reservations/domain/reservation_models.dart';
 import '../../data/guides_repository.dart';
 import '../../data/guides_providers.dart';
 import '../../data/language_specialty_models.dart';
+import '../widgets/grade_icon.dart';
 
 class GuidesPage extends ConsumerStatefulWidget {
   const GuidesPage({super.key});
@@ -69,9 +70,9 @@ class _GuidesPageState extends ConsumerState<GuidesPage> {
                 const SizedBox(height: 4),
                 Text(
                   '가이드 정보를 관리하고 할당 현황을 확인하세요.',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.grey600,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: AppColors.grey600),
                 ),
               ],
             ),
@@ -85,9 +86,9 @@ class _GuidesPageState extends ConsumerState<GuidesPage> {
             ),
           ],
         ),
-        
+
         const SizedBox(height: 24),
-        
+
         // Search and Filters
         Row(
           children: [
@@ -98,15 +99,16 @@ class _GuidesPageState extends ConsumerState<GuidesPage> {
                 decoration: InputDecoration(
                   hintText: '가이드명, 전화번호, 이메일 검색...',
                   prefixIcon: const Icon(Icons.search),
-                  suffixIcon: _searchController.text.isNotEmpty
-                      ? IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: () {
-                            _searchController.clear();
-                            _updateSearchQuery();
-                          },
-                        )
-                      : null,
+                  suffixIcon:
+                      _searchController.text.isNotEmpty
+                          ? IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              _searchController.clear();
+                              _updateSearchQuery();
+                            },
+                          )
+                          : null,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -132,18 +134,18 @@ class _GuidesPageState extends ConsumerState<GuidesPage> {
             ),
           ],
         ),
-        
+
         const SizedBox(height: 24),
-        
+
         // Statistics Cards
         statsAsync.when(
           data: (stats) => _buildStatsCards(stats),
           loading: () => _buildStatsCardsLoading(),
           error: (error, _) => _buildStatsCardsError(),
         ),
-        
+
         const SizedBox(height: 24),
-        
+
         // Filters and View Toggle
         Row(
           children: [
@@ -154,23 +156,22 @@ class _GuidesPageState extends ConsumerState<GuidesPage> {
               items: const [
                 DropdownMenuItem(value: 'active', child: Text('활성')),
                 DropdownMenuItem(value: 'inactive', child: Text('비활성')),
-                DropdownMenuItem(value: 'suspended', child: Text('정지')),
               ],
               onChanged: (value) {
                 ref.read(guideStatusFilterProvider.notifier).state = value;
               },
             ),
             const SizedBox(width: 16),
-            
+
             // Language Filter (실제 데이터)
             _buildLanguageFilter(),
             const SizedBox(width: 16),
-            
+
             // Specialty Filter (실제 데이터)
             _buildSpecialtyFilter(),
-            
+
             const Spacer(),
-            
+
             // View Mode Toggle
             Container(
               decoration: BoxDecoration(
@@ -182,18 +183,26 @@ class _GuidesPageState extends ConsumerState<GuidesPage> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      ref.read(guideViewModeProvider.notifier).state = GuideViewMode.grid;
+                      ref.read(guideViewModeProvider.notifier).state =
+                          GuideViewMode.grid;
                     },
                     icon: const Icon(Icons.grid_view),
-                    color: viewMode == GuideViewMode.grid ? AppColors.primary : AppColors.grey600,
+                    color:
+                        viewMode == GuideViewMode.grid
+                            ? AppColors.primary
+                            : AppColors.grey600,
                     tooltip: '그리드 뷰',
                   ),
                   IconButton(
                     onPressed: () {
-                      ref.read(guideViewModeProvider.notifier).state = GuideViewMode.list;
+                      ref.read(guideViewModeProvider.notifier).state =
+                          GuideViewMode.list;
                     },
                     icon: const Icon(Icons.view_list),
-                    color: viewMode == GuideViewMode.list ? AppColors.primary : AppColors.grey600,
+                    color:
+                        viewMode == GuideViewMode.list
+                            ? AppColors.primary
+                            : AppColors.grey600,
                     tooltip: '리스트 뷰',
                   ),
                 ],
@@ -201,31 +210,38 @@ class _GuidesPageState extends ConsumerState<GuidesPage> {
             ),
           ],
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Guides List/Grid
         Expanded(
           child: guidesAsync.when(
-            data: (paginatedGuides) => viewMode == GuideViewMode.grid
-                ? _buildGuidesGrid(paginatedGuides)
-                : _buildGuidesList(paginatedGuides),
+            data:
+                (paginatedGuides) =>
+                    viewMode == GuideViewMode.grid
+                        ? _buildGuidesGrid(paginatedGuides)
+                        : _buildGuidesList(paginatedGuides),
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, _) => Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.error_outline, size: 64, color: AppColors.error),
-                  const SizedBox(height: 16),
-                  Text('가이드 목록 로드 실패: $error'),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: _refreshData,
-                    child: const Text('다시 시도'),
+            error:
+                (error, _) => Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 64,
+                        color: AppColors.error,
+                      ),
+                      const SizedBox(height: 16),
+                      Text('가이드 목록 로드 실패: $error'),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: _refreshData,
+                        child: const Text('다시 시도'),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
+                ),
           ),
         ),
       ],
@@ -276,8 +292,9 @@ class _GuidesPageState extends ConsumerState<GuidesPage> {
 
   Widget _buildStatsCardsLoading() {
     return Row(
-      children: List.generate(4, (index) => 
-        Expanded(
+      children: List.generate(
+        4,
+        (index) => Expanded(
           child: Container(
             margin: EdgeInsets.only(right: index < 3 ? 16 : 0),
             height: 100,
@@ -301,10 +318,7 @@ class _GuidesPageState extends ConsumerState<GuidesPage> {
         border: Border.all(color: AppColors.error.withOpacity(0.3)),
       ),
       child: Center(
-        child: Text(
-          '통계 로드 실패',
-          style: TextStyle(color: AppColors.error),
-        ),
+        child: Text('통계 로드 실패', style: TextStyle(color: AppColors.error)),
       ),
     );
   }
@@ -321,10 +335,11 @@ class _GuidesPageState extends ConsumerState<GuidesPage> {
         value: value,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 8,
           ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         ),
         items: [
           DropdownMenuItem<String>(
@@ -343,47 +358,53 @@ class _GuidesPageState extends ConsumerState<GuidesPage> {
     final selectedLanguage = ref.watch(guideLanguageFilterProvider);
 
     return languagesAsync.when(
-      data: (languages) => _buildFilterDropdown(
-        label: '언어',
-        value: selectedLanguage,
-        items: languages
-            .map((language) => DropdownMenuItem(
-                  value: language.id,
-                  child: Text(language.name),
-                ))
-            .toList(),
-        onChanged: (value) {
-          ref.read(guideLanguageFilterProvider.notifier).state = value;
-        },
-      ),
-      loading: () => SizedBox(
-        width: 120,
-        height: 56,
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: AppColors.grey300),
-            borderRadius: BorderRadius.circular(8),
+      data:
+          (languages) => _buildFilterDropdown(
+            label: '언어',
+            value: selectedLanguage,
+            items:
+                languages
+                    .map(
+                      (language) => DropdownMenuItem(
+                        value: language.id,
+                        child: Text(language.name),
+                      ),
+                    )
+                    .toList(),
+            onChanged: (value) {
+              ref.read(guideLanguageFilterProvider.notifier).state = value;
+            },
           ),
-          child: const Center(
-            child: SizedBox(
-              width: 16,
-              height: 16,
-              child: CircularProgressIndicator(strokeWidth: 2),
+      loading:
+          () => SizedBox(
+            width: 120,
+            height: 56,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: AppColors.grey300),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Center(
+                child: SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-      error: (_, __) => _buildFilterDropdown(
-        label: '언어',
-        value: selectedLanguage,
-        items: const [
-          DropdownMenuItem(value: 'mock-ko', child: Text('한국어')),
-          DropdownMenuItem(value: 'mock-en', child: Text('영어')),
-        ],
-        onChanged: (value) {
-          ref.read(guideLanguageFilterProvider.notifier).state = value;
-        },
-      ),
+      error:
+          (_, __) => _buildFilterDropdown(
+            label: '언어',
+            value: selectedLanguage,
+            items: const [
+              DropdownMenuItem(value: 'mock-ko', child: Text('한국어')),
+              DropdownMenuItem(value: 'mock-en', child: Text('영어')),
+            ],
+            onChanged: (value) {
+              ref.read(guideLanguageFilterProvider.notifier).state = value;
+            },
+          ),
     );
   }
 
@@ -392,53 +413,59 @@ class _GuidesPageState extends ConsumerState<GuidesPage> {
     final selectedSpecialty = ref.watch(guideSpecialtyFilterProvider);
 
     return specialtiesAsync.when(
-      data: (specialties) => _buildFilterDropdown(
-        label: '전문분야',
-        value: selectedSpecialty,
-        items: specialties
-            .map((specialty) => DropdownMenuItem(
-                  value: specialty.id,
-                  child: Text(specialty.name),
-                ))
-            .toList(),
-        onChanged: (value) {
-          ref.read(guideSpecialtyFilterProvider.notifier).state = value;
-        },
-      ),
-      loading: () => SizedBox(
-        width: 120,
-        height: 56,
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: AppColors.grey300),
-            borderRadius: BorderRadius.circular(8),
+      data:
+          (specialties) => _buildFilterDropdown(
+            label: '전문분야',
+            value: selectedSpecialty,
+            items:
+                specialties
+                    .map(
+                      (specialty) => DropdownMenuItem(
+                        value: specialty.id,
+                        child: Text(specialty.name),
+                      ),
+                    )
+                    .toList(),
+            onChanged: (value) {
+              ref.read(guideSpecialtyFilterProvider.notifier).state = value;
+            },
           ),
-          child: const Center(
-            child: SizedBox(
-              width: 16,
-              height: 16,
-              child: CircularProgressIndicator(strokeWidth: 2),
+      loading:
+          () => SizedBox(
+            width: 120,
+            height: 56,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: AppColors.grey300),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Center(
+                child: SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-      error: (_, __) => _buildFilterDropdown(
-        label: '전문분야',
-        value: selectedSpecialty,
-        items: const [
-          DropdownMenuItem(value: 'mock-plastic', child: Text('성형외과')),
-          DropdownMenuItem(value: 'mock-derma', child: Text('피부과')),
-        ],
-        onChanged: (value) {
-          ref.read(guideSpecialtyFilterProvider.notifier).state = value;
-        },
-      ),
+      error:
+          (_, __) => _buildFilterDropdown(
+            label: '전문분야',
+            value: selectedSpecialty,
+            items: const [
+              DropdownMenuItem(value: 'mock-plastic', child: Text('성형외과')),
+              DropdownMenuItem(value: 'mock-derma', child: Text('피부과')),
+            ],
+            onChanged: (value) {
+              ref.read(guideSpecialtyFilterProvider.notifier).state = value;
+            },
+          ),
     );
   }
 
   Widget _buildGuidesGrid(PaginatedGuides paginatedGuides) {
     final guides = paginatedGuides.guides;
-    
+
     if (guides.isEmpty) {
       return _buildEmptyState();
     }
@@ -470,7 +497,7 @@ class _GuidesPageState extends ConsumerState<GuidesPage> {
 
   Widget _buildGuidesList(PaginatedGuides paginatedGuides) {
     final guides = paginatedGuides.guides;
-    
+
     if (guides.isEmpty) {
       return _buildEmptyState();
     }
@@ -487,17 +514,66 @@ class _GuidesPageState extends ConsumerState<GuidesPage> {
           ),
           child: const Row(
             children: [
-              Expanded(flex: 2, child: Text('닉네임', style: TextStyle(fontWeight: FontWeight.w600))),
-              Expanded(flex: 1, child: Text('상태', style: TextStyle(fontWeight: FontWeight.w600))),
-              Expanded(flex: 2, child: Text('언어', style: TextStyle(fontWeight: FontWeight.w600))),
-              Expanded(flex: 2, child: Text('전문분야', style: TextStyle(fontWeight: FontWeight.w600))),
-              Expanded(flex: 1, child: Text('평점', style: TextStyle(fontWeight: FontWeight.w600))),
-              Expanded(flex: 1, child: Text('예약건수', style: TextStyle(fontWeight: FontWeight.w600))),
-              Expanded(flex: 1, child: Text('액션', style: TextStyle(fontWeight: FontWeight.w600))),
+              Expanded(
+                flex: 2,
+                child: Text(
+                  '닉네임',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Text(
+                  '등급',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Text(
+                  '언어',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Text(
+                  '전문분야',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Text(
+                  '평점',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Text(
+                  '상태',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Text(
+                  '총출장/총고객',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Text(
+                  '수정',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
             ],
           ),
         ),
-        
+
         // Table Body
         Expanded(
           child: ListView.builder(
@@ -511,7 +587,7 @@ class _GuidesPageState extends ConsumerState<GuidesPage> {
             },
           ),
         ),
-        
+
         if (guides.isNotEmpty) _buildPagination(paginatedGuides),
       ],
     );
@@ -526,16 +602,16 @@ class _GuidesPageState extends ConsumerState<GuidesPage> {
           const SizedBox(height: 16),
           Text(
             '가이드가 없습니다',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: AppColors.grey600,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(color: AppColors.grey600),
           ),
           const SizedBox(height: 8),
           Text(
             '첫 번째 가이드를 등록해보세요.',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppColors.grey500,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppColors.grey500),
           ),
           const SizedBox(height: 24),
           ElevatedButton.icon(
@@ -552,8 +628,9 @@ class _GuidesPageState extends ConsumerState<GuidesPage> {
 
   Widget _buildPagination(PaginatedGuides paginatedGuides) {
     final currentPage = ref.watch(guidePageProvider);
-    final totalPages = (paginatedGuides.totalCount / paginatedGuides.pageSize).ceil();
-    
+    final totalPages =
+        (paginatedGuides.totalCount / paginatedGuides.pageSize).ceil();
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Row(
@@ -561,23 +638,29 @@ class _GuidesPageState extends ConsumerState<GuidesPage> {
         children: [
           Text(
             '총 ${paginatedGuides.totalCount}개 항목',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppColors.grey600,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppColors.grey600),
           ),
           Row(
             children: [
               IconButton(
-                onPressed: currentPage > 1
-                    ? () => ref.read(guidePageProvider.notifier).state = currentPage - 1
-                    : null,
+                onPressed:
+                    currentPage > 1
+                        ? () =>
+                            ref.read(guidePageProvider.notifier).state =
+                                currentPage - 1
+                        : null,
                 icon: const Icon(Icons.chevron_left),
               ),
               Text('$currentPage / $totalPages'),
               IconButton(
-                onPressed: paginatedGuides.hasNextPage
-                    ? () => ref.read(guidePageProvider.notifier).state = currentPage + 1
-                    : null,
+                onPressed:
+                    paginatedGuides.hasNextPage
+                        ? () =>
+                            ref.read(guidePageProvider.notifier).state =
+                                currentPage + 1
+                        : null,
                 icon: const Icon(Icons.chevron_right),
               ),
             ],
@@ -642,9 +725,9 @@ class _GuideStatsCard extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.grey600,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: AppColors.grey600),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -667,10 +750,7 @@ class _GuideCard extends StatelessWidget {
   final Guide guide;
   final VoidCallback onTap;
 
-  const _GuideCard({
-    required this.guide,
-    required this.onTap,
-  });
+  const _GuideCard({required this.guide, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -679,97 +759,138 @@ class _GuideCard extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 프로필 이미지 영역
-              Center(
-                child: CircleAvatar(
-                  radius: 30,
-                  backgroundColor: AppColors.primary.withOpacity(0.1),
-                  child: Text(
-                    guide.koreanName.isNotEmpty ? guide.koreanName[0] : 'G',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              
-              // 닉네임
-              Text(
-                guide.koreanName,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 8),
-              
-              // 언어 (실제 데이터)
-              _GuideLanguagesWidget(guideId: guide.id),
-              const SizedBox(height: 4),
-              
-              // 전문분야 (실제 데이터)
-              _GuideSpecialtiesWidget(guideId: guide.id),
-              const SizedBox(height: 8),
-              
-              // 상태
-              Row(
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: AppColors.success,
-                      shape: BoxShape.circle,
+                  // 프로필 이미지 영역
+                  Center(
+                    child: CircleAvatar(
+                      radius: 30,
+                      backgroundColor: AppColors.primary.withOpacity(0.1),
+                      child: Text(
+                        guide.koreanName.isNotEmpty ? guide.koreanName[0] : 'G',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                        ),
+                      ),
                     ),
                   ),
-                  const SizedBox(width: 4),
-                  Text(
-                    '활성',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.success,
-                      fontWeight: FontWeight.w500,
+                  const SizedBox(height: 12),
+
+                  // 닉네임 (가장 크게)
+                  Center(
+                    child: Text(
+                      guide.koreanName,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              
-              // 평점과 예약건수
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                  const SizedBox(height: 8),
+
+                  // 등급 (두 번째로 크게)
+                  Center(child: GradeIcon(grade: guide.currentGrade, size: 18)),
+                  const SizedBox(height: 12),
+
+                  // 언어 (실제 데이터, 크게)
+                  _GuideLanguagesWidget(guideId: guide.id),
+                  const SizedBox(height: 6),
+
+                  // 전문분야 (실제 데이터, 크게)
+                  _GuideSpecialtiesWidget(guideId: guide.id),
+                  const SizedBox(height: 12),
+
+                  // 상태 (크게)
                   Row(
                     children: [
-                      Icon(Icons.star, size: 16, color: AppColors.warning),
-                      const SizedBox(width: 2),
+                      Container(
+                        width: 10,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color:
+                              guide.isActive
+                                  ? AppColors.success
+                                  : AppColors.grey400,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
                       Text(
-                        '4.8',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontWeight: FontWeight.w500,
+                        guide.isActive ? '활성' : '비활성',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color:
+                              guide.isActive
+                                  ? AppColors.success
+                                  : AppColors.grey400,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
                         ),
                       ),
                     ],
                   ),
-                  Text(
-                    '총 25건',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.grey600,
-                    ),
+                  const SizedBox(height: 12),
+
+                  // 평점과 통계 (크게)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.star, size: 18, color: AppColors.warning),
+                          const SizedBox(width: 4),
+                          Text(
+                            '4.8',
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            '완료한 출장: ${guide.completedCount}건',
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodySmall?.copyWith(
+                              color: AppColors.grey600,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            '안내 완료 고객: ${guide.totalCustomers}명',
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodySmall?.copyWith(
+                              color: AppColors.grey600,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -781,10 +902,7 @@ class _GuideListItem extends StatelessWidget {
   final Guide guide;
   final VoidCallback onTap;
 
-  const _GuideListItem({
-    required this.guide,
-    required this.onTap,
-  });
+  const _GuideListItem({required this.guide, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -806,7 +924,13 @@ class _GuideListItem extends StatelessWidget {
                   style: const TextStyle(fontWeight: FontWeight.w500),
                 ),
               ),
-              
+
+              // 등급 추가
+              Expanded(
+                flex: 1,
+                child: GradeIcon(grade: guide.currentGrade, size: 14),
+              ),
+
               // 상태
               Expanded(
                 flex: 1,
@@ -816,15 +940,21 @@ class _GuideListItem extends StatelessWidget {
                       width: 8,
                       height: 8,
                       decoration: BoxDecoration(
-                        color: AppColors.success,
+                        color:
+                            guide.isActive
+                                ? AppColors.success
+                                : AppColors.grey400,
                         shape: BoxShape.circle,
                       ),
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      '활성',
+                      guide.isActive ? '활성' : '비활성',
                       style: TextStyle(
-                        color: AppColors.success,
+                        color:
+                            guide.isActive
+                                ? AppColors.success
+                                : AppColors.grey400,
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                       ),
@@ -832,19 +962,19 @@ class _GuideListItem extends StatelessWidget {
                   ],
                 ),
               ),
-              
-              // 언어
-              const Expanded(
+
+              // 언어 (실제 데이터)
+              Expanded(
                 flex: 2,
-                child: Text('한국어, 영어'),
+                child: _GuideLanguagesListWidget(guideId: guide.id),
               ),
-              
-              // 전문분야
-              const Expanded(
+
+              // 전문분야 (실제 데이터)
+              Expanded(
                 flex: 2,
-                child: Text('성형외과'),
+                child: _GuideSpecialtiesListWidget(guideId: guide.id),
               ),
-              
+
               // 평점
               Expanded(
                 flex: 1,
@@ -852,37 +982,26 @@ class _GuideListItem extends StatelessWidget {
                   children: [
                     Icon(Icons.star, size: 14, color: AppColors.warning),
                     const SizedBox(width: 2),
-                    const Text('4.8'),
+                    const Text('4.8', style: TextStyle(fontSize: 12)),
                   ],
                 ),
               ),
-              
-              // 예약건수
-              const Expanded(
-                flex: 1,
-                child: Text('25건'),
+
+              // 총출장/총고객 (변경됨)
+              Expanded(
+                flex: 2,
+                child: Text(
+                  '${guide.completedCount}/${guide.totalCustomers}',
+                  style: const TextStyle(fontSize: 12),
+                ),
               ),
-              
-              // 액션
+
+              // 수정 (변경됨)
               Expanded(
                 flex: 1,
-                child: Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        // TODO: Edit guide
-                      },
-                      icon: const Icon(Icons.edit, size: 16),
-                      tooltip: '편집',
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        // TODO: Toggle status
-                      },
-                      icon: const Icon(Icons.toggle_on, size: 16),
-                      tooltip: '비활성화',
-                    ),
-                  ],
+                child: TextButton(
+                  onPressed: onTap,
+                  child: const Text('수정', style: TextStyle(fontSize: 12)),
                 ),
               ),
             ],
@@ -913,9 +1032,9 @@ class _GuideDetailModal extends StatelessWidget {
               children: [
                 Text(
                   '가이드 상세 정보',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const Spacer(),
                 IconButton(
@@ -925,7 +1044,7 @@ class _GuideDetailModal extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 24),
-            
+
             // 프로필 정보
             Row(
               children: [
@@ -948,10 +1067,13 @@ class _GuideDetailModal extends StatelessWidget {
                     children: [
                       Text(
                         guide.koreanName,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
+                      const SizedBox(height: 4),
+
+                      // 등급
+                      GradeIcon(grade: guide.currentGrade, size: 16),
                       const SizedBox(height: 4),
                       Text(
                         '국적: ${guide.nationality}',
@@ -971,9 +1093,9 @@ class _GuideDetailModal extends StatelessWidget {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // 연락처 정보
             if (guide.phoneNumber != null) ...[
               Text(
@@ -989,16 +1111,17 @@ class _GuideDetailModal extends StatelessWidget {
               ),
               const SizedBox(height: 8),
             ],
-            
+
             const SizedBox(height: 24),
-            
+
             // 액션 버튼들
             Row(
               children: [
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: () {
-                      // TODO: Edit guide
+                      Navigator.of(context).pop(); // 모달 닫기
+                      context.go('/guides/edit/${guide.id}');
                     },
                     icon: const Icon(Icons.edit),
                     label: const Text('편집'),
@@ -1033,7 +1156,7 @@ class _GuideDetailModal extends StatelessWidget {
   }
 }
 
-// 가이드 언어 표시 위젯
+// 가이드 언어 표시 위젯 (그리드용)
 class _GuideLanguagesWidget extends ConsumerWidget {
   final String guideId;
 
@@ -1048,8 +1171,10 @@ class _GuideLanguagesWidget extends ConsumerWidget {
         if (guideLanguages.isEmpty) {
           return Text(
             '언어: 정보 없음',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: AppColors.grey600,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -1061,38 +1186,47 @@ class _GuideLanguagesWidget extends ConsumerWidget {
             .take(2) // 최대 2개만 표시
             .join(', ');
 
-        final displayText = guideLanguages.length > 2
-            ? '$languageNames 외 ${guideLanguages.length - 2}개'
-            : languageNames;
+        final displayText =
+            guideLanguages.length > 2
+                ? '$languageNames 외 ${guideLanguages.length - 2}개'
+                : languageNames;
 
         return Text(
           '언어: $displayText',
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: AppColors.grey600,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
           ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         );
       },
-      loading: () => Text(
-        '언어: 로딩중...',
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: AppColors.grey600,
-        ),
-      ),
-      error: (_, __) => Text(
-        '언어: 한국어, 영어', // 기본값
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: AppColors.grey600,
-        ),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
+      loading:
+          () => Text(
+            '언어: 로딩중...',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AppColors.grey600,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+      error:
+          (_, __) => Text(
+            '언어: 정보 없음',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AppColors.grey600,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
     );
   }
 }
 
-// 가이드 전문분야 표시 위젯
+// 가이드 전문분야 표시 위젯 (그리드용)
 class _GuideSpecialtiesWidget extends ConsumerWidget {
   final String guideId;
 
@@ -1107,8 +1241,10 @@ class _GuideSpecialtiesWidget extends ConsumerWidget {
         if (guideSpecialties.isEmpty) {
           return Text(
             '전문분야: 정보 없음',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: AppColors.grey600,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -1120,33 +1256,142 @@ class _GuideSpecialtiesWidget extends ConsumerWidget {
             .take(2) // 최대 2개만 표시
             .join(', ');
 
-        final displayText = guideSpecialties.length > 2
-            ? '$specialtyNames 외 ${guideSpecialties.length - 2}개'
-            : specialtyNames;
+        final displayText =
+            guideSpecialties.length > 2
+                ? '$specialtyNames 외 ${guideSpecialties.length - 2}개'
+                : specialtyNames;
 
         return Text(
           '전문분야: $displayText',
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: AppColors.grey600,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
           ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         );
       },
-      loading: () => Text(
-        '전문분야: 로딩중...',
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: AppColors.grey600,
-        ),
-      ),
-      error: (_, __) => Text(
-        '전문분야: 성형외과', // 기본값
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: AppColors.grey600,
-        ),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
+      loading:
+          () => Text(
+            '전문분야: 로딩중...',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AppColors.grey600,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+      error:
+          (_, __) => Text(
+            '전문분야: 정보 없음',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AppColors.grey600,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
     );
   }
-} 
+}
+
+// 가이드 언어 표시 위젯 (리스트용)
+class _GuideLanguagesListWidget extends ConsumerWidget {
+  final String guideId;
+
+  const _GuideLanguagesListWidget({required this.guideId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final languagesAsync = ref.watch(guideLanguagesProvider(guideId));
+
+    return languagesAsync.when(
+      data: (guideLanguages) {
+        if (guideLanguages.isEmpty) {
+          return const Text(
+            '정보 없음',
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          );
+        }
+
+        final languageNames = guideLanguages
+            .map((gl) => gl.language.name)
+            .take(2)
+            .join(', ');
+
+        final displayText =
+            guideLanguages.length > 2
+                ? '$languageNames 외 ${guideLanguages.length - 2}개'
+                : languageNames;
+
+        return Text(
+          displayText,
+          style: const TextStyle(fontSize: 12),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        );
+      },
+      loading:
+          () => const Text(
+            '로딩중...',
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+      error:
+          (_, __) => const Text(
+            '정보 없음',
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+    );
+  }
+}
+
+// 가이드 전문분야 표시 위젯 (리스트용)
+class _GuideSpecialtiesListWidget extends ConsumerWidget {
+  final String guideId;
+
+  const _GuideSpecialtiesListWidget({required this.guideId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final specialtiesAsync = ref.watch(guideSpecialtiesProvider(guideId));
+
+    return specialtiesAsync.when(
+      data: (guideSpecialties) {
+        if (guideSpecialties.isEmpty) {
+          return const Text(
+            '정보 없음',
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          );
+        }
+
+        final specialtyNames = guideSpecialties
+            .map((gs) => gs.specialty.name)
+            .take(2)
+            .join(', ');
+
+        final displayText =
+            guideSpecialties.length > 2
+                ? '$specialtyNames 외 ${guideSpecialties.length - 2}개'
+                : specialtyNames;
+
+        return Text(
+          displayText,
+          style: const TextStyle(fontSize: 12),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        );
+      },
+      loading:
+          () => const Text(
+            '로딩중...',
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+      error:
+          (_, __) => const Text(
+            '정보 없음',
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+    );
+  }
+}

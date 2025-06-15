@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/guide_form_providers.dart';
+import '../../data/guide_form_models.dart';
 
 class ProfileSection extends ConsumerStatefulWidget {
   const ProfileSection({super.key});
@@ -16,12 +17,13 @@ class _ProfileSectionState extends ConsumerState<ProfileSection> {
   void initState() {
     super.initState();
     _bioController = TextEditingController();
+  }
 
-    // 초기 상태에서 컨트롤러에 값 설정
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final formState = ref.read(guideFormProvider);
-      _bioController.text = formState.bio ?? '';
-    });
+  void _updateController(GuideFormState formState) {
+    final bioText = formState.bio ?? '';
+    if (_bioController.text != bioText) {
+      _bioController.text = bioText;
+    }
   }
 
   @override
@@ -33,6 +35,13 @@ class _ProfileSectionState extends ConsumerState<ProfileSection> {
   @override
   Widget build(BuildContext context) {
     final formState = ref.watch(guideFormProvider);
+
+    // 상태 변경을 감지하여 컨트롤러 업데이트
+    ref.listen<GuideFormState>(guideFormProvider, (previous, next) {
+      if (previous != next) {
+        _updateController(next);
+      }
+    });
 
     return Container(
       width: double.infinity,
@@ -66,11 +75,7 @@ class _ProfileSectionState extends ConsumerState<ProfileSection> {
         const SizedBox(height: 8),
         const Text(
           '가이드의 프로필 이미지를 업로드해주세요. (선택사항)',
-          style: TextStyle(
-            fontSize: 14,
-            color: Color(0xFF6C757D),
-            height: 1.4,
-          ),
+          style: TextStyle(fontSize: 14, color: Color(0xFF6C757D), height: 1.4),
         ),
         const SizedBox(height: 16),
 
@@ -86,9 +91,10 @@ class _ProfileSectionState extends ConsumerState<ProfileSection> {
               style: BorderStyle.solid,
             ),
           ),
-          child: profileImageUrl != null && profileImageUrl.isNotEmpty
-              ? _buildImagePreview(profileImageUrl)
-              : _buildImageUploadPlaceholder(),
+          child:
+              profileImageUrl != null && profileImageUrl.isNotEmpty
+                  ? _buildImagePreview(profileImageUrl)
+                  : _buildImageUploadPlaceholder(),
         ),
 
         const SizedBox(height: 12),
@@ -104,7 +110,10 @@ class _ProfileSectionState extends ConsumerState<ProfileSection> {
                 backgroundColor: const Color(0xFF495057),
                 foregroundColor: Colors.white,
                 elevation: 0,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -119,7 +128,10 @@ class _ProfileSectionState extends ConsumerState<ProfileSection> {
                 style: OutlinedButton.styleFrom(
                   foregroundColor: const Color(0xFFDC3545),
                   side: const BorderSide(color: Color(0xFFDC3545)),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -133,11 +145,7 @@ class _ProfileSectionState extends ConsumerState<ProfileSection> {
         // 이미지 업로드 안내사항
         const Text(
           '• 권장 크기: 400x400px 이상\n• 지원 형식: JPG, PNG (최대 5MB)\n• 얼굴이 잘 보이는 정면 사진을 권장합니다',
-          style: TextStyle(
-            fontSize: 12,
-            color: Color(0xFF6C757D),
-            height: 1.4,
-          ),
+          style: TextStyle(fontSize: 12, color: Color(0xFF6C757D), height: 1.4),
         ),
       ],
     );
@@ -161,7 +169,7 @@ class _ProfileSectionState extends ConsumerState<ProfileSection> {
               ),
             ),
           ),
-          
+
           // 어두운 오버레이
           Container(
             width: double.infinity,
@@ -170,10 +178,7 @@ class _ProfileSectionState extends ConsumerState<ProfileSection> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  Colors.transparent,
-                  Colors.black.withOpacity(0.3),
-                ],
+                colors: [Colors.transparent, Colors.black.withOpacity(0.3)],
               ),
             ),
           ),
@@ -184,11 +189,7 @@ class _ProfileSectionState extends ConsumerState<ProfileSection> {
             left: 16,
             child: Row(
               children: [
-                Icon(
-                  Icons.photo,
-                  color: Colors.white,
-                  size: 20,
-                ),
+                Icon(Icons.photo, color: Colors.white, size: 20),
                 SizedBox(width: 8),
                 Text(
                   '프로필 이미지 미리보기',
@@ -217,11 +218,7 @@ class _ProfileSectionState extends ConsumerState<ProfileSection> {
             color: const Color(0xFFE9ECEF),
             borderRadius: BorderRadius.circular(32),
           ),
-          child: const Icon(
-            Icons.person,
-            size: 32,
-            color: Color(0xFF6C757D),
-          ),
+          child: const Icon(Icons.person, size: 32, color: Color(0xFF6C757D)),
         ),
         const SizedBox(height: 16),
         const Text(
@@ -235,10 +232,7 @@ class _ProfileSectionState extends ConsumerState<ProfileSection> {
         const SizedBox(height: 4),
         const Text(
           '아래 버튼을 눌러 이미지를 선택해주세요',
-          style: TextStyle(
-            fontSize: 14,
-            color: Color(0xFF6C757D),
-          ),
+          style: TextStyle(fontSize: 14, color: Color(0xFF6C757D)),
         ),
       ],
     );
@@ -259,11 +253,7 @@ class _ProfileSectionState extends ConsumerState<ProfileSection> {
         const SizedBox(height: 8),
         const Text(
           '가이드의 경력, 전문 지식, 성격 등을 소개해주세요. (선택사항)',
-          style: TextStyle(
-            fontSize: 14,
-            color: Color(0xFF6C757D),
-            height: 1.4,
-          ),
+          style: TextStyle(fontSize: 14, color: Color(0xFF6C757D), height: 1.4),
         ),
         const SizedBox(height: 16),
 
@@ -273,7 +263,8 @@ class _ProfileSectionState extends ConsumerState<ProfileSection> {
           maxLines: 8,
           maxLength: 500,
           decoration: InputDecoration(
-            hintText: '예시: 안녕하세요! 5년 경력의 의료 전문 가이드입니다. 성형외과와 피부과 분야에 특히 전문적이며, 한국어, 영어, 중국어로 안내 가능합니다. 고객분들의 안전하고 편안한 의료 여행을 위해 최선을 다하겠습니다.',
+            hintText:
+                '예시: 안녕하세요! 5년 경력의 의료 전문 가이드입니다. 성형외과와 피부과 분야에 특히 전문적이며, 한국어, 영어, 중국어로 안내 가능합니다. 고객분들의 안전하고 편안한 의료 여행을 위해 최선을 다하겠습니다.',
             hintStyle: const TextStyle(
               color: Color(0xFF6C757D),
               fontSize: 14,
@@ -305,7 +296,9 @@ class _ProfileSectionState extends ConsumerState<ProfileSection> {
             height: 1.4,
           ),
           onChanged: (value) {
-            ref.read(guideFormProvider.notifier).updateBio(value.isEmpty ? null : value);
+            ref
+                .read(guideFormProvider.notifier)
+                .updateBio(value.isEmpty ? null : value);
           },
         ),
 
@@ -360,23 +353,24 @@ class _ProfileSectionState extends ConsumerState<ProfileSection> {
     // TODO: 이미지 선택 구현
     // 실제로는 image_picker 패키지를 사용해서 이미지를 선택하고
     // Supabase Storage에 업로드한 후 URL을 받아와야 함
-    
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('이미지 선택'),
-        content: const Text('이미지 선택 기능은 추후 구현 예정입니다.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('확인'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('이미지 선택'),
+            content: const Text('이미지 선택 기능은 추후 구현 예정입니다.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('확인'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
   void _removeImage() {
     ref.read(guideFormProvider.notifier).updateProfileImageUrl(null);
   }
-} 
+}

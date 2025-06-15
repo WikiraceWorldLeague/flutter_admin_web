@@ -4,14 +4,21 @@ import 'package:uuid/uuid.dart';
 import 'guide_form_models.dart';
 import 'language_specialty_models.dart';
 import 'language_specialty_repository.dart';
+import 'guides_providers.dart';
+import '../../reservations/domain/reservation_models.dart' show Guide;
 
 class GuideFormNotifier extends StateNotifier<GuideFormState> {
-  final LanguageSpecialtyRepository _languageSpecialtyRepository;
   final SupabaseClient _supabase;
-  final Uuid _uuid = const Uuid();
+  final LanguageSpecialtyRepository _languageSpecialtyRepository;
+  final Uuid _uuid;
+  final Ref _ref;
 
-  GuideFormNotifier(this._languageSpecialtyRepository, this._supabase) 
-      : super(const GuideFormState());
+  GuideFormNotifier(
+    this._supabase,
+    this._languageSpecialtyRepository,
+    this._uuid,
+    this._ref,
+  ) : super(const GuideFormState());
 
   // 기본 정보 업데이트
   void updateNickname(String nickname) {
@@ -85,39 +92,42 @@ class GuideFormNotifier extends StateNotifier<GuideFormState> {
   }
 
   void removeLanguage(String tempId) {
-    final updatedLanguages = state.languages
-        .where((gl) => gl.tempId != tempId)
-        .toList();
+    final updatedLanguages =
+        state.languages.where((gl) => gl.tempId != tempId).toList();
     state = state.copyWith(languages: updatedLanguages);
-    
+
     if (updatedLanguages.isEmpty) {
       _setValidationError('languages', '최소 1개 이상의 언어를 선택해주세요.');
     }
   }
 
-  void updateLanguageProficiency(String tempId, ProficiencyLevel proficiencyLevel) {
-    final updatedLanguages = state.languages.map((gl) {
-      if (gl.tempId == tempId) {
-        return gl.copyWith(proficiencyLevel: proficiencyLevel);
-      }
-      return gl;
-    }).toList();
-    
+  void updateLanguageProficiency(
+    String tempId,
+    ProficiencyLevel proficiencyLevel,
+  ) {
+    final updatedLanguages =
+        state.languages.map((gl) {
+          if (gl.tempId == tempId) {
+            return gl.copyWith(proficiencyLevel: proficiencyLevel);
+          }
+          return gl;
+        }).toList();
+
     state = state.copyWith(languages: updatedLanguages);
   }
 
   // 전문분야 관리 (Chip 방식)
   void toggleSpecialty(String specialtyId) {
     final currentIds = List<String>.from(state.selectedSpecialtyIds);
-    
+
     if (currentIds.contains(specialtyId)) {
       currentIds.remove(specialtyId);
     } else {
       currentIds.add(specialtyId);
     }
-    
+
     state = state.copyWith(selectedSpecialtyIds: currentIds);
-    
+
     if (currentIds.isEmpty) {
       _setValidationError('specialties', '최소 1개 이상의 전문분야를 선택해주세요.');
     } else {
@@ -128,7 +138,7 @@ class GuideFormNotifier extends StateNotifier<GuideFormState> {
   // 유효성 검증
   void _validateField(String fieldName, String value) {
     ValidationResult result;
-    
+
     switch (fieldName) {
       case 'nickname':
         result = _validateNickname(value);
@@ -151,7 +161,7 @@ class GuideFormNotifier extends StateNotifier<GuideFormState> {
       default:
         result = ValidationResult.valid;
     }
-    
+
     if (result.isValid) {
       _clearValidationError(fieldName);
     } else {
@@ -176,13 +186,13 @@ class GuideFormNotifier extends StateNotifier<GuideFormState> {
     if (phoneNumber.isEmpty) {
       return ValidationResult.invalid('전화번호를 입력해주세요.');
     }
-    
+
     // 한국 전화번호 형식 검증 (010-1234-5678 또는 01012345678)
     final phoneRegex = RegExp(r'^01[0-9]-?[0-9]{3,4}-?[0-9]{4}$');
     if (!phoneRegex.hasMatch(phoneNumber)) {
       return ValidationResult.invalid('올바른 전화번호 형식이 아닙니다. (예: 010-1234-5678)');
     }
-    
+
     return ValidationResult.valid;
   }
 
@@ -190,12 +200,14 @@ class GuideFormNotifier extends StateNotifier<GuideFormState> {
     if (email.isEmpty) {
       return ValidationResult.invalid('이메일을 입력해주세요.');
     }
-    
-    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
     if (!emailRegex.hasMatch(email)) {
       return ValidationResult.invalid('올바른 이메일 형식이 아닙니다.');
     }
-    
+
     return ValidationResult.valid;
   }
 
@@ -263,14 +275,15 @@ class GuideFormNotifier extends StateNotifier<GuideFormState> {
   // 중복 검사 (비동기)
   Future<void> checkEmailDuplicate(String email) async {
     if (email.isEmpty) return;
-    
+
     try {
-      final response = await _supabase
-          .from('guides')
-          .select('id')
-          .eq('email', email)
-          .maybeSingle();
-      
+      final response =
+          await _supabase
+              .from('guides')
+              .select('id')
+              .eq('email', email)
+              .maybeSingle();
+
       if (response != null && response['id'] != state.editingGuideId) {
         _setValidationError('email', '이미 사용 중인 이메일입니다.');
       } else {
@@ -283,14 +296,15 @@ class GuideFormNotifier extends StateNotifier<GuideFormState> {
 
   Future<void> checkPhoneDuplicate(String phoneNumber) async {
     if (phoneNumber.isEmpty) return;
-    
+
     try {
-      final response = await _supabase
-          .from('guides')
-          .select('id')
-          .eq('phone', phoneNumber)
-          .maybeSingle();
-      
+      final response =
+          await _supabase
+              .from('guides')
+              .select('id')
+              .eq('phone', phoneNumber)
+              .maybeSingle();
+
       if (response != null && response['id'] != state.editingGuideId) {
         _setValidationError('phoneNumber', '이미 사용 중인 전화번호입니다.');
       } else {
@@ -310,40 +324,49 @@ class GuideFormNotifier extends StateNotifier<GuideFormState> {
     _validateField('passportFirstName', state.passportFirstName);
     _validateField('passportLastName', state.passportLastName);
     _validateField('nationality', state.nationality);
-    
+
     // 언어 검증
     if (state.languages.isEmpty) {
       _setValidationError('languages', '최소 1개 이상의 언어를 선택해주세요.');
     }
-    
+
     // 전문분야 검증
     if (state.selectedSpecialtyIds.isEmpty) {
       _setValidationError('specialties', '최소 1개 이상의 전문분야를 선택해주세요.');
     }
-    
+
     // 중복 검사
     await checkEmailDuplicate(state.email);
     await checkPhoneDuplicate(state.phoneNumber);
-    
+
     return state.isValid;
   }
 
   // 폼 저장
   Future<bool> saveGuide() async {
     state = state.copyWith(isLoading: true);
-    
+
     try {
       final isValid = await validateForm();
       if (!isValid) {
         state = state.copyWith(isLoading: false);
         return false;
       }
-      
+
+      bool success;
       if (state.isEditing) {
-        return await _updateGuide();
+        success = await _updateGuide();
       } else {
-        return await _createGuide();
+        success = await _createGuide();
       }
+
+      // 저장 성공 시 가이드 목록 새로고침
+      if (success) {
+        _ref.invalidate(guidesProvider);
+        _ref.invalidate(guideStatsProvider);
+      }
+
+      return success;
     } catch (e) {
       print('가이드 저장 오류: $e');
       state = state.copyWith(isLoading: false);
@@ -367,41 +390,51 @@ class GuideFormNotifier extends StateNotifier<GuideFormState> {
         'bio': state.bio,
         'created_at': DateTime.now().toIso8601String(),
       };
-      
-      final guideResponse = await _supabase
-          .from('guides')
-          .insert(guideData)
-          .select('id')
-          .single();
-      
+
+      final guideResponse =
+          await _supabase
+              .from('guides')
+              .insert(guideData)
+              .select('id')
+              .single();
+
       final guideId = guideResponse['id'] as String;
-      
+
       // 2. 언어 정보 저장
       if (state.languages.isNotEmpty) {
-        final languageData = state.languages.map((gl) => {
-          'guide_id': guideId,
-          'language_id': gl.languageId,
-          'proficiency_level': gl.proficiencyLevel.value,
-          'created_at': DateTime.now().toIso8601String(),
-        }).toList();
-        
+        final languageData =
+            state.languages
+                .map(
+                  (gl) => {
+                    'guide_id': guideId,
+                    'language_id': gl.languageId,
+                    'proficiency_level': gl.proficiencyLevel.value,
+                    'created_at': DateTime.now().toIso8601String(),
+                  },
+                )
+                .toList();
+
         await _supabase.from('guide_languages').insert(languageData);
       }
-      
+
       // 3. 전문분야 정보 저장
       if (state.selectedSpecialtyIds.isNotEmpty) {
-        final specialtyData = state.selectedSpecialtyIds.map((specialtyId) => {
-          'guide_id': guideId,
-          'specialty_id': specialtyId,
-          'created_at': DateTime.now().toIso8601String(),
-        }).toList();
-        
+        final specialtyData =
+            state.selectedSpecialtyIds
+                .map(
+                  (specialtyId) => {
+                    'guide_id': guideId,
+                    'specialty_id': specialtyId,
+                    'created_at': DateTime.now().toIso8601String(),
+                  },
+                )
+                .toList();
+
         await _supabase.from('guide_specialties').insert(specialtyData);
       }
-      
+
       state = state.copyWith(isLoading: false);
       return true;
-      
     } catch (e) {
       print('가이드 생성 오류: $e');
       state = state.copyWith(isLoading: false);
@@ -412,7 +445,7 @@ class GuideFormNotifier extends StateNotifier<GuideFormState> {
   Future<bool> _updateGuide() async {
     try {
       final guideId = state.editingGuideId!;
-      
+
       // 1. 가이드 기본 정보 업데이트
       final guideData = {
         'passport_first_name': state.passportFirstName,
@@ -427,48 +460,51 @@ class GuideFormNotifier extends StateNotifier<GuideFormState> {
         'bio': state.bio,
         'updated_at': DateTime.now().toIso8601String(),
       };
-      
-      await _supabase
-          .from('guides')
-          .update(guideData)
-          .eq('id', guideId);
-      
+
+      await _supabase.from('guides').update(guideData).eq('id', guideId);
+
       // 2. 기존 언어 정보 삭제 후 재생성
-      await _supabase
-          .from('guide_languages')
-          .delete()
-          .eq('guide_id', guideId);
-      
+      await _supabase.from('guide_languages').delete().eq('guide_id', guideId);
+
       if (state.languages.isNotEmpty) {
-        final languageData = state.languages.map((gl) => {
-          'guide_id': guideId,
-          'language_id': gl.languageId,
-          'proficiency_level': gl.proficiencyLevel.value,
-          'created_at': DateTime.now().toIso8601String(),
-        }).toList();
-        
+        final languageData =
+            state.languages
+                .map(
+                  (gl) => {
+                    'guide_id': guideId,
+                    'language_id': gl.languageId,
+                    'proficiency_level': gl.proficiencyLevel.value,
+                    'created_at': DateTime.now().toIso8601String(),
+                  },
+                )
+                .toList();
+
         await _supabase.from('guide_languages').insert(languageData);
       }
-      
+
       // 3. 기존 전문분야 정보 삭제 후 재생성
       await _supabase
           .from('guide_specialties')
           .delete()
           .eq('guide_id', guideId);
-      
+
       if (state.selectedSpecialtyIds.isNotEmpty) {
-        final specialtyData = state.selectedSpecialtyIds.map((specialtyId) => {
-          'guide_id': guideId,
-          'specialty_id': specialtyId,
-          'created_at': DateTime.now().toIso8601String(),
-        }).toList();
-        
+        final specialtyData =
+            state.selectedSpecialtyIds
+                .map(
+                  (specialtyId) => {
+                    'guide_id': guideId,
+                    'specialty_id': specialtyId,
+                    'created_at': DateTime.now().toIso8601String(),
+                  },
+                )
+                .toList();
+
         await _supabase.from('guide_specialties').insert(specialtyData);
       }
-      
+
       state = state.copyWith(isLoading: false);
       return true;
-      
     } catch (e) {
       print('가이드 업데이트 오류: $e');
       state = state.copyWith(isLoading: false);
@@ -477,7 +513,8 @@ class GuideFormNotifier extends StateNotifier<GuideFormState> {
   }
 
   // 편집 모드로 초기화
-  void initializeForEdit(String guideId, {
+  void initializeForEdit(
+    String guideId, {
     required String nickname,
     String? gender,
     DateTime? birthDate,
@@ -506,5 +543,163 @@ class GuideFormNotifier extends StateNotifier<GuideFormState> {
   // 폼 초기화
   void resetForm() {
     state = const GuideFormState();
+  }
+
+  // 편집을 위한 가이드 데이터 로드
+  Future<bool> loadGuideForEdit(String guideId) async {
+    state = state.copyWith(isLoading: true);
+
+    try {
+      // 1. 가이드 기본 정보 조회
+      final guideResponse =
+          await _supabase.from('guides').select().eq('id', guideId).single();
+
+      // 2. 가이드 언어 정보 조회 (언어 정보 포함)
+      final languagesResponse = await _supabase
+          .from('guide_languages')
+          .select('''
+            language_id,
+            proficiency_level,
+            languages!inner(
+              id,
+              name,
+              code,
+              is_active,
+              sort_order,
+              created_at
+            )
+          ''')
+          .eq('guide_id', guideId);
+
+      // 3. 가이드 전문분야 ID 목록 조회
+      final specialtiesResponse = await _supabase
+          .from('guide_specialties')
+          .select('specialty_id')
+          .eq('guide_id', guideId);
+
+      // 4. 언어 데이터 변환
+      final languages =
+          languagesResponse.map((item) {
+            final languageData = item['languages'] as Map<String, dynamic>;
+            final language = Language(
+              id: languageData['id'] as String,
+              name: languageData['name'] as String,
+              code: languageData['code'] as String,
+              isActive: languageData['is_active'] as bool? ?? true,
+              sortOrder: languageData['sort_order'] as int? ?? 0,
+              createdAt: DateTime.parse(languageData['created_at'] as String),
+            );
+
+            return GuideLanguageForm(
+              tempId: _uuid.v4(),
+              languageId: item['language_id'] as String,
+              language: language,
+              proficiencyLevel: ProficiencyLevel.fromString(
+                item['proficiency_level'] as String,
+              ),
+            );
+          }).toList();
+
+      // 5. 전문분야 ID 목록 변환
+      final selectedSpecialtyIds =
+          specialtiesResponse
+              .map((item) => item['specialty_id'] as String)
+              .toList();
+
+      // 6. Guide 객체 생성
+      final guide = Guide(
+        id: guideResponse['id'] as String,
+        koreanName: guideResponse['nickname'] as String? ?? '',
+        englishName: '', // 영어 이름은 현재 스키마에 없음
+        nationality: guideResponse['nationality'] as String? ?? '',
+        gender: guideResponse['gender'] as String? ?? 'other',
+        experienceYears: 0, // 경력 년수는 현재 스키마에 없음
+        phoneNumber: guideResponse['phone'] as String?,
+        email: guideResponse['email'] as String?,
+        notes: guideResponse['bio'] as String?,
+        createdAt: DateTime.parse(guideResponse['created_at'] as String),
+      );
+
+      // 7. 상태 초기화
+      state = GuideFormState(
+        nickname: guideResponse['nickname'] as String? ?? '',
+        gender: guideResponse['gender'] as String?,
+        birthDate:
+            guideResponse['birth_date'] != null
+                ? DateTime.parse(guideResponse['birth_date'] as String)
+                : null,
+        phoneNumber: guideResponse['phone'] as String? ?? '',
+        email: guideResponse['email'] as String? ?? '',
+        passportFirstName:
+            guideResponse['passport_first_name'] as String? ?? '',
+        passportLastName: guideResponse['passport_last_name'] as String? ?? '',
+        nationality: guideResponse['nationality'] as String? ?? '',
+        profileImageUrl: guideResponse['profile_image_url'] as String?,
+        bio: guideResponse['bio'] as String?,
+        languages: languages,
+        selectedSpecialtyIds: selectedSpecialtyIds,
+        isEditing: true,
+        editingGuideId: guideId,
+        currentGuide: guide,
+        isLoading: false,
+      );
+
+      return true;
+    } catch (e) {
+      print('가이드 데이터 로드 오류: $e');
+      state = state.copyWith(isLoading: false);
+      return false;
+    }
+  }
+
+  // 현재 가이드 설정
+  void setCurrentGuide(Guide? guide) {
+    state = state.copyWith(currentGuide: guide);
+  }
+
+  // 가이드 상태 토글 (활성/비활성)
+  Future<bool> toggleGuideStatus(bool newStatus) async {
+    final guide = state.currentGuide;
+    if (guide == null) return false;
+
+    try {
+      state = state.copyWith(isLoading: true);
+
+      final repository = _ref.read(guidesRepositoryProvider);
+      await repository.toggleGuideStatus(guide.id, newStatus);
+
+      // 가이드 목록 새로고침
+      _ref.invalidate(guidesProvider);
+
+      state = state.copyWith(isLoading: false);
+      return true;
+    } catch (e) {
+      print('가이드 상태 토글 오류: $e');
+      state = state.copyWith(isLoading: false);
+      return false;
+    }
+  }
+
+  // 가이드 완전 삭제
+  Future<bool> deleteGuide() async {
+    final guide = state.currentGuide;
+    if (guide == null) return false;
+
+    try {
+      state = state.copyWith(isLoading: true);
+
+      final repository = _ref.read(guidesRepositoryProvider);
+      await repository.deleteGuide(guide.id);
+
+      // 가이드 목록 새로고침
+      _ref.invalidate(guidesProvider);
+
+      state = state.copyWith(isLoading: false);
+      return true;
+    } catch (e) {
+      print('가이드 삭제 오류: $e');
+      state = state.copyWith(isLoading: false);
+      return false;
+    }
   }
 }

@@ -66,6 +66,10 @@ dependencies:
   
   # Local Storage
   shared_preferences: ^2.3.3
+  freezed_annotation: ^3.0.0
+  json_annotation: ^4.9.0
+  flutter_hooks: ^0.21.2
+  hooks_riverpod: ^2.6.1
 
 dev_dependencies:
   flutter_test:
@@ -82,7 +86,7 @@ dev_dependencies:
   riverpod_generator: ^2.4.3
   build_runner: ^2.4.13
   json_serializable: ^6.8.0
-  json_annotation: ^4.9.0
+  freezed: ^3.0.6
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
