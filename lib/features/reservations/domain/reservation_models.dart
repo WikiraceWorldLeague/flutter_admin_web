@@ -3,23 +3,14 @@ class Language {
   final String code;
   final String name;
 
-  const Language({
-    required this.code,
-    required this.name,
-  });
+  const Language({required this.code, required this.name});
 
   factory Language.fromJson(Map<String, dynamic> json) {
-    return Language(
-      code: json['code'] as String,
-      name: json['name'] as String,
-    );
+    return Language(code: json['code'] as String, name: json['name'] as String);
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'code': code,
-      'name': name,
-    };
+    return {'code': code, 'name': name};
   }
 }
 
@@ -28,23 +19,14 @@ class Specialty {
   final String id;
   final String name;
 
-  const Specialty({
-    required this.id,
-    required this.name,
-  });
+  const Specialty({required this.id, required this.name});
 
   factory Specialty.fromJson(Map<String, dynamic> json) {
-    return Specialty(
-      id: json['id'] as String,
-      name: json['name'] as String,
-    );
+    return Specialty(id: json['id'] as String, name: json['name'] as String);
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-    };
+    return {'id': id, 'name': name};
   }
 }
 
@@ -96,11 +78,11 @@ enum ReservationStatus {
 // 예약 상태별 색상 정의 (beige 테마와 조화)
 class ReservationStatusColors {
   static const Map<ReservationStatus, int> colors = {
-    ReservationStatus.pendingAssignment: 0xFFC0C0C0,     // soft gray
-    ReservationStatus.assigned: 0xFFB2C7D9,    // warm blue gray
-    ReservationStatus.inProgress: 0xFFF3D6A4,  // soft amber
-    ReservationStatus.completed: 0xFFA7C8A1,   // sage green
-    ReservationStatus.cancelled: 0xFFE5B5B5,   // dusty rose
+    ReservationStatus.pendingAssignment: 0xFFC0C0C0, // soft gray
+    ReservationStatus.assigned: 0xFFB2C7D9, // warm blue gray
+    ReservationStatus.inProgress: 0xFFF3D6A4, // soft amber
+    ReservationStatus.completed: 0xFFA7C8A1, // sage green
+    ReservationStatus.cancelled: 0xFFE5B5B5, // dusty rose
   };
 
   static int getColor(ReservationStatus status) {
@@ -113,29 +95,48 @@ class Customer {
   final String id;
   final String name;
   final String nationality;
-  final String? phoneNumber;
-  final String? email;
+  final DateTime? birthDate;
+  final String? gender;
   final String? notes;
+  final bool isBooker;
+  final String? booker;
+  final double? age;
   final DateTime createdAt;
 
   const Customer({
     required this.id,
     required this.name,
     required this.nationality,
-    this.phoneNumber,
-    this.email,
+    this.birthDate,
+    this.gender,
     this.notes,
+    this.isBooker = false,
+    this.booker,
+    this.age,
     required this.createdAt,
   });
+
+  // 나이 계산 (예약일 기준)
+  double? calculateAge(DateTime reservationDate) {
+    if (birthDate == null) return null;
+    final difference = reservationDate.difference(birthDate!);
+    return double.parse((difference.inDays / 365.0).toStringAsFixed(2));
+  }
 
   factory Customer.fromJson(Map<String, dynamic> json) {
     return Customer(
       id: json['id'] as String,
       name: json['name'] as String,
       nationality: json['nationality'] as String? ?? '',
-      phoneNumber: json['phone'] as String?,
-      email: json['email'] as String?,
+      birthDate:
+          json['birth_date'] != null
+              ? DateTime.parse(json['birth_date'] as String)
+              : null,
+      gender: json['gender'] as String?,
       notes: json['customer_note'] as String?,
+      isBooker: json['is_booker'] as bool? ?? false,
+      booker: json['booker'] as String?,
+      age: (json['age'] as num?)?.toDouble(),
       createdAt: DateTime.parse(json['created_at'] as String),
     );
   }
@@ -145,9 +146,12 @@ class Customer {
       'id': id,
       'name': name,
       'nationality': nationality,
-      'phone_number': phoneNumber,
-      'email': email,
-      'notes': notes,
+      'birth_date': birthDate?.toIso8601String().split('T')[0],
+      'gender': gender,
+      'customer_note': notes,
+      'is_booker': isBooker,
+      'booker': booker,
+      'age': age,
       'created_at': createdAt.toIso8601String(),
     };
   }
@@ -156,18 +160,24 @@ class Customer {
     String? id,
     String? name,
     String? nationality,
-    String? phoneNumber,
-    String? email,
+    DateTime? birthDate,
+    String? gender,
     String? notes,
+    bool? isBooker,
+    String? booker,
+    double? age,
     DateTime? createdAt,
   }) {
     return Customer(
       id: id ?? this.id,
       name: name ?? this.name,
       nationality: nationality ?? this.nationality,
-      phoneNumber: phoneNumber ?? this.phoneNumber,
-      email: email ?? this.email,
+      birthDate: birthDate ?? this.birthDate,
+      gender: gender ?? this.gender,
       notes: notes ?? this.notes,
+      isBooker: isBooker ?? this.isBooker,
+      booker: booker ?? this.booker,
+      age: age ?? this.age,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -191,8 +201,8 @@ class Clinic {
 
   factory Clinic.fromJson(Map<String, dynamic> json) {
     return Clinic(
-      id: json['id'] as String,
-      name: json['clinic_name'] as String,
+      id: json['id'] as String? ?? '',
+      name: json['clinic_name'] as String? ?? '',
       address: json['address'] as String?,
       region: json['region'] as String?,
       phone: json['phone'] as String?,
@@ -229,17 +239,18 @@ class ReservationGuide {
 
   // koreanName getter 추가 (호환성)
   String get koreanName => nickname;
-  
+
   // languages getter 추가 (호환성)
   List<Language> get languages => [];
-  
+
   // specialties getter 추가 (호환성)
   List<Specialty> get specialties => [];
 
   factory ReservationGuide.fromJson(Map<String, dynamic> json) {
     return ReservationGuide(
       id: json['id'] as String,
-      nickname: json['nickname'] as String? ?? json['korean_name'] as String? ?? '',
+      nickname:
+          json['nickname'] as String? ?? json['korean_name'] as String? ?? '',
       phoneNumber: json['phone'] as String? ?? json['phone_number'] as String?,
       email: json['email'] as String?,
     );
@@ -258,40 +269,27 @@ class ReservationGuide {
   String toString() => nickname;
 }
 
-// 서비스 타입 모델
-class ServiceType {
-  final String id;
-  final String name;
-  final String? description;
-  final int defaultDurationMinutes;
+// 서비스 타입 enum (단순화)
+enum ServiceTypeEnum {
+  translationOnly('translation_only', '단순 통역'),
+  fullPackage('full_package', '미용의료 풀패키지'),
+  generalGuide('general_guide', '일반 관광 가이드');
 
-  const ServiceType({
-    required this.id,
-    required this.name,
-    this.description,
-    required this.defaultDurationMinutes,
-  });
+  const ServiceTypeEnum(this.code, this.displayName);
 
-  factory ServiceType.fromJson(Map<String, dynamic> json) {
-    return ServiceType(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      description: json['description'] as String?,
-      defaultDurationMinutes: json['default_duration_minutes'] as int,
-    );
-  }
+  final String code;
+  final String displayName;
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'description': description,
-      'default_duration_minutes': defaultDurationMinutes,
-    };
+  static ServiceTypeEnum? fromCode(String? code) {
+    if (code == null) return null;
+    for (final type in ServiceTypeEnum.values) {
+      if (type.code == code) return type;
+    }
+    return null;
   }
 
   @override
-  String toString() => name;
+  String toString() => displayName;
 }
 
 // 예약 모델
@@ -304,11 +302,14 @@ class Reservation {
   final ReservationStatus status;
   final Clinic clinic;
   final List<Customer> customers;
-  final List<ServiceType> serviceTypes;
+  final ServiceTypeEnum? serviceType;
   final ReservationGuide? assignedGuide;
   final double? totalAmount;
   final double? guideCommission;
   final String? notes;
+  final String? contactInfo;
+  final String? bookerId;
+  final int groupSize;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -321,11 +322,14 @@ class Reservation {
     required this.status,
     required this.clinic,
     required this.customers,
-    required this.serviceTypes,
+    this.serviceType,
     this.assignedGuide,
     this.totalAmount,
     this.guideCommission,
     this.notes,
+    this.contactInfo,
+    this.bookerId,
+    this.groupSize = 1,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -335,35 +339,37 @@ class Reservation {
     final reservationDate = DateTime.parse(json['reservation_date'] as String);
     final startTimeStr = json['start_time'] as String;
     final endTimeStr = json['end_time'] as String?;
-    
+
     // 시간 문자열을 DateTime으로 변환
-    final startTime = DateTime.parse('${reservationDate.toIso8601String().split('T')[0]}T$startTimeStr');
-    final endTime = endTimeStr != null 
-        ? DateTime.parse('${reservationDate.toIso8601String().split('T')[0]}T$endTimeStr')
-        : startTime.add(const Duration(hours: 3)); // 기본 3시간
+    final startTime = DateTime.parse(
+      '${reservationDate.toIso8601String().split('T')[0]}T$startTimeStr',
+    );
+    final endTime =
+        endTimeStr != null
+            ? DateTime.parse(
+              '${reservationDate.toIso8601String().split('T')[0]}T$endTimeStr',
+            )
+            : startTime.add(const Duration(hours: 3)); // 기본 3시간
 
     // customers 처리 - 직접 배열이거나 단일 객체일 수 있음
     List<Customer> customersList = [];
     final customersData = json['customers'];
     if (customersData != null) {
       if (customersData is List) {
-        customersList = customersData
-            .map((c) => Customer.fromJson(c as Map<String, dynamic>))
-            .toList();
+        customersList =
+            customersData
+                .map((c) => Customer.fromJson(c as Map<String, dynamic>))
+                .toList();
       } else if (customersData is Map<String, dynamic>) {
         customersList = [Customer.fromJson(customersData)];
       }
     }
 
-    // service_types 처리 - reservation_services를 통해 접근
-    List<ServiceType> serviceTypesList = [];
-    final serviceTypesData = json['service_types'];
-    if (serviceTypesData != null && serviceTypesData is List) {
-      for (final serviceData in serviceTypesData) {
-        if (serviceData is Map<String, dynamic> && serviceData['service_type'] != null) {
-          serviceTypesList.add(ServiceType.fromJson(serviceData['service_type'] as Map<String, dynamic>));
-        }
-      }
+    // service_type 처리 - 단일 enum 값
+    ServiceTypeEnum? serviceType;
+    final serviceTypeData = json['service_type'];
+    if (serviceTypeData != null) {
+      serviceType = ServiceTypeEnum.fromCode(serviceTypeData as String);
     }
 
     return Reservation(
@@ -372,16 +378,24 @@ class Reservation {
       reservationDate: reservationDate,
       startTime: startTime,
       endTime: endTime,
-      status: ReservationStatus.fromDbValue(json['status'] as String? ?? 'pending_assignment'),
+      status: ReservationStatus.fromDbValue(
+        json['status'] as String? ?? 'pending_assignment',
+      ),
       clinic: Clinic.fromJson(json['clinic'] as Map<String, dynamic>),
       customers: customersList,
-      serviceTypes: serviceTypesList,
-      assignedGuide: json['assigned_guide'] != null
-          ? ReservationGuide.fromJson(json['assigned_guide'] as Map<String, dynamic>)
-          : null,
+      serviceType: serviceType,
+      assignedGuide:
+          json['assigned_guide'] != null
+              ? ReservationGuide.fromJson(
+                json['assigned_guide'] as Map<String, dynamic>,
+              )
+              : null,
       totalAmount: (json['total_amount'] as num?)?.toDouble(),
       guideCommission: (json['commission_amount'] as num?)?.toDouble(),
       notes: json['special_notes'] as String?,
+      contactInfo: json['contact_info'] as String?,
+      bookerId: json['booker_id'] as String?,
+      groupSize: json['group_size'] as int? ?? 1,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );
@@ -397,11 +411,14 @@ class Reservation {
       'status': status.dbValue,
       'clinic': clinic.toJson(),
       'customers': customers.map((c) => c.toJson()).toList(),
-      'service_types': serviceTypes.map((s) => s.toJson()).toList(),
+      'service_type': serviceType?.code,
       'assigned_guide': assignedGuide?.toJson(),
       'total_amount': totalAmount,
       'guide_commission': guideCommission,
       'notes': notes,
+      'contact_info': contactInfo,
+      'booker_id': bookerId,
+      'group_size': groupSize,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
     };
@@ -416,11 +433,14 @@ class Reservation {
     ReservationStatus? status,
     Clinic? clinic,
     List<Customer>? customers,
-    List<ServiceType>? serviceTypes,
+    ServiceTypeEnum? serviceType,
     ReservationGuide? assignedGuide,
     double? totalAmount,
     double? guideCommission,
     String? notes,
+    String? contactInfo,
+    String? bookerId,
+    int? groupSize,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -433,11 +453,14 @@ class Reservation {
       status: status ?? this.status,
       clinic: clinic ?? this.clinic,
       customers: customers ?? this.customers,
-      serviceTypes: serviceTypes ?? this.serviceTypes,
+      serviceType: serviceType ?? this.serviceType,
       assignedGuide: assignedGuide ?? this.assignedGuide,
       totalAmount: totalAmount ?? this.totalAmount,
       guideCommission: guideCommission ?? this.guideCommission,
       notes: notes ?? this.notes,
+      contactInfo: contactInfo ?? this.contactInfo,
+      bookerId: bookerId ?? this.bookerId,
+      groupSize: groupSize ?? this.groupSize,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -445,10 +468,10 @@ class Reservation {
 
   // 편의 메서드들
   String get customerNames => customers.map((c) => c.name).join(', ');
-  String get serviceTypeNames => serviceTypes.map((s) => s.name).join(', ');
+  String get serviceTypeNames => serviceType?.displayName ?? '미지정';
   int get customerCount => customers.length;
   Duration get duration => endTime.difference(startTime);
-  
+
   bool get isPending => status == ReservationStatus.pendingAssignment;
   bool get isAssigned => status == ReservationStatus.assigned;
   bool get isInProgress => status == ReservationStatus.inProgress;
@@ -601,7 +624,8 @@ class Guide {
   factory Guide.fromJson(Map<String, dynamic> json) {
     return Guide(
       id: json['id'] as String,
-      koreanName: json['korean_name'] as String? ?? json['nickname'] as String? ?? '',
+      koreanName:
+          json['korean_name'] as String? ?? json['nickname'] as String? ?? '',
       englishName: json['english_name'] as String? ?? '',
       nationality: json['nationality'] as String? ?? '',
       gender: json['gender'] as String? ?? 'other',
@@ -631,35 +655,117 @@ class Guide {
   }
 }
 
-// 예약 생성 요청 모델
-class CreateReservationRequest {
-  final DateTime reservationDate;
-  final DateTime startTime;
-  final int durationMinutes;
-  final String clinicId;
-  final String customerId;
-  final List<String> serviceTypeIds;
+// 고객 데이터 모델 (예약 생성용)
+class CustomerData {
+  final String name;
+  final String nationality;
+  final DateTime? birthDate;
+  final String? gender;
   final String? notes;
+  final bool isBooker;
 
-  const CreateReservationRequest({
-    required this.reservationDate,
-    required this.startTime,
-    required this.durationMinutes,
-    required this.clinicId,
-    required this.customerId,
-    required this.serviceTypeIds,
+  const CustomerData({
+    required this.name,
+    required this.nationality,
+    this.birthDate,
+    this.gender,
     this.notes,
+    this.isBooker = false,
   });
+
+  // 나이 계산 (예약일 기준)
+  double? calculateAge(DateTime reservationDate) {
+    if (birthDate == null) return null;
+    final difference = reservationDate.difference(birthDate!);
+    return double.parse((difference.inDays / 365.0).toStringAsFixed(2));
+  }
 
   Map<String, dynamic> toJson() {
     return {
-      'reservation_date': reservationDate.toIso8601String().split('T')[0],
-      'start_time': startTime.toIso8601String(),
-      'duration_minutes': durationMinutes,
-      'clinic_id': clinicId,
-      'customer_id': customerId,
-      'service_type_ids': serviceTypeIds,
+      'name': name,
+      'nationality': nationality,
+      'birth_date': birthDate?.toIso8601String().split('T')[0],
+      'gender': gender,
       'notes': notes,
+      'is_booker': isBooker,
+    };
+  }
+
+  CustomerData copyWith({
+    String? name,
+    String? nationality,
+    DateTime? birthDate,
+    String? gender,
+    String? notes,
+    bool? isBooker,
+  }) {
+    return CustomerData(
+      name: name ?? this.name,
+      nationality: nationality ?? this.nationality,
+      birthDate: birthDate ?? this.birthDate,
+      gender: gender ?? this.gender,
+      notes: notes ?? this.notes,
+      isBooker: isBooker ?? this.isBooker,
+    );
+  }
+}
+
+// 새로운 예약 생성 요청 모델
+class CreateReservationRequestNew {
+  final String reservationNumber;
+  final DateTime reservationDate;
+  final String startTime;
+  final String endTime;
+  final String clinicId;
+  final ServiceTypeEnum? serviceType;
+  final String? notes;
+  final String? contactInfo;
+  final int durationMinutes;
+  final List<CustomerData> customers;
+
+  const CreateReservationRequestNew({
+    required this.reservationNumber,
+    required this.reservationDate,
+    required this.startTime,
+    required this.endTime,
+    required this.clinicId,
+    this.serviceType,
+    this.notes,
+    this.contactInfo,
+    required this.durationMinutes,
+    required this.customers,
+  });
+
+  // 예약자 찾기
+  CustomerData? get booker => customers.firstWhere(
+    (customer) => customer.isBooker,
+    orElse:
+        () =>
+            customers.isNotEmpty
+                ? customers.first
+                : throw StateError('No customers found'),
+  );
+
+  // 그룹 크기
+  int get groupSize => customers.length;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'reservation_number': reservationNumber,
+      'reservation_date': reservationDate.toIso8601String().split('T')[0],
+      'start_time': startTime,
+      'end_time': endTime,
+      'clinic_id': clinicId,
+      'service_type': serviceType?.code,
+      'special_notes': notes,
+      'contact_info': contactInfo,
+      'duration_minutes': durationMinutes,
+      'group_size': groupSize,
+      'status': 'assigned',
+      'total_amount': 0,
+      'commission_amount': 0,
+      'payment_amount': 0,
+      'customers': customers.map((c) => c.toJson()).toList(),
     };
   }
 }
@@ -716,4 +822,4 @@ class GuideRecommendation {
       isAvailable: json['is_available'] ?? false,
     );
   }
-} 
+}

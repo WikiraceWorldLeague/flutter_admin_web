@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../domain/reservation_models.dart';
 import '../../data/providers.dart';
+import '../widgets/create_reservation_dialog.dart';
 
 class ReservationsPage extends ConsumerStatefulWidget {
   const ReservationsPage({super.key});
@@ -74,9 +75,9 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
                 const SizedBox(height: 4),
                 Text(
                   '고객 예약을 관리하고 가이드를 할당하세요.',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.grey600,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: AppColors.grey600),
                 ),
               ],
             ),
@@ -102,9 +103,9 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
             ),
           ],
         ),
-        
+
         const SizedBox(height: 24),
-        
+
         // Search and Filters Row
         Row(
           children: [
@@ -117,15 +118,16 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
                 decoration: InputDecoration(
                   hintText: '예약번호, 고객명, 국적 검색...',
                   prefixIcon: const Icon(Icons.search),
-                  suffixIcon: _searchController.text.isNotEmpty
-                      ? IconButton(
-                          onPressed: () {
-                            _searchController.clear();
-                            _updateSearchQuery();
-                          },
-                          icon: const Icon(Icons.clear),
-                        )
-                      : null,
+                  suffixIcon:
+                      _searchController.text.isNotEmpty
+                          ? IconButton(
+                            onPressed: () {
+                              _searchController.clear();
+                              _updateSearchQuery();
+                            },
+                            icon: const Icon(Icons.clear),
+                          )
+                          : null,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -133,7 +135,7 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
               ),
             ),
             const SizedBox(width: 16),
-            
+
             // 상태 필터
             Consumer(
               builder: (context, ref, child) {
@@ -145,34 +147,28 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
                   },
                   hint: const Text('상태'),
                   items: [
-                    const DropdownMenuItem(
-                      value: null,
-                      child: Text('전체'),
-                    ),
-                    ...ReservationStatus.values.map((status) => 
-                      DropdownMenuItem(
+                    const DropdownMenuItem(value: null, child: Text('전체')),
+                    ...ReservationStatus.values.map(
+                      (status) => DropdownMenuItem(
                         value: status,
                         child: Text(status.displayName),
-                      )
+                      ),
                     ),
                   ],
                 );
               },
             ),
-            
+
             const SizedBox(width: 16),
-            
+
             // 병원 필터 (임시 비활성화)
             Container(
               width: 100,
-              child: const Text(
-                '병원: 전체',
-                style: TextStyle(color: Colors.grey),
-              ),
+              child: const Text('병원: 전체', style: TextStyle(color: Colors.grey)),
             ),
-            
+
             const SizedBox(width: 16),
-            
+
             // 필터 초기화 버튼
             TextButton.icon(
               onPressed: _clearFilters,
@@ -181,22 +177,24 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
             ),
           ],
         ),
-        
+
         const SizedBox(height: 24),
-        
+
         // 통계 카드
         statsAsync.when(
           data: (stats) => _buildStatsCards(stats),
           loading: () => _buildStatsLoadingCards(),
           error: (error, _) => _buildStatsErrorCard(error.toString()),
         ),
-        
+
         const SizedBox(height: 24),
-        
+
         // 예약 테이블
         Expanded(
           child: reservationsAsync.when(
-            data: (paginatedReservations) => _buildReservationsTable(paginatedReservations),
+            data:
+                (paginatedReservations) =>
+                    _buildReservationsTable(paginatedReservations),
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (error, _) => _buildErrorWidget(error.toString()),
           ),
@@ -249,8 +247,9 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
 
   Widget _buildStatsLoadingCards() {
     return Row(
-      children: List.generate(4, (index) => 
-        Expanded(
+      children: List.generate(
+        4,
+        (index) => Expanded(
           child: Container(
             margin: index < 3 ? const EdgeInsets.only(right: 16) : null,
             child: _buildStatCard(
@@ -329,9 +328,9 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
               children: [
                 Text(
                   title,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.grey600,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: AppColors.grey600),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -350,7 +349,7 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
 
   Widget _buildReservationsTable(PaginatedReservations paginatedReservations) {
     final reservations = paginatedReservations.reservations;
-    
+
     if (reservations.isEmpty) {
       return _buildEmptyState();
     }
@@ -375,16 +374,31 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
             ),
             child: Row(
               children: [
-                Expanded(flex: 2, child: Text('예약번호', style: _headerTextStyle())),
-                Expanded(flex: 3, child: Text('고객 정보', style: _headerTextStyle())),
-                Expanded(flex: 2, child: Text('가이드', style: _headerTextStyle())),
-                Expanded(flex: 2, child: Text('예약 일시', style: _headerTextStyle())),
+                Expanded(
+                  flex: 2,
+                  child: Text('예약번호', style: _headerTextStyle()),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: Text('고객 정보', style: _headerTextStyle()),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Text('가이드', style: _headerTextStyle()),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Text('예약 일시', style: _headerTextStyle()),
+                ),
                 Expanded(flex: 2, child: Text('상태', style: _headerTextStyle())),
-                const SizedBox(width: 100, child: Text('작업', textAlign: TextAlign.center)),
+                const SizedBox(
+                  width: 100,
+                  child: Text('작업', textAlign: TextAlign.center),
+                ),
               ],
             ),
           ),
-          
+
           // 테이블 데이터
           Expanded(
             child: ListView.builder(
@@ -395,7 +409,7 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
               },
             ),
           ),
-          
+
           // 페이지네이션
           _buildPagination(paginatedReservations),
         ],
@@ -405,7 +419,7 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
 
   Widget _buildReservationRow(Reservation reservation, int index) {
     final isEven = index % 2 == 0;
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -428,15 +442,12 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
                 ),
                 Text(
                   reservation.clinic?.name ?? '알 수 없음',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.grey600,
-                  ),
+                  style: TextStyle(fontSize: 12, color: AppColors.grey600),
                 ),
               ],
             ),
           ),
-          
+
           // 고객 정보
           Expanded(
             flex: 3,
@@ -449,46 +460,49 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
                 ),
                 Text(
                   '${reservation.customers.length}명 · ${reservation.customers.map((c) => c.nationality).toSet().join(', ')}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.grey600,
-                  ),
+                  style: TextStyle(fontSize: 12, color: AppColors.grey600),
                 ),
               ],
             ),
           ),
-          
+
           // 가이드
           Expanded(
             flex: 2,
-            child: reservation.assignedGuide != null
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        reservation.assignedGuide!.koreanName,
-                        style: const TextStyle(fontWeight: FontWeight.w500),
-                      ),
-                      Text(
-                        reservation.assignedGuide!.languages.map((l) => l.name).join(', '),
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
+            child:
+                reservation.assignedGuide != null
+                    ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          reservation.assignedGuide!.koreanName,
+                          style: const TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                        Text(
+                          reservation.assignedGuide!.languages
+                              .map((l) => l.name)
+                              .join(', '),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    )
+                    : ElevatedButton(
+                      onPressed: () => _showGuideAssignmentDialog(reservation),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.warning,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
                         ),
                       ),
-                    ],
-                  )
-                : ElevatedButton(
-                    onPressed: () => _showGuideAssignmentDialog(reservation),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.warning,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      child: const Text('가이드 할당'),
                     ),
-                    child: const Text('가이드 할당'),
-                  ),
           ),
-          
+
           // 예약 일시
           Expanded(
             flex: 2,
@@ -501,59 +515,54 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
                 ),
                 Text(
                   DateFormat('HH:mm').format(reservation.startTime),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.grey600,
-                  ),
+                  style: TextStyle(fontSize: 12, color: AppColors.grey600),
                 ),
               ],
             ),
           ),
-          
+
           // 상태
-          Expanded(
-            flex: 2,
-            child: _buildStatusChip(reservation.status),
-          ),
-          
+          Expanded(flex: 2, child: _buildStatusChip(reservation.status)),
+
           // 작업 버튼
           SizedBox(
             width: 100,
             child: PopupMenuButton<String>(
               onSelected: (action) => _handleMenuAction(action, reservation),
-              itemBuilder: (context) => [
-                const PopupMenuItem(
-                  value: 'view',
-                  child: Row(
-                    children: [
-                      Icon(Icons.visibility),
-                      SizedBox(width: 8),
-                      Text('상세보기'),
-                    ],
-                  ),
-                ),
-                const PopupMenuItem(
-                  value: 'edit',
-                  child: Row(
-                    children: [
-                      Icon(Icons.edit),
-                      SizedBox(width: 8),
-                      Text('수정'),
-                    ],
-                  ),
-                ),
-                if (reservation.status != ReservationStatus.cancelled)
-                  const PopupMenuItem(
-                    value: 'cancel',
-                    child: Row(
-                      children: [
-                        Icon(Icons.cancel, color: Colors.red),
-                        SizedBox(width: 8),
-                        Text('취소', style: TextStyle(color: Colors.red)),
-                      ],
+              itemBuilder:
+                  (context) => [
+                    const PopupMenuItem(
+                      value: 'view',
+                      child: Row(
+                        children: [
+                          Icon(Icons.visibility),
+                          SizedBox(width: 8),
+                          Text('상세보기'),
+                        ],
+                      ),
                     ),
-                  ),
-              ],
+                    const PopupMenuItem(
+                      value: 'edit',
+                      child: Row(
+                        children: [
+                          Icon(Icons.edit),
+                          SizedBox(width: 8),
+                          Text('수정'),
+                        ],
+                      ),
+                    ),
+                    if (reservation.status != ReservationStatus.cancelled)
+                      const PopupMenuItem(
+                        value: 'cancel',
+                        child: Row(
+                          children: [
+                            Icon(Icons.cancel, color: Colors.red),
+                            SizedBox(width: 8),
+                            Text('취소', style: TextStyle(color: Colors.red)),
+                          ],
+                        ),
+                      ),
+                  ],
               child: const Icon(Icons.more_vert),
             ),
           ),
@@ -565,7 +574,7 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
   Widget _buildStatusChip(ReservationStatus status) {
     Color color;
     String text = status.displayName;
-    
+
     switch (status) {
       case ReservationStatus.pendingAssignment:
         color = const Color(0xFFC0C0C0);
@@ -583,7 +592,7 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
         color = const Color(0xFFE5B5B5);
         break;
     }
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
@@ -606,7 +615,7 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
     final currentPage = ref.watch(reservationPageProvider);
     final pageSize = ref.watch(reservationPageSizeProvider);
     final totalPages = (paginatedReservations.totalCount / pageSize).ceil();
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -622,9 +631,9 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
             '총 ${paginatedReservations.totalCount}개 항목',
             style: TextStyle(color: AppColors.grey600),
           ),
-          
+
           const Spacer(),
-          
+
           // 페이지 크기 선택
           DropdownButton<int>(
             value: pageSize,
@@ -634,32 +643,39 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
                 ref.read(reservationPageProvider.notifier).state = 1;
               }
             },
-            items: [10, 20, 50, 100].map((size) => 
-              DropdownMenuItem(
-                value: size,
-                child: Text('$size개씩'),
-              )
-            ).toList(),
+            items:
+                [10, 20, 50, 100]
+                    .map(
+                      (size) =>
+                          DropdownMenuItem(value: size, child: Text('$size개씩')),
+                    )
+                    .toList(),
           ),
-          
+
           const SizedBox(width: 16),
-          
+
           // 페이지 네비게이션
           Row(
             children: [
               IconButton(
-                onPressed: currentPage > 1 
-                    ? () => ref.read(reservationPageProvider.notifier).state = currentPage - 1
-                    : null,
+                onPressed:
+                    currentPage > 1
+                        ? () =>
+                            ref.read(reservationPageProvider.notifier).state =
+                                currentPage - 1
+                        : null,
                 icon: const Icon(Icons.chevron_left),
               ),
-              
+
               Text('$currentPage / $totalPages'),
-              
+
               IconButton(
-                onPressed: paginatedReservations.hasNextPage
-                    ? () => ref.read(reservationPageProvider.notifier).state = currentPage + 1
-                    : null,
+                onPressed:
+                    paginatedReservations.hasNextPage
+                        ? () =>
+                            ref.read(reservationPageProvider.notifier).state =
+                                currentPage + 1
+                        : null,
                 icon: const Icon(Icons.chevron_right),
               ),
             ],
@@ -674,23 +690,16 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.event_note,
-            size: 64,
-            color: AppColors.grey400,
-          ),
+          Icon(Icons.event_note, size: 64, color: AppColors.grey400),
           const SizedBox(height: 16),
           Text(
             '예약이 없습니다',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: AppColors.grey600,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(color: AppColors.grey600),
           ),
           const SizedBox(height: 8),
-          Text(
-            '첫 번째 예약을 생성해보세요.',
-            style: TextStyle(color: AppColors.grey500),
-          ),
+          Text('첫 번째 예약을 생성해보세요.', style: TextStyle(color: AppColors.grey500)),
           const SizedBox(height: 24),
           ElevatedButton.icon(
             onPressed: () => _showCreateReservationDialog(),
@@ -711,17 +720,13 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: AppColors.error,
-          ),
+          Icon(Icons.error_outline, size: 64, color: AppColors.error),
           const SizedBox(height: 16),
           Text(
             '데이터 로드 실패',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: AppColors.error,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(color: AppColors.error),
           ),
           const SizedBox(height: 8),
           Text(
@@ -741,16 +746,13 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
   }
 
   TextStyle _headerTextStyle() {
-    return const TextStyle(
-      fontWeight: FontWeight.w600,
-      fontSize: 14,
-    );
+    return const TextStyle(fontWeight: FontWeight.w600, fontSize: 14);
   }
 
   void _showCreateReservationDialog() {
-    // TODO: 예약 생성 다이얼로그 구현
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('예약 생성 기능은 개발 중입니다.')),
+    showDialog(
+      context: context,
+      builder: (context) => const CreateReservationDialog(),
     );
   }
 
@@ -784,52 +786,50 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
   void _showCancelConfirmation(Reservation reservation) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('예약 취소'),
-        content: Text('${reservation.reservationNumber}을(를) 취소하시겠습니까?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('취소'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('예약 취소'),
+            content: Text('${reservation.reservationNumber}을(를) 취소하시겠습니까?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('취소'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _cancelReservation(reservation);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.error,
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text('확인'),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _cancelReservation(reservation);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.error,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('확인'),
-          ),
-        ],
-      ),
     );
   }
 
   void _cancelReservation(Reservation reservation) {
-    ref.read(reservationFormProvider.notifier).updateStatus(
-      reservation.id,
-      ReservationStatus.cancelled,
-    );
-    
+    ref
+        .read(reservationFormProvider.notifier)
+        .updateStatus(reservation.id, ReservationStatus.cancelled);
+
     // 성공/실패 처리는 reservationFormProvider를 watch하여 처리할 수 있음
     ref.listen(reservationFormProvider, (previous, next) {
       next.when(
-        data: (updatedReservation) {
-          if (updatedReservation != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('예약이 취소되었습니다.')),
-            );
-            _refreshData(); // 데이터 새로고침
-          }
+        data: (_) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('예약이 취소되었습니다.')));
+          _refreshData(); // 데이터 새로고침
         },
         loading: () {}, // 로딩 중에는 아무것도 하지 않음
         error: (error, _) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('취소 실패: $error')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('취소 실패: $error')));
         },
       );
     });
@@ -844,8 +844,10 @@ class _GuideAssignmentDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final recommendationsAsync = ref.watch(guideRecommendationsProvider(reservation.id));
-    
+    final recommendationsAsync = ref.watch(
+      guideRecommendationsProvider(reservation.id),
+    );
+
     return Dialog(
       child: Container(
         width: 600,
@@ -869,9 +871,9 @@ class _GuideAssignmentDialog extends ConsumerWidget {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // 예약 정보
             Container(
               padding: const EdgeInsets.all(16),
@@ -890,32 +892,37 @@ class _GuideAssignmentDialog extends ConsumerWidget {
                   ),
                   const SizedBox(height: 8),
                   Text('예약번호: ${reservation.reservationNumber}'),
-                  Text('고객: ${reservation.customers.map((c) => c.name).join(', ')}'),
-                  Text('일시: ${DateFormat('yyyy-MM-dd HH:mm').format(reservation.startTime)}'),
+                  Text(
+                    '고객: ${reservation.customers.map((c) => c.name).join(', ')}',
+                  ),
+                  Text(
+                    '일시: ${DateFormat('yyyy-MM-dd HH:mm').format(reservation.startTime)}',
+                  ),
                   Text('병원: ${reservation.clinic?.name ?? '알 수 없음'}'),
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             Text(
               '추천 가이드',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
-            
+
             const SizedBox(height: 12),
-            
+
             // 가이드 목록
             Expanded(
               child: recommendationsAsync.when(
-                data: (recommendations) => _buildGuideList(context, ref, recommendations),
+                data:
+                    (recommendations) =>
+                        _buildGuideList(context, ref, recommendations),
                 loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, _) => Center(
-                  child: Text('가이드 목록 로드 실패: $error'),
-                ),
+                error:
+                    (error, _) => Center(child: Text('가이드 목록 로드 실패: $error')),
               ),
             ),
           ],
@@ -924,11 +931,13 @@ class _GuideAssignmentDialog extends ConsumerWidget {
     );
   }
 
-  Widget _buildGuideList(BuildContext context, WidgetRef ref, List<GuideRecommendation> recommendations) {
+  Widget _buildGuideList(
+    BuildContext context,
+    WidgetRef ref,
+    List<GuideRecommendation> recommendations,
+  ) {
     if (recommendations.isEmpty) {
-      return const Center(
-        child: Text('사용 가능한 가이드가 없습니다.'),
-      );
+      return const Center(child: Text('사용 가능한 가이드가 없습니다.'));
     }
 
     return ListView.builder(
@@ -936,7 +945,7 @@ class _GuideAssignmentDialog extends ConsumerWidget {
       itemBuilder: (context, index) {
         final recommendation = recommendations[index];
         final guide = recommendation.guide;
-        
+
         return Container(
           margin: const EdgeInsets.only(bottom: 8),
           decoration: BoxDecoration(
@@ -945,20 +954,26 @@ class _GuideAssignmentDialog extends ConsumerWidget {
           ),
           child: ListTile(
             leading: CircleAvatar(
-              backgroundColor: recommendation.isAvailable 
-                  ? AppColors.success.withOpacity(0.1)
-                  : AppColors.error.withOpacity(0.1),
+              backgroundColor:
+                  recommendation.isAvailable
+                      ? AppColors.success.withOpacity(0.1)
+                      : AppColors.error.withOpacity(0.1),
               child: Icon(
                 recommendation.isAvailable ? Icons.check : Icons.close,
-                color: recommendation.isAvailable ? AppColors.success : AppColors.error,
+                color:
+                    recommendation.isAvailable
+                        ? AppColors.success
+                        : AppColors.error,
               ),
             ),
-                         title: Text(guide.koreanName),
+            title: Text(guide.koreanName),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('언어: ${guide.languages.map((l) => l.name).join(', ')}'),
-                Text('전문분야: ${guide.specialties.map((s) => s.name).join(', ')}'),
+                Text(
+                  '전문분야: ${guide.specialties.map((s) => s.name).join(', ')}',
+                ),
                 if (!recommendation.isAvailable)
                   Text(
                     '사유: 해당 시간대 불가능',
@@ -979,9 +994,10 @@ class _GuideAssignmentDialog extends ConsumerWidget {
                 ),
               ],
             ),
-            onTap: recommendation.isAvailable 
-                ? () => _assignGuide(context, ref, guide.id)
-                : null,
+            onTap:
+                recommendation.isAvailable
+                    ? () => _assignGuide(context, ref, guide.id)
+                    : null,
           ),
         );
       },
@@ -989,26 +1005,26 @@ class _GuideAssignmentDialog extends ConsumerWidget {
   }
 
   void _assignGuide(BuildContext context, WidgetRef ref, String guideId) {
-    ref.read(reservationFormProvider.notifier).assignGuide(reservation.id, guideId);
-    
+    ref
+        .read(reservationFormProvider.notifier)
+        .assignGuide(reservation.id, guideId);
+
     ref.listen(reservationFormProvider, (previous, next) {
       next.when(
-        data: (updatedReservation) {
-          if (updatedReservation != null) {
-            Navigator.of(context).pop();
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('가이드가 할당되었습니다.')),
-            );
-            ref.invalidate(filteredReservationsProvider); // 데이터 새로고침
-          }
+        data: (_) {
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('가이드가 할당되었습니다.')));
+          ref.invalidate(filteredReservationsProvider); // 데이터 새로고침
         },
         loading: () {}, // 로딩 표시는 다이얼로그에서 처리
         error: (error, _) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('가이드 할당 실패: $error')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('가이드 할당 실패: $error')));
         },
       );
     });
   }
-} 
+}

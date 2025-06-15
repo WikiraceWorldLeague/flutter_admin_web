@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../domain/reservation_models.dart';
 import '../providers/reservations_providers.dart';
 import '../../../../core/theme/app_theme.dart';
 
-class GuideAssignmentDialog extends ConsumerStatefulWidget {
+class GuideAssignmentDialog extends HookConsumerWidget {
   final Reservation reservation;
   final Function(String guideId) onAssign;
 
@@ -15,26 +17,44 @@ class GuideAssignmentDialog extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<GuideAssignmentDialog> createState() => _GuideAssignmentDialogState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedGuideId = useState<String?>(reservation.assignedGuide?.id);
+    final isAssigning = useState(false);
 
-class _GuideAssignmentDialogState extends ConsumerState<GuideAssignmentDialog> {
-  String? _selectedGuideId;
-  bool _isAssigning = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedGuideId = widget.reservation.assignedGuide?.id;
-  }
-
-  @override
-  Widget build(BuildContext context) {
     final guidesAsync = ref.watch(guidesProvider);
+
+    Future<void> assignGuide() async {
+      if (selectedGuideId.value == null) return;
+
+      isAssigning.value = true;
+
+      try {
+        onAssign(selectedGuideId.value!);
+        Navigator.of(context).pop();
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '가이드가 ${reservation.assignedGuide != null ? '변경' : '배정'}되었습니다.',
+            ),
+            backgroundColor: AppColors.success,
+          ),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('오류가 발생했습니다: $e'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      } finally {
+        isAssigning.value = false;
+      }
+    }
 
     return AlertDialog(
       title: Text(
-        '가이드 ${widget.reservation.assignedGuide != null ? '변경' : '배정'}',
+        '가이드 ${reservation.assignedGuide != null ? '변경' : '배정'}',
         style: TextStyle(
           color: AppColors.onBackground,
           fontWeight: FontWeight.w600,
@@ -58,7 +78,7 @@ class _GuideAssignmentDialogState extends ConsumerState<GuideAssignmentDialog> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.reservation.reservationNumber,
+                    reservation.reservationNumber,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: AppColors.onBackground,
@@ -66,19 +86,13 @@ class _GuideAssignmentDialogState extends ConsumerState<GuideAssignmentDialog> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    widget.reservation.clinic.name,
-                    style: TextStyle(
-                      color: AppColors.grey600,
-                      fontSize: 14,
-                    ),
+                    reservation.clinic.name,
+                    style: TextStyle(color: AppColors.grey600, fontSize: 14),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    widget.reservation.customerNames,
-                    style: TextStyle(
-                      color: AppColors.grey600,
-                      fontSize: 14,
-                    ),
+                    reservation.customerNames,
+                    style: TextStyle(color: AppColors.grey600, fontSize: 14),
                   ),
                 ],
               ),
@@ -116,24 +130,26 @@ class _GuideAssignmentDialogState extends ConsumerState<GuideAssignmentDialog> {
                     itemCount: guides.length,
                     itemBuilder: (context, index) {
                       final guide = guides[index];
-                      final isSelected = _selectedGuideId == guide.id;
-                      final isCurrent = widget.reservation.assignedGuide?.id == guide.id;
+                      final isSelected = selectedGuideId.value == guide.id;
+                      final isCurrent =
+                          reservation.assignedGuide?.id == guide.id;
 
                       return Card(
                         margin: const EdgeInsets.only(bottom: 8),
-                        color: isSelected 
-                            ? AppColors.primary.withOpacity(0.1)
-                            : AppColors.surface,
+                        color:
+                            isSelected
+                                ? AppColors.primary.withOpacity(0.1)
+                                : AppColors.surface,
                         child: ListTile(
                           leading: CircleAvatar(
-                            backgroundColor: isSelected 
-                                ? AppColors.primary 
-                                : AppColors.grey400,
+                            backgroundColor:
+                                isSelected
+                                    ? AppColors.primary
+                                    : AppColors.grey400,
                             child: Icon(
                               Icons.person,
-                              color: isSelected 
-                                  ? Colors.white 
-                                  : AppColors.grey600,
+                              color:
+                                  isSelected ? Colors.white : AppColors.grey600,
                             ),
                           ),
                           title: Row(
@@ -192,16 +208,15 @@ class _GuideAssignmentDialogState extends ConsumerState<GuideAssignmentDialog> {
                                 ),
                             ],
                           ),
-                          trailing: isSelected
-                              ? Icon(
-                                  Icons.check_circle,
-                                  color: AppColors.primary,
-                                )
-                              : null,
+                          trailing:
+                              isSelected
+                                  ? Icon(
+                                    Icons.check_circle,
+                                    color: AppColors.primary,
+                                  )
+                                  : null,
                           onTap: () {
-                            setState(() {
-                              _selectedGuideId = guide.id;
-                            });
+                            selectedGuideId.value = guide.id;
                           },
                         ),
                       );
@@ -209,97 +224,62 @@ class _GuideAssignmentDialogState extends ConsumerState<GuideAssignmentDialog> {
                   ),
                 );
               },
-              loading: () => Container(
-                height: 100,
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-              error: (error, stack) => Container(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      color: AppColors.error,
-                      size: 32,
+              loading:
+                  () => Container(
+                    height: 100,
+                    child: const Center(child: CircularProgressIndicator()),
+                  ),
+              error:
+                  (error, stack) => Container(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.error_outline,
+                          color: AppColors.error,
+                          size: 32,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          '가이드 목록을 불러올 수 없습니다.',
+                          style: TextStyle(color: AppColors.error),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '가이드 목록을 불러올 수 없습니다.',
-                      style: TextStyle(color: AppColors.error),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
+                  ),
             ),
           ],
         ),
       ),
       actions: [
         TextButton(
-          onPressed: _isAssigning ? null : () => Navigator.of(context).pop(),
-          child: Text(
-            '취소',
-            style: TextStyle(color: AppColors.grey600),
-          ),
+          onPressed:
+              isAssigning.value ? null : () => Navigator.of(context).pop(),
+          child: Text('취소', style: TextStyle(color: AppColors.grey600)),
         ),
         ElevatedButton(
-          onPressed: _isAssigning || _selectedGuideId == null
-              ? null
-              : () => _assignGuide(),
+          onPressed:
+              isAssigning.value || selectedGuideId.value == null
+                  ? null
+                  : assignGuide,
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primary,
             foregroundColor: Colors.white,
           ),
-          child: _isAssigning
-              ? const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Colors.white,
-                  ),
-                )
-              : Text(widget.reservation.assignedGuide != null ? '변경' : '배정'),
+          child:
+              isAssigning.value
+                  ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
+                  )
+                  : Text(reservation.assignedGuide != null ? '변경' : '배정'),
         ),
       ],
     );
   }
-
-  Future<void> _assignGuide() async {
-    if (_selectedGuideId == null) return;
-
-    setState(() {
-      _isAssigning = true;
-    });
-
-    try {
-      widget.onAssign(_selectedGuideId!);
-      Navigator.of(context).pop();
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            '가이드가 ${widget.reservation.assignedGuide != null ? '변경' : '배정'}되었습니다.',
-          ),
-          backgroundColor: AppColors.success,
-        ),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('가이드 배정에 실패했습니다: $e'),
-          backgroundColor: AppColors.error,
-        ),
-      );
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isAssigning = false;
-        });
-      }
-    }
-  }
-} 
+}

@@ -1,51 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends HookConsumerWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final formKey = useMemoized(() => GlobalKey<FormState>());
+    final emailController = useTextEditingController();
+    final passwordController = useTextEditingController();
+    final isLoading = useState(false);
 
-class _LoginPageState extends State<LoginPage> {
-  final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  bool _isLoading = false;
+    Future<void> handleLogin() async {
+      if (!formKey.currentState!.validate()) return;
 
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
+      isLoading.value = true;
 
-  Future<void> _handleLogin() async {
-    if (!_formKey.currentState!.validate()) return;
+      // TODO: Implement actual login logic with Supabase
+      // For now, simulate login process
+      await Future.delayed(const Duration(seconds: 1));
 
-    setState(() {
-      _isLoading = true;
-    });
+      isLoading.value = false;
 
-    // TODO: Implement actual login logic with Supabase
-    // For now, simulate login process
-    await Future.delayed(const Duration(seconds: 1));
-
-    if (mounted) {
-      setState(() {
-        _isLoading = false;
-      });
-      
       // Navigate to dashboard after successful login
-      context.go('/dashboard');
+      if (context.mounted) {
+        context.go('/dashboard');
+      }
     }
-  }
 
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Center(
@@ -64,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
             ],
           ),
           child: Form(
-            key: _formKey,
+            key: formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -84,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                     size: 32,
                   ),
                 ),
-                
+
                 Text(
                   'Admin Web 로그인',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -93,22 +80,22 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                
+
                 const SizedBox(height: 8),
-                
+
                 Text(
                   '관리자 계정으로 로그인하세요',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.grey600,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: AppColors.grey600),
                   textAlign: TextAlign.center,
                 ),
-                
+
                 const SizedBox(height: 32),
-                
+
                 // Email Field
                 TextFormField(
-                  controller: _emailController,
+                  controller: emailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: const InputDecoration(
                     labelText: '이메일',
@@ -125,12 +112,12 @@ class _LoginPageState extends State<LoginPage> {
                     return null;
                   },
                 ),
-                
+
                 const SizedBox(height: 16),
-                
+
                 // Password Field
                 TextFormField(
-                  controller: _passwordController,
+                  controller: passwordController,
                   obscureText: true,
                   decoration: const InputDecoration(
                     labelText: '비밀번호',
@@ -147,37 +134,36 @@ class _LoginPageState extends State<LoginPage> {
                     return null;
                   },
                 ),
-                
+
                 const SizedBox(height: 24),
-                
+
                 // Login Button
                 ElevatedButton(
-                  onPressed: _isLoading ? null : _handleLogin,
-                  child: _isLoading
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              AppColors.onPrimary,
+                  onPressed: isLoading.value ? null : handleLogin,
+                  child:
+                      isLoading.value
+                          ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                AppColors.onPrimary,
+                              ),
                             ),
-                          ),
-                        )
-                      : const Text('로그인'),
+                          )
+                          : const Text('로그인'),
                 ),
-                
+
                 const SizedBox(height: 16),
-                
+
                 // Demo Credentials Note
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: AppColors.info.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: AppColors.info.withOpacity(0.3),
-                    ),
+                    border: Border.all(color: AppColors.info.withOpacity(0.3)),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,9 +178,9 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 4),
                       Text(
                         '이메일: admin@demo.com\n비밀번호: 123456',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.info,
-                        ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.copyWith(color: AppColors.info),
                       ),
                     ],
                   ),
@@ -206,4 +192,4 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-} 
+}
