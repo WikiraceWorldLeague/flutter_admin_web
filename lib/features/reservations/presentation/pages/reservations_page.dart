@@ -790,10 +790,7 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
         _showReservationDetailsDialog(reservation);
         break;
       case 'edit':
-        // TODO: 편집 구현
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${reservation.reservationNumber} 편집')),
-        );
+        _showEditReservationDialog(reservation);
         break;
       case 'cancel':
         _showCancelConfirmation(reservation);
@@ -1009,18 +1006,46 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
                     ),
                   ),
                 ),
-                // 하단 버튼
+                // 버튼 영역
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    border: Border(top: BorderSide(color: Colors.grey[300]!)),
+                    color: Colors.grey[50],
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(16),
+                      bottomRight: Radius.circular(16),
+                    ),
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Text('닫기'),
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            _showEditReservationDialog(reservation);
+                          },
+                          icon: const Icon(Icons.edit),
+                          label: const Text('수정하기'),
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            _showSettlementDialog(reservation);
+                          },
+                          icon: const Icon(Icons.account_balance_wallet),
+                          label: const Text('정산하기'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -1353,6 +1378,328 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
       if (mounted) {
         NotificationHelper.showError(context, '예약 삭제 중 오류가 발생했습니다: $e');
       }
+    }
+  }
+
+  void _showEditReservationDialog(Reservation reservation) {
+    // TODO: EditReservationDialog 구현 완료 후 교체
+    showDialog(
+      context: context,
+      builder:
+          (context) => Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.6,
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.edit, size: 48, color: AppColors.primary),
+                  const SizedBox(height: 16),
+                  const Text(
+                    '예약 수정',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '예약번호: ${reservation.reservationNumber}',
+                    style: const TextStyle(color: AppColors.grey600),
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.blue[50],
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.blue[200]!),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.info, color: Colors.blue[600]),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            '예약 수정 기능은 현재 개발 중입니다. 곧 완전한 수정 폼이 제공될 예정입니다.',
+                            style: TextStyle(
+                              color: Colors.blue[800],
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('닫기'),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('수정 기능은 곧 구현될 예정입니다.'),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: Colors.white,
+                          ),
+                          child: const Text('확인'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+    );
+  }
+
+  void _showSettlementDialog(Reservation reservation) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.6,
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.7,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // 헤더
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.account_balance_wallet,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              '정산 관리',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              '예약번호: ${reservation.reservationNumber}',
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: const Icon(Icons.close, color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // 내용
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildSettlementSection('예약 정보', [
+                          _buildDetailRow(
+                            '예약번호',
+                            reservation.reservationNumber,
+                          ),
+                          _buildDetailRow(
+                            '예약일',
+                            DateFormat(
+                              'yyyy-MM-dd',
+                            ).format(reservation.reservationDate),
+                          ),
+                          _buildDetailRow(
+                            '고객명',
+                            reservation.customers?.isNotEmpty == true
+                                ? reservation.customers!
+                                    .where((c) => c.isBooker)
+                                    .first
+                                    .name
+                                : '정보 없음',
+                          ),
+                          if (reservation.assignedGuide != null)
+                            _buildDetailRow(
+                              '가이드',
+                              reservation.assignedGuide!.nickname,
+                            ),
+                        ]),
+                        const SizedBox(height: 20),
+                        _buildSettlementSection('금액 정보', [
+                          _buildDetailRow(
+                            '총 금액',
+                            reservation.totalAmount != null
+                                ? '${NumberFormat('#,###').format(reservation.totalAmount)}원'
+                                : '미정',
+                          ),
+                          _buildDetailRow(
+                            '가이드 수수료',
+                            reservation.guideCommission != null
+                                ? '${NumberFormat('#,###').format(reservation.guideCommission)}원'
+                                : '미정',
+                          ),
+                          _buildDetailRow(
+                            '정산 상태',
+                            _getSettlementStatus(reservation),
+                          ),
+                        ]),
+                        const SizedBox(height: 20),
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.blue[50],
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.blue[200]!),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.info, color: Colors.blue[600]),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  '정산 기능은 현재 개발 중입니다. 곧 정산 관리 탭과 연동될 예정입니다.',
+                                  style: TextStyle(
+                                    color: Colors.blue[800],
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // 버튼 영역
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[50],
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(16),
+                      bottomRight: Radius.circular(16),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('닫기'),
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            // TODO: 정산 처리 로직 구현
+                            Navigator.of(context).pop();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('정산 기능은 곧 구현될 예정입니다.'),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.check),
+                          label: const Text('정산 처리'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildSettlementSection(String title, List<Widget> children) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: AppColors.grey800,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: AppColors.grey300),
+          ),
+          child: Column(children: children),
+        ),
+      ],
+    );
+  }
+
+  String _getSettlementStatus(Reservation reservation) {
+    // TODO: 실제 정산 상태 로직 구현
+    if (reservation.status == ReservationStatus.completed) {
+      return '정산 대기';
+    } else if (reservation.status == ReservationStatus.cancelled) {
+      return '정산 불필요';
+    } else {
+      return '예약 진행 중';
     }
   }
 }
