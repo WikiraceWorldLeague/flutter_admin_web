@@ -64,7 +64,7 @@ final reservationsProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ReservationsRef = AutoDisposeFutureProviderRef<List<Reservation>>;
-String _$reservationStatsHash() => r'33aac526856a7e3caf607b947d5823cb9d3fb86c';
+String _$reservationStatsHash() => r'4fd256b1d4b0c82bf006c51c6ecfcb590e4750d2';
 
 /// See also [reservationStats].
 @ProviderFor(reservationStats)
@@ -426,7 +426,7 @@ final activeFilterProvider = AutoDisposeProvider<ReservationFilters>.internal(
 // ignore: unused_element
 typedef ActiveFilterRef = AutoDisposeProviderRef<ReservationFilters>;
 String _$filteredReservationsHash() =>
-    r'c830a22e3fdc86638153ed54033ce68e19d7336e';
+    r'c5c13bd4778a29f2702cca815d7af16ca7656a0a';
 
 /// See also [filteredReservations].
 @ProviderFor(filteredReservations)

@@ -787,20 +787,413 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
   void _handleMenuAction(String action, Reservation reservation) {
     switch (action) {
       case 'view':
-        // TODO: 상세보기 구현
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${reservation.reservationNumber} 상세보기')),
-        );
+        _showReservationDetailsDialog(reservation);
         break;
       case 'edit':
-        // TODO: 수정 구현
+        // TODO: 편집 구현
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${reservation.reservationNumber} 수정')),
+          SnackBar(content: Text('${reservation.reservationNumber} 편집')),
         );
         break;
       case 'cancel':
         _showCancelConfirmation(reservation);
         break;
+    }
+  }
+
+  void _showReservationDetailsDialog(Reservation reservation) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.8,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // 헤더
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor.withOpacity(0.1),
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.info_outline,
+                        color: Theme.of(context).primaryColor,
+                        size: 28,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '예약 상세 정보',
+                              style: Theme.of(
+                                context,
+                              ).textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            Text(
+                              reservation.reservationNumber,
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodyMedium?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).primaryColor.withOpacity(0.7),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: const Icon(Icons.close),
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ],
+                  ),
+                ),
+                // 내용
+                Flexible(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildDetailSection('기본 정보', [
+                          _buildDetailRow(
+                            '예약번호',
+                            reservation.reservationNumber,
+                          ),
+                          _buildDetailRow(
+                            '예약일',
+                            DateFormat(
+                              'yyyy-MM-dd',
+                            ).format(reservation.reservationDate),
+                          ),
+                          _buildDetailRow(
+                            '시작시간',
+                            DateFormat('HH:mm').format(reservation.startTime),
+                          ),
+                          _buildDetailRow(
+                            '종료시간',
+                            DateFormat('HH:mm').format(reservation.endTime),
+                          ),
+                          _buildDetailRow(
+                            '소요시간',
+                            '${reservation.endTime.difference(reservation.startTime).inMinutes}분',
+                          ),
+                          _buildDetailRow(
+                            '상태',
+                            _getStatusText(reservation.status.displayName),
+                          ),
+                          _buildDetailRow(
+                            '서비스 유형',
+                            _getServiceTypeText(reservation.serviceType?.code),
+                          ),
+                          _buildDetailRow('그룹 크기', '${reservation.groupSize}명'),
+                        ]),
+                        const SizedBox(height: 20),
+                        _buildDetailSection('금액 정보', [
+                          _buildDetailRow(
+                            '총 금액',
+                            reservation.totalAmount != null
+                                ? '${NumberFormat('#,###').format(reservation.totalAmount)}원'
+                                : '미정',
+                          ),
+                          _buildDetailRow(
+                            '가이드 수수료',
+                            reservation.guideCommission != null
+                                ? '${NumberFormat('#,###').format(reservation.guideCommission)}원'
+                                : '미정',
+                          ),
+                        ]),
+                        const SizedBox(height: 20),
+                        if (reservation.assignedGuide != null)
+                          _buildDetailSection('가이드 정보', [
+                            _buildDetailRow(
+                              '가이드명',
+                              reservation.assignedGuide!.nickname,
+                            ),
+                            if (reservation.assignedGuide!.phoneNumber != null)
+                              _buildDetailRow(
+                                '연락처',
+                                reservation.assignedGuide!.phoneNumber!,
+                              ),
+                            if (reservation.assignedGuide!.email != null)
+                              _buildDetailRow(
+                                '이메일',
+                                reservation.assignedGuide!.email!,
+                              ),
+                          ]),
+                        const SizedBox(height: 20),
+                        _buildDetailSection('병원 정보', [
+                          _buildDetailRow('병원명', reservation.clinic.name),
+                          if (reservation.clinic.address != null)
+                            _buildDetailRow('주소', reservation.clinic.address!),
+                          if (reservation.clinic.phone != null)
+                            _buildDetailRow('연락처', reservation.clinic.phone!),
+                        ]),
+                        const SizedBox(height: 20),
+                        if (reservation.customers.isNotEmpty)
+                          _buildDetailSection(
+                            '고객 정보',
+                            reservation.customers
+                                .map((customer) => _buildCustomerInfo(customer))
+                                .toList(),
+                          ),
+                        const SizedBox(height: 20),
+                        if (reservation.notes?.isNotEmpty == true)
+                          _buildDetailSection('특별 요청사항', [
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[100],
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                reservation.notes!,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            ),
+                          ]),
+                        const SizedBox(height: 20),
+                        if (reservation.contactInfo?.isNotEmpty == true)
+                          _buildDetailSection('연락처 정보', [
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[100],
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                reservation.contactInfo!,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            ),
+                          ]),
+                        const SizedBox(height: 20),
+                        _buildDetailSection('시스템 정보', [
+                          _buildDetailRow(
+                            '생성일',
+                            DateFormat(
+                              'yyyy-MM-dd HH:mm',
+                            ).format(reservation.createdAt),
+                          ),
+                          _buildDetailRow(
+                            '수정일',
+                            DateFormat(
+                              'yyyy-MM-dd HH:mm',
+                            ).format(reservation.updatedAt),
+                          ),
+                        ]),
+                      ],
+                    ),
+                  ),
+                ),
+                // 하단 버튼
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    border: Border(top: BorderSide(color: Colors.grey[300]!)),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text('닫기'),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildDetailSection(String title, List<Widget> children) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).primaryColor,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey[300]!),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: children,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 100,
+            child: Text(
+              label,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w500,
+                color: Colors.grey[600],
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(value, style: Theme.of(context).textTheme.bodyMedium),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCustomerInfo(Customer customer) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.blue[50],
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.blue[200]!),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                customer.isBooker ? Icons.person : Icons.person_outline,
+                color: customer.isBooker ? Colors.blue[700] : Colors.grey[600],
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                customer.name,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: customer.isBooker ? Colors.blue[700] : null,
+                ),
+              ),
+              if (customer.isBooker) ...[
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.blue[700],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    '예약자',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.white,
+                      fontSize: 10,
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+          const SizedBox(height: 8),
+          if (customer.nationality != null)
+            _buildDetailRow('국적', customer.nationality!),
+          if (customer.gender != null)
+            _buildDetailRow('성별', _getGenderText(customer.gender!)),
+          if (customer.age != null) _buildDetailRow('나이', '${customer.age}세'),
+          if (customer.birthDate != null)
+            _buildDetailRow(
+              '생년월일',
+              DateFormat('yyyy-MM-dd').format(customer.birthDate!),
+            ),
+          if (customer.notes?.isNotEmpty == true)
+            _buildDetailRow('메모', customer.notes!),
+        ],
+      ),
+    );
+  }
+
+  String _getStatusText(String status) {
+    switch (status) {
+      case 'pending_assignment':
+        return '배정 대기';
+      case 'assigned':
+        return '배정 완료';
+      case 'in_progress':
+        return '진행 중';
+      case 'completed':
+        return '완료';
+      case 'cancelled':
+        return '취소';
+      default:
+        return status;
+    }
+  }
+
+  String _getServiceTypeText(String? serviceType) {
+    if (serviceType == null) return '미지정';
+    switch (serviceType) {
+      case 'translation_only':
+        return '통역만';
+      case 'full_package':
+        return '풀 패키지';
+      case 'general_guide':
+        return '일반 가이드';
+      default:
+        return serviceType;
+    }
+  }
+
+  String _getGenderText(String gender) {
+    switch (gender) {
+      case 'male':
+        return '남성';
+      case 'female':
+        return '여성';
+      case 'other':
+        return '기타';
+      default:
+        return gender;
     }
   }
 
@@ -950,7 +1343,7 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
       if (mounted) {
         NotificationHelper.showSuccess(context, '예약이 완전히 삭제되었습니다.');
 
-        // 예약 목록 새로고침
+        // 실시간 구독이 자동으로 업데이트하지만, 즉시 반영을 위해 한 번 더 새로고침
         ref.invalidate(filteredReservationsProvider);
         ref.invalidate(reservationStatsProvider);
         ref.invalidate(todayReservationsProvider);

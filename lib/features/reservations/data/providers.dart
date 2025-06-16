@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:async';
 import 'dart:developer';
 
 import '../../../core/config/supabase_config.dart';
@@ -66,6 +67,27 @@ Future<List<Reservation>> reservations(ReservationsRef ref) async {
 @riverpod
 Future<ReservationStats> reservationStats(ReservationStatsRef ref) async {
   final repository = ref.watch(reservationsRepositoryProvider);
+
+  // Supabase 실시간 구독으로 통계도 즉시 업데이트
+  final supabase = ref.watch(supabaseClientProvider);
+
+  final subscription =
+      supabase
+          .channel('stats_reservations_changes')
+          .onPostgresChanges(
+            event: PostgresChangeEvent.all,
+            schema: 'public',
+            table: 'reservations',
+            callback: (payload) {
+              ref.invalidateSelf();
+            },
+          )
+          .subscribe();
+
+  ref.onDispose(() {
+    subscription.unsubscribe();
+  });
+
   return await repository.getReservationStats();
 }
 
@@ -352,6 +374,44 @@ Future<PaginatedReservations> filteredReservations(
   final repository = ref.watch(reservationsRepositoryProvider);
   final page = ref.watch(reservationPageProvider);
   final pageSize = ref.watch(reservationPageSizeProvider);
+
+  // Supabase 실시간 구독 설정
+  final supabase = ref.watch(supabaseClientProvider);
+
+  // reservations 테이블 변경사항 구독
+  final subscription =
+      supabase
+          .channel('reservations_changes')
+          .onPostgresChanges(
+            event: PostgresChangeEvent.all,
+            schema: 'public',
+            table: 'reservations',
+            callback: (payload) {
+              // 데이터 변경 시 즉시 새로고침
+              ref.invalidateSelf();
+            },
+          )
+          .subscribe();
+
+  // customers 테이블 변경사항도 구독 (예약과 관련된 고객 정보)
+  final customerSubscription =
+      supabase
+          .channel('customers_changes')
+          .onPostgresChanges(
+            event: PostgresChangeEvent.all,
+            schema: 'public',
+            table: 'customers',
+            callback: (payload) {
+              // 고객 정보 변경 시에도 새로고침
+              ref.invalidateSelf();
+            },
+          )
+          .subscribe();
+
+  ref.onDispose(() {
+    subscription.unsubscribe();
+    customerSubscription.unsubscribe();
+  });
 
   return await repository.getReservations(page: page, pageSize: pageSize);
 }
