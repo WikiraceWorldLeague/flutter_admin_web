@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../shared/widgets/common/error_display_widget.dart';
 import '../../domain/reservation_models.dart';
 import '../../data/providers.dart';
 import '../widgets/create_reservation_dialog.dart';
@@ -529,43 +530,25 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
           // 작업 버튼
           SizedBox(
             width: 100,
-            child: PopupMenuButton<String>(
-              onSelected: (action) => _handleMenuAction(action, reservation),
-              itemBuilder:
-                  (context) => [
-                    const PopupMenuItem(
-                      value: 'view',
-                      child: Row(
-                        children: [
-                          Icon(Icons.visibility),
-                          SizedBox(width: 8),
-                          Text('상세보기'),
-                        ],
-                      ),
-                    ),
-                    const PopupMenuItem(
-                      value: 'edit',
-                      child: Row(
-                        children: [
-                          Icon(Icons.edit),
-                          SizedBox(width: 8),
-                          Text('수정'),
-                        ],
-                      ),
-                    ),
-                    if (reservation.status != ReservationStatus.cancelled)
-                      const PopupMenuItem(
-                        value: 'cancel',
-                        child: Row(
-                          children: [
-                            Icon(Icons.cancel, color: Colors.red),
-                            SizedBox(width: 8),
-                            Text('취소', style: TextStyle(color: Colors.red)),
-                          ],
-                        ),
-                      ),
-                  ],
-              child: const Icon(Icons.more_vert),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // 상세 보기 버튼
+                IconButton(
+                  onPressed: () => _handleMenuAction('view', reservation),
+                  icon: const Icon(Icons.visibility),
+                  tooltip: '상세 보기',
+                  iconSize: 20,
+                ),
+                const SizedBox(width: 4),
+                // 삭제 버튼
+                IconButton(
+                  onPressed: () => _showDeleteConfirmDialog(reservation),
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  tooltip: '삭제',
+                  iconSize: 20,
+                ),
+              ],
             ),
           ),
         ],
@@ -871,6 +854,113 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
         },
       );
     });
+  }
+
+  // 삭제 확인 다이얼로그를 표시하는 메서드
+  void _showDeleteConfirmDialog(Reservation reservation) {
+    showDialog<bool>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('예약 삭제'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('정말로 이 예약을 삭제하시겠습니까?'),
+                const SizedBox(height: 8),
+                Text(
+                  '한 번 삭제하면 되돌릴 수 없습니다.',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('예약번호: ${reservation.reservationNumber}'),
+                      Text('병원: ${reservation.clinic.name}'),
+                      Text(
+                        '예약자: ${reservation.customers.where((c) => c.isBooker).firstOrNull?.name ?? "정보 없음"}',
+                      ),
+                      Text(
+                        '일시: ${DateFormat('yyyy-MM-dd HH:mm').format(reservation.startTime)}',
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('취소'),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text('삭제'),
+              ),
+            ],
+          ),
+    ).then((confirmed) {
+      if (confirmed == true) {
+        _deleteReservation(reservation);
+      }
+    });
+  }
+
+  // 예약을 완전히 삭제하는 메서드
+  Future<void> _deleteReservation(Reservation reservation) async {
+    try {
+      // 외래키 제약 조건을 고려한 순차적 삭제
+
+      // 1. reservations의 booker_id를 null로 설정 (외래키 제약 해제)
+      await ref
+          .read(supabaseClientProvider)
+          .from('reservations')
+          .update({'booker_id': null})
+          .eq('id', reservation.id);
+
+      // 2. customers 테이블에서 해당 예약의 고객들 삭제
+      await ref
+          .read(supabaseClientProvider)
+          .from('customers')
+          .delete()
+          .eq('reservation_id', reservation.id);
+
+      // 3. reservations 테이블에서 예약 삭제
+      await ref
+          .read(supabaseClientProvider)
+          .from('reservations')
+          .delete()
+          .eq('id', reservation.id);
+
+      if (mounted) {
+        NotificationHelper.showSuccess(context, '예약이 완전히 삭제되었습니다.');
+
+        // 예약 목록 새로고침
+        ref.invalidate(filteredReservationsProvider);
+        ref.invalidate(reservationStatsProvider);
+        ref.invalidate(todayReservationsProvider);
+        ref.invalidate(upcomingReservationsProvider);
+      }
+    } catch (e) {
+      if (mounted) {
+        NotificationHelper.showError(context, '예약 삭제 중 오류가 발생했습니다: $e');
+      }
+    }
   }
 }
 

@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../domain/reservation_models.dart';
 import '../../data/providers.dart';
+import '../../../../shared/widgets/common/error_display_widget.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../guides/data/guide_form_models.dart';
 
@@ -20,6 +21,7 @@ class CreateReservationDialog extends HookConsumerWidget {
     final startTime = useState<TimeOfDay?>(null);
     final endTime = useState<TimeOfDay?>(null);
     final selectedClinic = useState<Clinic?>(null);
+    final customClinicName = useState(''); // 기타 병원명 입력용
     final selectedServiceType = useState<ServiceTypeEnum?>(null);
     final notes = useState('');
     final requiredLanguages = useState('');
@@ -33,9 +35,7 @@ class CreateReservationDialog extends HookConsumerWidget {
 
     void showError(BuildContext context, String message) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(message)));
+        NotificationHelper.showError(context, message);
       }
     }
 
@@ -56,9 +56,9 @@ class CreateReservationDialog extends HookConsumerWidget {
     Future<void> selectDate() async {
       final date = await showDatePicker(
         context: context,
-        initialDate: DateTime.now().add(const Duration(days: 1)),
+        initialDate: DateTime.now().add(Duration(days: 1)),
         firstDate: DateTime.now(),
-        lastDate: DateTime.now().add(const Duration(days: 365)),
+        lastDate: DateTime.now().add(Duration(days: 365)),
       );
 
       if (date != null) {
@@ -111,6 +111,13 @@ class CreateReservationDialog extends HookConsumerWidget {
         return;
       }
 
+      // '기타' 병원 선택 시 직접 입력된 병원명 확인
+      if (selectedClinic.value!.name == '기타' &&
+          customClinicName.value.isEmpty) {
+        showError(context, '기타 병원명을 입력해주세요');
+        return;
+      }
+
       // 예약자가 선택되었는지 확인
       final hasBooker = customers.value.any((customer) => customer.isBooker);
       if (!hasBooker) {
@@ -138,7 +145,10 @@ class CreateReservationDialog extends HookConsumerWidget {
           endTime: endTimeStr,
           clinicId: selectedClinic.value!.id,
           serviceType: selectedServiceType.value,
-          notes: notes.value.isNotEmpty ? notes.value : null,
+          notes:
+              selectedClinic.value!.name == '기타'
+                  ? '병원명: ${customClinicName.value}${notes.value.isNotEmpty ? '\n\n${notes.value}' : ''}'
+                  : (notes.value.isNotEmpty ? notes.value : null),
           contactInfo:
               requiredLanguages.value.isNotEmpty
                   ? requiredLanguages.value
@@ -167,12 +177,16 @@ class CreateReservationDialog extends HookConsumerWidget {
         isLoading.value = false;
         if (context.mounted) {
           Navigator.of(context).pop(true); // 성공 시 true 반환
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('예약이 성공적으로 생성되었습니다. (ID: ${reservation.id})'),
-              backgroundColor: Colors.green,
-            ),
+          NotificationHelper.showSuccess(
+            context,
+            '예약이 성공적으로 생성되었습니다. (ID: ${reservation.id})',
           );
+
+          // 예약 목록 자동 새로고침
+          ref.invalidate(filteredReservationsProvider);
+          ref.invalidate(reservationStatsProvider);
+          ref.invalidate(todayReservationsProvider);
+          ref.invalidate(upcomingReservationsProvider);
         }
       } catch (e) {
         isLoading.value = false;
@@ -225,6 +239,7 @@ class CreateReservationDialog extends HookConsumerWidget {
                         startTime: startTime,
                         endTime: endTime,
                         selectedClinic: selectedClinic,
+                        customClinicName: customClinicName,
                         selectedServiceType: selectedServiceType,
                         notes: notes,
                         requiredLanguages: requiredLanguages,
@@ -285,6 +300,7 @@ class _BasicInfoSection extends StatelessWidget {
     required this.startTime,
     required this.endTime,
     required this.selectedClinic,
+    required this.customClinicName,
     required this.selectedServiceType,
     required this.notes,
     required this.requiredLanguages,
@@ -298,6 +314,7 @@ class _BasicInfoSection extends StatelessWidget {
   final ValueNotifier<TimeOfDay?> startTime;
   final ValueNotifier<TimeOfDay?> endTime;
   final ValueNotifier<Clinic?> selectedClinic;
+  final ValueNotifier<String> customClinicName;
   final ValueNotifier<ServiceTypeEnum?> selectedServiceType;
   final ValueNotifier<String> notes;
   final ValueNotifier<String> requiredLanguages;
@@ -402,23 +419,52 @@ class _BasicInfoSection extends StatelessWidget {
         // 병원 선택
         clinicsAsync.when(
           data:
-              (clinics) => DropdownButtonFormField<Clinic>(
-                decoration: const InputDecoration(
-                  labelText: '병원',
-                  border: OutlineInputBorder(),
-                ),
-                value: selectedClinic.value,
-                items:
-                    clinics
-                        .map(
-                          (clinic) => DropdownMenuItem(
-                            value: clinic,
-                            child: Text(clinic.name),
-                          ),
-                        )
-                        .toList(),
-                onChanged: (clinic) => selectedClinic.value = clinic,
-                validator: (value) => value == null ? '병원을 선택해주세요' : null,
+              (clinics) => Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  DropdownButtonFormField<Clinic>(
+                    decoration: const InputDecoration(
+                      labelText: '병원',
+                      border: OutlineInputBorder(),
+                    ),
+                    value: selectedClinic.value,
+                    items:
+                        clinics
+                            .map(
+                              (clinic) => DropdownMenuItem(
+                                value: clinic,
+                                child: Text(clinic.name),
+                              ),
+                            )
+                            .toList(),
+                    onChanged: (clinic) {
+                      selectedClinic.value = clinic;
+                      // 기타가 아닌 경우 커스텀 병원명 초기화
+                      if (clinic?.name != '기타') {
+                        customClinicName.value = '';
+                      }
+                    },
+                    validator: (value) => value == null ? '병원을 선택해주세요' : null,
+                  ),
+                  // 기타 선택 시 직접 입력 필드 표시
+                  if (selectedClinic.value?.name == '기타') ...[
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: '병원명 직접 입력',
+                        border: OutlineInputBorder(),
+                        hintText: '병원명을 입력하세요',
+                      ),
+                      onChanged: (value) => customClinicName.value = value,
+                      validator:
+                          (value) =>
+                              selectedClinic.value?.name == '기타' &&
+                                      (value == null || value.isEmpty)
+                                  ? '병원명을 입력해주세요'
+                                  : null,
+                    ),
+                  ],
+                ],
               ),
           loading:
               () => DropdownButtonFormField<Clinic>(

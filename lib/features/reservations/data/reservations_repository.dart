@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../domain/reservation_models.dart';
 import 'dart:developer' as dev;
@@ -20,7 +21,7 @@ class ReservationsRepository {
       var query = _supabase.from('reservations').select('''
             *,
             clinic:clinics(*),
-            customers!reservations_customer_id_fkey(*),
+            customers!customers_reservation_id_fkey(*),
             assigned_guide:guides(id, nickname, phone, email)
           ''');
 
@@ -92,7 +93,7 @@ class ReservationsRepository {
               .select('''
             *,
             clinic:clinics(*),
-            customers!reservations_customer_id_fkey(*),
+            customers!customers_reservation_id_fkey(*),
             assigned_guide:guides(id, nickname, phone, email)
           ''')
               .eq('id', id)
@@ -121,7 +122,7 @@ class ReservationsRepository {
           .select('''
             *,
             clinic:clinics(*),
-            customers!reservations_customer_id_fkey(*),
+            customers!customers_reservation_id_fkey(*),
             assigned_guide:guides(id, nickname, phone, email)
           ''')
           .single();
@@ -308,7 +309,7 @@ class ReservationsRepository {
         'duration_minutes': request.durationMinutes,
         'clinic_id': request.clinicId,
         'service_type': request.serviceType?.code,
-        'status': 'assigned',
+        'status': 'pending_assignment', // guide_id가 없으므로 배정 대기 상태
         'special_notes': request.notes,
         'contact_info': request.contactInfo,
         'booker_id': bookerId,
@@ -475,8 +476,9 @@ class ReservationsRepository {
     String reservationId,
   ) async {
     try {
-      print(
+      log(
         '🔍 Starting getGuideRecommendations for reservation: $reservationId',
+        name: 'ReservationsRepository',
       );
 
       // 예약 정보 조회
@@ -484,20 +486,29 @@ class ReservationsRepository {
       if (reservation == null) {
         throw Exception('예약을 찾을 수 없습니다');
       }
-      print('📊 Found reservation: ${reservation.reservationNumber}');
+      log(
+        '📊 Found reservation: ${reservation.reservationNumber}',
+        name: 'ReservationsRepository',
+      );
 
       // 모든 가이드 조회 (단순화)
-      print('📊 Fetching guides...');
+      log('📊 Fetching guides...', name: 'ReservationsRepository');
       final guidesResponse = await _supabase
           .from('guides')
           .select('*')
           .eq('is_active', true);
 
-      print('📊 Raw guides response: $guidesResponse');
-      print('📊 Guides count: ${guidesResponse?.length ?? 0}');
+      log(
+        '📊 Raw guides response: $guidesResponse',
+        name: 'ReservationsRepository',
+      );
+      log(
+        '📊 Guides count: ${guidesResponse?.length ?? 0}',
+        name: 'ReservationsRepository',
+      );
 
       if (guidesResponse == null || guidesResponse.isEmpty) {
-        print('⚠️ No guides found');
+        log('⚠️ No guides found', name: 'ReservationsRepository');
         return [];
       }
 

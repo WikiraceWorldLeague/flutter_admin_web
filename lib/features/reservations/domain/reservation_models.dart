@@ -35,7 +35,7 @@ enum ReservationStatus {
   pendingAssignment('배정 대기'),
   assigned('배정됨'),
   inProgress('진행중'),
-  completed('완료'),
+  completed('진행완료'),
   cancelled('취소');
 
   const ReservationStatus(this.displayName);
