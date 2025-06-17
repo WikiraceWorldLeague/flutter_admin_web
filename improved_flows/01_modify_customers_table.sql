@@ -20,7 +20,7 @@ ALTER TABLE customers ADD COLUMN IF NOT EXISTS net_revenue_with_tax NUMERIC(10,2
 ALTER TABLE customers ADD COLUMN IF NOT EXISTS net_revenue_without_tax NUMERIC(10,2) DEFAULT 0; -- 순매출 (부가세 불포함)
 
 -- 복합 유니크 제약조건 추가 (고객 중복 방지)
-ALTER TABLE customers ADD CONSTRAINT IF NOT EXISTS unique_customer_info 
+ALTER TABLE customers ADD CONSTRAINT unique_customer_info 
 UNIQUE (name, birth_date, nationality);
 
 -- 인덱스 생성 (검색 성능 향상)
