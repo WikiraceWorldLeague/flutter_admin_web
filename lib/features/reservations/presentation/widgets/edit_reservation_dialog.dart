@@ -8,6 +8,7 @@ import '../../data/providers.dart';
 import '../../../../shared/widgets/common/error_display_widget.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../guides/data/guide_form_models.dart';
+import '../../../customers/data/models/customer_model.dart';
 
 class EditReservationDialog extends HookConsumerWidget {
   final Reservation reservation;
@@ -44,12 +45,13 @@ class EditReservationDialog extends HookConsumerWidget {
                   birthDate: customer.birthDate,
                   gender:
                       customer.gender != null
-                          ? GenderEnum.values.firstWhere(
+                          ? CustomerGender.values.firstWhere(
                             (g) => g.value == customer.gender,
+                            orElse: () => CustomerGender.other,
                           )
                           : null,
                   notes: customer.notes ?? '',
-                  isBooker: customer.isBooker,
+                  isBooker: customer.isBooker ?? false,
                 ),
               )
               .toList() ??
@@ -60,7 +62,9 @@ class EditReservationDialog extends HookConsumerWidget {
 
     void showError(BuildContext context, String message) {
       if (context.mounted) {
-        NotificationHelper.showError(context, message);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message), backgroundColor: Colors.red),
+        );
       }
     }
 
@@ -153,47 +157,39 @@ class EditReservationDialog extends HookConsumerWidget {
         final endTimeStr =
             '${endTime.value!.hour.toString().padLeft(2, '0')}:${endTime.value!.minute.toString().padLeft(2, '0')}:00';
 
-        // 예약 수정 요청 데이터 준비
-        final request = UpdateReservationRequest(
-          id: reservation.id,
-          reservationDate: selectedDate.value!,
-          startTime: startTimeStr,
-          endTime: endTimeStr,
-          clinicId: selectedClinic.value!.id,
-          serviceType: selectedServiceType.value,
-          notes:
+        // 예약 수정 데이터 준비
+        final updates = <String, dynamic>{
+          'reservation_date':
+              selectedDate.value!.toIso8601String().split('T')[0],
+          'start_time': startTimeStr,
+          'end_time': endTimeStr,
+          'clinic_id': selectedClinic.value!.id,
+          'service_type': selectedServiceType.value?.code,
+          'notes':
               selectedClinic.value!.name == '기타'
                   ? '병원명: ${customClinicName.value}${notes.value.isNotEmpty ? '\n\n${notes.value}' : ''}'
                   : (notes.value.isNotEmpty ? notes.value : null),
-          contactInfo:
+          'contact_info':
               requiredLanguages.value.isNotEmpty
                   ? requiredLanguages.value
                   : null,
-          durationMinutes: 180,
-          customers:
-              customers.value
-                  .where((customer) => customer.name.isNotEmpty)
-                  .map(
-                    (customer) => CustomerData(
-                      name: customer.name,
-                      nationality: customer.nationality,
-                      birthDate: customer.birthDate,
-                      gender: customer.gender?.value,
-                      notes: customer.notes.isNotEmpty ? customer.notes : null,
-                      isBooker: customer.isBooker,
-                    ),
-                  )
-                  .toList(),
-        );
+          'duration_minutes': 180,
+          'updated_at': DateTime.now().toIso8601String(),
+        };
 
         // ReservationsRepository를 통해 실제 예약 수정
         final repository = ref.read(reservationsRepositoryProvider);
-        await repository.updateReservation(request);
+        await repository.updateReservation(reservation.id, updates);
 
         isLoading.value = false;
         if (context.mounted) {
           Navigator.of(context).pop(true); // 성공 시 true 반환
-          NotificationHelper.showSuccess(context, '예약이 성공적으로 수정되었습니다.');
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('예약이 성공적으로 수정되었습니다.'),
+              backgroundColor: Colors.green,
+            ),
+          );
 
           // 예약 목록 자동 새로고침
           ref.invalidate(filteredReservationsProvider);
@@ -216,7 +212,7 @@ class EditReservationDialog extends HookConsumerWidget {
     useEffect(() {
       clinicsAsync.whenData((clinics) {
         final clinic = clinics.firstWhere(
-          (c) => c.id == reservation.clinicId,
+          (c) => c.id == reservation.clinic.id,
           orElse: () => clinics.first,
         );
         selectedClinic.value = clinic;
@@ -303,6 +299,7 @@ class EditReservationDialog extends HookConsumerWidget {
                               '시작 시간',
                               startTime,
                               () => selectTime(true),
+                              context,
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -311,6 +308,7 @@ class EditReservationDialog extends HookConsumerWidget {
                               '종료 시간',
                               endTime,
                               () => selectTime(false),
+                              context,
                             ),
                           ),
                         ],
@@ -345,6 +343,7 @@ class EditReservationDialog extends HookConsumerWidget {
                         customers,
                         addCustomer,
                         removeCustomer,
+                        context,
                       ),
 
                       const SizedBox(height: 24),
@@ -463,6 +462,7 @@ class EditReservationDialog extends HookConsumerWidget {
     String label,
     ValueNotifier<TimeOfDay?> time,
     VoidCallback onTap,
+    BuildContext context,
   ) {
     return InkWell(
       onTap: onTap,
@@ -477,9 +477,7 @@ class EditReservationDialog extends HookConsumerWidget {
             const Icon(Icons.access_time, size: 20),
             const SizedBox(width: 8),
             Text(
-              time.value != null
-                  ? time.value!.format(context as BuildContext)
-                  : label,
+              time.value != null ? time.value!.format(context) : label,
               style: TextStyle(
                 color: time.value != null ? Colors.black : Colors.grey[600],
               ),
@@ -572,6 +570,7 @@ class EditReservationDialog extends HookConsumerWidget {
     ValueNotifier<List<CustomerFormData>> customers,
     VoidCallback addCustomer,
     Function(int) removeCustomer,
+    BuildContext context,
   ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -597,6 +596,7 @@ class EditReservationDialog extends HookConsumerWidget {
             index,
             customers.value.length > 1,
             () => removeCustomer(index),
+            context,
           );
         }).toList(),
       ],
@@ -608,6 +608,7 @@ class EditReservationDialog extends HookConsumerWidget {
     int index,
     bool canRemove,
     VoidCallback onRemove,
+    BuildContext context,
   ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -678,7 +679,7 @@ class EditReservationDialog extends HookConsumerWidget {
                 child: InkWell(
                   onTap: () async {
                     final date = await showDatePicker(
-                      context: context as BuildContext,
+                      context: context,
                       initialDate: customer.birthDate ?? DateTime(1990),
                       firstDate: DateTime(1900),
                       lastDate: DateTime.now(),
@@ -717,14 +718,14 @@ class EditReservationDialog extends HookConsumerWidget {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: DropdownButtonFormField<GenderEnum>(
+                child: DropdownButtonFormField<CustomerGender>(
                   value: customer.gender,
                   decoration: const InputDecoration(
                     labelText: '성별',
                     border: OutlineInputBorder(),
                   ),
                   items:
-                      GenderEnum.values
+                      CustomerGender.values
                           .map(
                             (gender) => DropdownMenuItem(
                               value: gender,

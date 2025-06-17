@@ -487,7 +487,7 @@ final customerStatsProvider = AutoDisposeFutureProvider<CustomerStats>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CustomerStatsRef = AutoDisposeFutureProviderRef<CustomerStats>;
-String _$customerCreatorHash() => r'3b34ba7368ce1566f16a0028225344f180fa0e45';
+String _$customerCreatorHash() => r'4d99f488f3056cc7c2664af86042045bfd114e47';
 
 /// 고객 생성 Provider
 ///
@@ -506,7 +506,7 @@ final customerCreatorProvider =
     );
 
 typedef _$CustomerCreator = AutoDisposeAsyncNotifier<void>;
-String _$customerUpdaterHash() => r'e830d894f87d96091dc28596bda7d0dc6d5a0456';
+String _$customerUpdaterHash() => r'1d3651e605dce8a74919880880031e64c3c98edb';
 
 /// 고객 수정 Provider
 ///

@@ -54,21 +54,14 @@ class CustomerCreator extends _$CustomerCreator {
 
   /// 고객 생성
   Future<Customer> createCustomer(CustomerInput input) async {
-    state = const AsyncLoading();
-    try {
-      final repository = ref.read(customersRepositoryProvider);
-      final customer = await repository.createCustomer(input);
+    final repository = ref.read(customersRepositoryProvider);
+    final customer = await repository.createCustomer(input);
 
-      // 관련 providers 무효화
-      ref.invalidate(customersListProvider);
-      ref.invalidate(customerStatsProvider);
+    // 관련 providers 무효화
+    ref.invalidate(customersListProvider);
+    ref.invalidate(customerStatsProvider);
 
-      state = const AsyncData(null);
-      return customer;
-    } catch (error, stackTrace) {
-      state = AsyncError(error, stackTrace);
-      rethrow;
-    }
+    return customer;
   }
 }
 
@@ -80,22 +73,15 @@ class CustomerUpdater extends _$CustomerUpdater {
 
   /// 고객 정보 수정
   Future<Customer> updateCustomer(String id, CustomerInput input) async {
-    state = const AsyncLoading();
-    try {
-      final repository = ref.read(customersRepositoryProvider);
-      final customer = await repository.updateCustomer(id, input);
+    final repository = ref.read(customersRepositoryProvider);
+    final customer = await repository.updateCustomer(id, input);
 
-      // 관련 providers 무효화
-      ref.invalidate(customersListProvider);
-      ref.invalidate(customerDetailProvider(id));
-      ref.invalidate(customerStatsProvider);
+    // 관련 providers 무효화
+    ref.invalidate(customersListProvider);
+    ref.invalidate(customerDetailProvider(id));
+    ref.invalidate(customerStatsProvider);
 
-      state = const AsyncData(null);
-      return customer;
-    } catch (error, stackTrace) {
-      state = AsyncError(error, stackTrace);
-      rethrow;
-    }
+    return customer;
   }
 }
 

@@ -32,7 +32,7 @@ class CustomersPage extends HookConsumerWidget {
 
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -57,18 +57,8 @@ class CustomersPage extends HookConsumerWidget {
                     Expanded(
                       child: customersAsync.when(
                         data:
-                            (customers) => CustomerListWidget(
-                              customers: customers,
-                              pagination: pagination,
-                              onPageChanged: (page) {
-                                ref
-                                    .read(
-                                      customerPaginationNotifierProvider
-                                          .notifier,
-                                    )
-                                    .setPage(page);
-                              },
-                            ),
+                            (customers) =>
+                                CustomerListWidget(customers: customers),
                         loading:
                             () => const Center(
                               child: CircularProgressIndicator(),
@@ -261,7 +251,7 @@ class CustomersPage extends HookConsumerWidget {
         filters.gender != null ||
         filters.nationality?.isNotEmpty == true ||
         filters.acquisitionChannel?.isNotEmpty == true ||
-        filters.communicationChannel?.isNotEmpty == true ||
+        filters.communicationChannel != null ||
         filters.isBooker != null ||
         filters.createdAfter != null ||
         filters.createdBefore != null ||

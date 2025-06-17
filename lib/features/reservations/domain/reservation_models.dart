@@ -1,3 +1,5 @@
+import '../../customers/data/models/customer_model.dart';
+
 // 언어 모델
 class Language {
   final String code;
@@ -821,4 +823,50 @@ class GuideRecommendation {
       isAvailable: json['is_available'] ?? false,
     );
   }
+}
+
+/// 고객 폼 데이터 (예약 수정 시 사용)
+class CustomerFormData {
+  String name;
+  String nationality;
+  DateTime? birthDate;
+  CustomerGender? gender;
+  String notes;
+  bool isBooker;
+
+  CustomerFormData({
+    this.name = '',
+    this.nationality = '',
+    this.birthDate,
+    this.gender,
+    this.notes = '',
+    this.isBooker = false,
+  });
+}
+
+/// 예약 수정 요청 데이터
+class UpdateReservationRequest {
+  final String id;
+  final DateTime reservationDate;
+  final String startTime;
+  final String endTime;
+  final String clinicId;
+  final ServiceTypeEnum? serviceType;
+  final String? notes;
+  final String? contactInfo;
+  final int durationMinutes;
+  final List<CustomerData> customers;
+
+  UpdateReservationRequest({
+    required this.id,
+    required this.reservationDate,
+    required this.startTime,
+    required this.endTime,
+    required this.clinicId,
+    this.serviceType,
+    this.notes,
+    this.contactInfo,
+    required this.durationMinutes,
+    required this.customers,
+  });
 }

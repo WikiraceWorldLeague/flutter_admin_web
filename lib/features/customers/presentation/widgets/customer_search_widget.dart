@@ -260,22 +260,31 @@ class CustomerSearchWidget extends HookConsumerWidget {
                 children: [
                   Text('소통채널', style: Theme.of(context).textTheme.labelMedium),
                   const SizedBox(height: 4),
-                  TextFormField(
-                    initialValue: filters.communicationChannel,
+                  DropdownButtonFormField<CommunicationChannel?>(
+                    value: filters.communicationChannel,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
-                      hintText: '소통채널 입력',
                       contentPadding: EdgeInsets.symmetric(
                         horizontal: 12,
                         vertical: 8,
                       ),
                     ),
+                    items: [
+                      const DropdownMenuItem<CommunicationChannel?>(
+                        value: null,
+                        child: Text('전체'),
+                      ),
+                      ...CommunicationChannel.values.map((channel) {
+                        return DropdownMenuItem<CommunicationChannel?>(
+                          value: channel,
+                          child: Text(channel.displayName),
+                        );
+                      }).toList(),
+                    ],
                     onChanged: (value) {
                       ref
                           .read(customerFiltersNotifierProvider.notifier)
-                          .setCommunicationChannel(
-                            value.isEmpty ? null : value,
-                          );
+                          .setCommunicationChannel(value);
                       ref
                           .read(customerPaginationNotifierProvider.notifier)
                           .setPage(0);

@@ -15,801 +15,23 @@ final _privateConstructorUsedError = UnsupportedError(
   'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
 );
 
-Customer _$CustomerFromJson(Map<String, dynamic> json) {
-  return _Customer.fromJson(json);
-}
-
-/// @nodoc
-mixin _$Customer {
-  String? get id => throw _privateConstructorUsedError;
-  @JsonKey(name: 'reservation_id')
-  String? get reservationId => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
-  String? get nationality => throw _privateConstructorUsedError;
-  CustomerGender? get gender => throw _privateConstructorUsedError;
-  double? get age => throw _privateConstructorUsedError;
-  @JsonKey(name: 'customer_note')
-  String? get customerNote => throw _privateConstructorUsedError;
-  @JsonKey(name: 'created_at')
-  DateTime get createdAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'birth_date')
-  DateTime? get birthDate => throw _privateConstructorUsedError;
-  @JsonKey(name: 'is_booker')
-  bool get isBooker => throw _privateConstructorUsedError;
-  String? get booker => throw _privateConstructorUsedError;
-  @JsonKey(name: 'customer_code')
-  String? get customerCode => throw _privateConstructorUsedError;
-  @JsonKey(name: 'passport_name')
-  String? get passportName => throw _privateConstructorUsedError;
-  String? get phone => throw _privateConstructorUsedError;
-  @JsonKey(name: 'acquisition_channel')
-  String? get acquisitionChannel => throw _privateConstructorUsedError;
-  @JsonKey(name: 'communication_channel')
-  String? get communicationChannel => throw _privateConstructorUsedError;
-  @JsonKey(name: 'channel_account')
-  String? get channelAccount => throw _privateConstructorUsedError;
-  @JsonKey(name: 'purchase_code')
-  String? get purchaseCode => throw _privateConstructorUsedError;
-  @JsonKey(name: 'total_payment_amount')
-  double get totalPaymentAmount => throw _privateConstructorUsedError;
-  @JsonKey(name: 'company_revenue_with_tax')
-  double get companyRevenueWithTax => throw _privateConstructorUsedError;
-  @JsonKey(name: 'company_revenue_without_tax')
-  double get companyRevenueWithoutTax => throw _privateConstructorUsedError;
-  @JsonKey(name: 'guide_commission')
-  double get guideCommission => throw _privateConstructorUsedError;
-  @JsonKey(name: 'net_revenue_with_tax')
-  double get netRevenueWithTax => throw _privateConstructorUsedError;
-  @JsonKey(name: 'net_revenue_without_tax')
-  double get netRevenueWithoutTax => throw _privateConstructorUsedError;
-
-  /// Serializes this Customer to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of Customer
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $CustomerCopyWith<Customer> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $CustomerCopyWith<$Res> {
-  factory $CustomerCopyWith(Customer value, $Res Function(Customer) then) =
-      _$CustomerCopyWithImpl<$Res, Customer>;
-  @useResult
-  $Res call({
-    String? id,
-    @JsonKey(name: 'reservation_id') String? reservationId,
-    String name,
-    String? nationality,
-    CustomerGender? gender,
-    double? age,
-    @JsonKey(name: 'customer_note') String? customerNote,
-    @JsonKey(name: 'created_at') DateTime createdAt,
-    @JsonKey(name: 'birth_date') DateTime? birthDate,
-    @JsonKey(name: 'is_booker') bool isBooker,
-    String? booker,
-    @JsonKey(name: 'customer_code') String? customerCode,
-    @JsonKey(name: 'passport_name') String? passportName,
-    String? phone,
-    @JsonKey(name: 'acquisition_channel') String? acquisitionChannel,
-    @JsonKey(name: 'communication_channel') String? communicationChannel,
-    @JsonKey(name: 'channel_account') String? channelAccount,
-    @JsonKey(name: 'purchase_code') String? purchaseCode,
-    @JsonKey(name: 'total_payment_amount') double totalPaymentAmount,
-    @JsonKey(name: 'company_revenue_with_tax') double companyRevenueWithTax,
-    @JsonKey(name: 'company_revenue_without_tax')
-    double companyRevenueWithoutTax,
-    @JsonKey(name: 'guide_commission') double guideCommission,
-    @JsonKey(name: 'net_revenue_with_tax') double netRevenueWithTax,
-    @JsonKey(name: 'net_revenue_without_tax') double netRevenueWithoutTax,
-  });
-}
-
-/// @nodoc
-class _$CustomerCopyWithImpl<$Res, $Val extends Customer>
-    implements $CustomerCopyWith<$Res> {
-  _$CustomerCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of Customer
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = freezed,
-    Object? reservationId = freezed,
-    Object? name = null,
-    Object? nationality = freezed,
-    Object? gender = freezed,
-    Object? age = freezed,
-    Object? customerNote = freezed,
-    Object? createdAt = null,
-    Object? birthDate = freezed,
-    Object? isBooker = null,
-    Object? booker = freezed,
-    Object? customerCode = freezed,
-    Object? passportName = freezed,
-    Object? phone = freezed,
-    Object? acquisitionChannel = freezed,
-    Object? communicationChannel = freezed,
-    Object? channelAccount = freezed,
-    Object? purchaseCode = freezed,
-    Object? totalPaymentAmount = null,
-    Object? companyRevenueWithTax = null,
-    Object? companyRevenueWithoutTax = null,
-    Object? guideCommission = null,
-    Object? netRevenueWithTax = null,
-    Object? netRevenueWithoutTax = null,
-  }) {
-    return _then(
-      _value.copyWith(
-            id:
-                freezed == id
-                    ? _value.id
-                    : id // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            reservationId:
-                freezed == reservationId
-                    ? _value.reservationId
-                    : reservationId // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            name:
-                null == name
-                    ? _value.name
-                    : name // ignore: cast_nullable_to_non_nullable
-                        as String,
-            nationality:
-                freezed == nationality
-                    ? _value.nationality
-                    : nationality // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            gender:
-                freezed == gender
-                    ? _value.gender
-                    : gender // ignore: cast_nullable_to_non_nullable
-                        as CustomerGender?,
-            age:
-                freezed == age
-                    ? _value.age
-                    : age // ignore: cast_nullable_to_non_nullable
-                        as double?,
-            customerNote:
-                freezed == customerNote
-                    ? _value.customerNote
-                    : customerNote // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            createdAt:
-                null == createdAt
-                    ? _value.createdAt
-                    : createdAt // ignore: cast_nullable_to_non_nullable
-                        as DateTime,
-            birthDate:
-                freezed == birthDate
-                    ? _value.birthDate
-                    : birthDate // ignore: cast_nullable_to_non_nullable
-                        as DateTime?,
-            isBooker:
-                null == isBooker
-                    ? _value.isBooker
-                    : isBooker // ignore: cast_nullable_to_non_nullable
-                        as bool,
-            booker:
-                freezed == booker
-                    ? _value.booker
-                    : booker // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            customerCode:
-                freezed == customerCode
-                    ? _value.customerCode
-                    : customerCode // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            passportName:
-                freezed == passportName
-                    ? _value.passportName
-                    : passportName // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            phone:
-                freezed == phone
-                    ? _value.phone
-                    : phone // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            acquisitionChannel:
-                freezed == acquisitionChannel
-                    ? _value.acquisitionChannel
-                    : acquisitionChannel // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            communicationChannel:
-                freezed == communicationChannel
-                    ? _value.communicationChannel
-                    : communicationChannel // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            channelAccount:
-                freezed == channelAccount
-                    ? _value.channelAccount
-                    : channelAccount // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            purchaseCode:
-                freezed == purchaseCode
-                    ? _value.purchaseCode
-                    : purchaseCode // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            totalPaymentAmount:
-                null == totalPaymentAmount
-                    ? _value.totalPaymentAmount
-                    : totalPaymentAmount // ignore: cast_nullable_to_non_nullable
-                        as double,
-            companyRevenueWithTax:
-                null == companyRevenueWithTax
-                    ? _value.companyRevenueWithTax
-                    : companyRevenueWithTax // ignore: cast_nullable_to_non_nullable
-                        as double,
-            companyRevenueWithoutTax:
-                null == companyRevenueWithoutTax
-                    ? _value.companyRevenueWithoutTax
-                    : companyRevenueWithoutTax // ignore: cast_nullable_to_non_nullable
-                        as double,
-            guideCommission:
-                null == guideCommission
-                    ? _value.guideCommission
-                    : guideCommission // ignore: cast_nullable_to_non_nullable
-                        as double,
-            netRevenueWithTax:
-                null == netRevenueWithTax
-                    ? _value.netRevenueWithTax
-                    : netRevenueWithTax // ignore: cast_nullable_to_non_nullable
-                        as double,
-            netRevenueWithoutTax:
-                null == netRevenueWithoutTax
-                    ? _value.netRevenueWithoutTax
-                    : netRevenueWithoutTax // ignore: cast_nullable_to_non_nullable
-                        as double,
-          )
-          as $Val,
-    );
-  }
-}
-
-/// @nodoc
-abstract class _$$CustomerImplCopyWith<$Res>
-    implements $CustomerCopyWith<$Res> {
-  factory _$$CustomerImplCopyWith(
-    _$CustomerImpl value,
-    $Res Function(_$CustomerImpl) then,
-  ) = __$$CustomerImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    String? id,
-    @JsonKey(name: 'reservation_id') String? reservationId,
-    String name,
-    String? nationality,
-    CustomerGender? gender,
-    double? age,
-    @JsonKey(name: 'customer_note') String? customerNote,
-    @JsonKey(name: 'created_at') DateTime createdAt,
-    @JsonKey(name: 'birth_date') DateTime? birthDate,
-    @JsonKey(name: 'is_booker') bool isBooker,
-    String? booker,
-    @JsonKey(name: 'customer_code') String? customerCode,
-    @JsonKey(name: 'passport_name') String? passportName,
-    String? phone,
-    @JsonKey(name: 'acquisition_channel') String? acquisitionChannel,
-    @JsonKey(name: 'communication_channel') String? communicationChannel,
-    @JsonKey(name: 'channel_account') String? channelAccount,
-    @JsonKey(name: 'purchase_code') String? purchaseCode,
-    @JsonKey(name: 'total_payment_amount') double totalPaymentAmount,
-    @JsonKey(name: 'company_revenue_with_tax') double companyRevenueWithTax,
-    @JsonKey(name: 'company_revenue_without_tax')
-    double companyRevenueWithoutTax,
-    @JsonKey(name: 'guide_commission') double guideCommission,
-    @JsonKey(name: 'net_revenue_with_tax') double netRevenueWithTax,
-    @JsonKey(name: 'net_revenue_without_tax') double netRevenueWithoutTax,
-  });
-}
-
-/// @nodoc
-class __$$CustomerImplCopyWithImpl<$Res>
-    extends _$CustomerCopyWithImpl<$Res, _$CustomerImpl>
-    implements _$$CustomerImplCopyWith<$Res> {
-  __$$CustomerImplCopyWithImpl(
-    _$CustomerImpl _value,
-    $Res Function(_$CustomerImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of Customer
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = freezed,
-    Object? reservationId = freezed,
-    Object? name = null,
-    Object? nationality = freezed,
-    Object? gender = freezed,
-    Object? age = freezed,
-    Object? customerNote = freezed,
-    Object? createdAt = null,
-    Object? birthDate = freezed,
-    Object? isBooker = null,
-    Object? booker = freezed,
-    Object? customerCode = freezed,
-    Object? passportName = freezed,
-    Object? phone = freezed,
-    Object? acquisitionChannel = freezed,
-    Object? communicationChannel = freezed,
-    Object? channelAccount = freezed,
-    Object? purchaseCode = freezed,
-    Object? totalPaymentAmount = null,
-    Object? companyRevenueWithTax = null,
-    Object? companyRevenueWithoutTax = null,
-    Object? guideCommission = null,
-    Object? netRevenueWithTax = null,
-    Object? netRevenueWithoutTax = null,
-  }) {
-    return _then(
-      _$CustomerImpl(
-        id:
-            freezed == id
-                ? _value.id
-                : id // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        reservationId:
-            freezed == reservationId
-                ? _value.reservationId
-                : reservationId // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        name:
-            null == name
-                ? _value.name
-                : name // ignore: cast_nullable_to_non_nullable
-                    as String,
-        nationality:
-            freezed == nationality
-                ? _value.nationality
-                : nationality // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        gender:
-            freezed == gender
-                ? _value.gender
-                : gender // ignore: cast_nullable_to_non_nullable
-                    as CustomerGender?,
-        age:
-            freezed == age
-                ? _value.age
-                : age // ignore: cast_nullable_to_non_nullable
-                    as double?,
-        customerNote:
-            freezed == customerNote
-                ? _value.customerNote
-                : customerNote // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        createdAt:
-            null == createdAt
-                ? _value.createdAt
-                : createdAt // ignore: cast_nullable_to_non_nullable
-                    as DateTime,
-        birthDate:
-            freezed == birthDate
-                ? _value.birthDate
-                : birthDate // ignore: cast_nullable_to_non_nullable
-                    as DateTime?,
-        isBooker:
-            null == isBooker
-                ? _value.isBooker
-                : isBooker // ignore: cast_nullable_to_non_nullable
-                    as bool,
-        booker:
-            freezed == booker
-                ? _value.booker
-                : booker // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        customerCode:
-            freezed == customerCode
-                ? _value.customerCode
-                : customerCode // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        passportName:
-            freezed == passportName
-                ? _value.passportName
-                : passportName // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        phone:
-            freezed == phone
-                ? _value.phone
-                : phone // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        acquisitionChannel:
-            freezed == acquisitionChannel
-                ? _value.acquisitionChannel
-                : acquisitionChannel // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        communicationChannel:
-            freezed == communicationChannel
-                ? _value.communicationChannel
-                : communicationChannel // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        channelAccount:
-            freezed == channelAccount
-                ? _value.channelAccount
-                : channelAccount // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        purchaseCode:
-            freezed == purchaseCode
-                ? _value.purchaseCode
-                : purchaseCode // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        totalPaymentAmount:
-            null == totalPaymentAmount
-                ? _value.totalPaymentAmount
-                : totalPaymentAmount // ignore: cast_nullable_to_non_nullable
-                    as double,
-        companyRevenueWithTax:
-            null == companyRevenueWithTax
-                ? _value.companyRevenueWithTax
-                : companyRevenueWithTax // ignore: cast_nullable_to_non_nullable
-                    as double,
-        companyRevenueWithoutTax:
-            null == companyRevenueWithoutTax
-                ? _value.companyRevenueWithoutTax
-                : companyRevenueWithoutTax // ignore: cast_nullable_to_non_nullable
-                    as double,
-        guideCommission:
-            null == guideCommission
-                ? _value.guideCommission
-                : guideCommission // ignore: cast_nullable_to_non_nullable
-                    as double,
-        netRevenueWithTax:
-            null == netRevenueWithTax
-                ? _value.netRevenueWithTax
-                : netRevenueWithTax // ignore: cast_nullable_to_non_nullable
-                    as double,
-        netRevenueWithoutTax:
-            null == netRevenueWithoutTax
-                ? _value.netRevenueWithoutTax
-                : netRevenueWithoutTax // ignore: cast_nullable_to_non_nullable
-                    as double,
-      ),
-    );
-  }
-}
-
-/// @nodoc
-@JsonSerializable()
-class _$CustomerImpl implements _Customer {
-  const _$CustomerImpl({
-    this.id,
-    @JsonKey(name: 'reservation_id') this.reservationId,
-    required this.name,
-    this.nationality,
-    this.gender,
-    this.age,
-    @JsonKey(name: 'customer_note') this.customerNote,
-    @JsonKey(name: 'created_at') required this.createdAt,
-    @JsonKey(name: 'birth_date') this.birthDate,
-    @JsonKey(name: 'is_booker') this.isBooker = false,
-    this.booker,
-    @JsonKey(name: 'customer_code') this.customerCode,
-    @JsonKey(name: 'passport_name') this.passportName,
-    this.phone,
-    @JsonKey(name: 'acquisition_channel') this.acquisitionChannel,
-    @JsonKey(name: 'communication_channel') this.communicationChannel,
-    @JsonKey(name: 'channel_account') this.channelAccount,
-    @JsonKey(name: 'purchase_code') this.purchaseCode,
-    @JsonKey(name: 'total_payment_amount') this.totalPaymentAmount = 0.0,
-    @JsonKey(name: 'company_revenue_with_tax') this.companyRevenueWithTax = 0.0,
-    @JsonKey(name: 'company_revenue_without_tax')
-    this.companyRevenueWithoutTax = 0.0,
-    @JsonKey(name: 'guide_commission') this.guideCommission = 0.0,
-    @JsonKey(name: 'net_revenue_with_tax') this.netRevenueWithTax = 0.0,
-    @JsonKey(name: 'net_revenue_without_tax') this.netRevenueWithoutTax = 0.0,
-  });
-
-  factory _$CustomerImpl.fromJson(Map<String, dynamic> json) =>
-      _$$CustomerImplFromJson(json);
-
-  @override
-  final String? id;
-  @override
-  @JsonKey(name: 'reservation_id')
-  final String? reservationId;
-  @override
-  final String name;
-  @override
-  final String? nationality;
-  @override
-  final CustomerGender? gender;
-  @override
-  final double? age;
-  @override
-  @JsonKey(name: 'customer_note')
-  final String? customerNote;
-  @override
-  @JsonKey(name: 'created_at')
-  final DateTime createdAt;
-  @override
-  @JsonKey(name: 'birth_date')
-  final DateTime? birthDate;
-  @override
-  @JsonKey(name: 'is_booker')
-  final bool isBooker;
-  @override
-  final String? booker;
-  @override
-  @JsonKey(name: 'customer_code')
-  final String? customerCode;
-  @override
-  @JsonKey(name: 'passport_name')
-  final String? passportName;
-  @override
-  final String? phone;
-  @override
-  @JsonKey(name: 'acquisition_channel')
-  final String? acquisitionChannel;
-  @override
-  @JsonKey(name: 'communication_channel')
-  final String? communicationChannel;
-  @override
-  @JsonKey(name: 'channel_account')
-  final String? channelAccount;
-  @override
-  @JsonKey(name: 'purchase_code')
-  final String? purchaseCode;
-  @override
-  @JsonKey(name: 'total_payment_amount')
-  final double totalPaymentAmount;
-  @override
-  @JsonKey(name: 'company_revenue_with_tax')
-  final double companyRevenueWithTax;
-  @override
-  @JsonKey(name: 'company_revenue_without_tax')
-  final double companyRevenueWithoutTax;
-  @override
-  @JsonKey(name: 'guide_commission')
-  final double guideCommission;
-  @override
-  @JsonKey(name: 'net_revenue_with_tax')
-  final double netRevenueWithTax;
-  @override
-  @JsonKey(name: 'net_revenue_without_tax')
-  final double netRevenueWithoutTax;
-
-  @override
-  String toString() {
-    return 'Customer(id: $id, reservationId: $reservationId, name: $name, nationality: $nationality, gender: $gender, age: $age, customerNote: $customerNote, createdAt: $createdAt, birthDate: $birthDate, isBooker: $isBooker, booker: $booker, customerCode: $customerCode, passportName: $passportName, phone: $phone, acquisitionChannel: $acquisitionChannel, communicationChannel: $communicationChannel, channelAccount: $channelAccount, purchaseCode: $purchaseCode, totalPaymentAmount: $totalPaymentAmount, companyRevenueWithTax: $companyRevenueWithTax, companyRevenueWithoutTax: $companyRevenueWithoutTax, guideCommission: $guideCommission, netRevenueWithTax: $netRevenueWithTax, netRevenueWithoutTax: $netRevenueWithoutTax)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$CustomerImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.reservationId, reservationId) ||
-                other.reservationId == reservationId) &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.nationality, nationality) ||
-                other.nationality == nationality) &&
-            (identical(other.gender, gender) || other.gender == gender) &&
-            (identical(other.age, age) || other.age == age) &&
-            (identical(other.customerNote, customerNote) ||
-                other.customerNote == customerNote) &&
-            (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt) &&
-            (identical(other.birthDate, birthDate) ||
-                other.birthDate == birthDate) &&
-            (identical(other.isBooker, isBooker) ||
-                other.isBooker == isBooker) &&
-            (identical(other.booker, booker) || other.booker == booker) &&
-            (identical(other.customerCode, customerCode) ||
-                other.customerCode == customerCode) &&
-            (identical(other.passportName, passportName) ||
-                other.passportName == passportName) &&
-            (identical(other.phone, phone) || other.phone == phone) &&
-            (identical(other.acquisitionChannel, acquisitionChannel) ||
-                other.acquisitionChannel == acquisitionChannel) &&
-            (identical(other.communicationChannel, communicationChannel) ||
-                other.communicationChannel == communicationChannel) &&
-            (identical(other.channelAccount, channelAccount) ||
-                other.channelAccount == channelAccount) &&
-            (identical(other.purchaseCode, purchaseCode) ||
-                other.purchaseCode == purchaseCode) &&
-            (identical(other.totalPaymentAmount, totalPaymentAmount) ||
-                other.totalPaymentAmount == totalPaymentAmount) &&
-            (identical(other.companyRevenueWithTax, companyRevenueWithTax) ||
-                other.companyRevenueWithTax == companyRevenueWithTax) &&
-            (identical(
-                  other.companyRevenueWithoutTax,
-                  companyRevenueWithoutTax,
-                ) ||
-                other.companyRevenueWithoutTax == companyRevenueWithoutTax) &&
-            (identical(other.guideCommission, guideCommission) ||
-                other.guideCommission == guideCommission) &&
-            (identical(other.netRevenueWithTax, netRevenueWithTax) ||
-                other.netRevenueWithTax == netRevenueWithTax) &&
-            (identical(other.netRevenueWithoutTax, netRevenueWithoutTax) ||
-                other.netRevenueWithoutTax == netRevenueWithoutTax));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hashAll([
-    runtimeType,
-    id,
-    reservationId,
-    name,
-    nationality,
-    gender,
-    age,
-    customerNote,
-    createdAt,
-    birthDate,
-    isBooker,
-    booker,
-    customerCode,
-    passportName,
-    phone,
-    acquisitionChannel,
-    communicationChannel,
-    channelAccount,
-    purchaseCode,
-    totalPaymentAmount,
-    companyRevenueWithTax,
-    companyRevenueWithoutTax,
-    guideCommission,
-    netRevenueWithTax,
-    netRevenueWithoutTax,
-  ]);
-
-  /// Create a copy of Customer
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$CustomerImplCopyWith<_$CustomerImpl> get copyWith =>
-      __$$CustomerImplCopyWithImpl<_$CustomerImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$CustomerImplToJson(this);
-  }
-}
-
-abstract class _Customer implements Customer {
-  const factory _Customer({
-    final String? id,
-    @JsonKey(name: 'reservation_id') final String? reservationId,
-    required final String name,
-    final String? nationality,
-    final CustomerGender? gender,
-    final double? age,
-    @JsonKey(name: 'customer_note') final String? customerNote,
-    @JsonKey(name: 'created_at') required final DateTime createdAt,
-    @JsonKey(name: 'birth_date') final DateTime? birthDate,
-    @JsonKey(name: 'is_booker') final bool isBooker,
-    final String? booker,
-    @JsonKey(name: 'customer_code') final String? customerCode,
-    @JsonKey(name: 'passport_name') final String? passportName,
-    final String? phone,
-    @JsonKey(name: 'acquisition_channel') final String? acquisitionChannel,
-    @JsonKey(name: 'communication_channel') final String? communicationChannel,
-    @JsonKey(name: 'channel_account') final String? channelAccount,
-    @JsonKey(name: 'purchase_code') final String? purchaseCode,
-    @JsonKey(name: 'total_payment_amount') final double totalPaymentAmount,
-    @JsonKey(name: 'company_revenue_with_tax')
-    final double companyRevenueWithTax,
-    @JsonKey(name: 'company_revenue_without_tax')
-    final double companyRevenueWithoutTax,
-    @JsonKey(name: 'guide_commission') final double guideCommission,
-    @JsonKey(name: 'net_revenue_with_tax') final double netRevenueWithTax,
-    @JsonKey(name: 'net_revenue_without_tax') final double netRevenueWithoutTax,
-  }) = _$CustomerImpl;
-
-  factory _Customer.fromJson(Map<String, dynamic> json) =
-      _$CustomerImpl.fromJson;
-
-  @override
-  String? get id;
-  @override
-  @JsonKey(name: 'reservation_id')
-  String? get reservationId;
-  @override
-  String get name;
-  @override
-  String? get nationality;
-  @override
-  CustomerGender? get gender;
-  @override
-  double? get age;
-  @override
-  @JsonKey(name: 'customer_note')
-  String? get customerNote;
-  @override
-  @JsonKey(name: 'created_at')
-  DateTime get createdAt;
-  @override
-  @JsonKey(name: 'birth_date')
-  DateTime? get birthDate;
-  @override
-  @JsonKey(name: 'is_booker')
-  bool get isBooker;
-  @override
-  String? get booker;
-  @override
-  @JsonKey(name: 'customer_code')
-  String? get customerCode;
-  @override
-  @JsonKey(name: 'passport_name')
-  String? get passportName;
-  @override
-  String? get phone;
-  @override
-  @JsonKey(name: 'acquisition_channel')
-  String? get acquisitionChannel;
-  @override
-  @JsonKey(name: 'communication_channel')
-  String? get communicationChannel;
-  @override
-  @JsonKey(name: 'channel_account')
-  String? get channelAccount;
-  @override
-  @JsonKey(name: 'purchase_code')
-  String? get purchaseCode;
-  @override
-  @JsonKey(name: 'total_payment_amount')
-  double get totalPaymentAmount;
-  @override
-  @JsonKey(name: 'company_revenue_with_tax')
-  double get companyRevenueWithTax;
-  @override
-  @JsonKey(name: 'company_revenue_without_tax')
-  double get companyRevenueWithoutTax;
-  @override
-  @JsonKey(name: 'guide_commission')
-  double get guideCommission;
-  @override
-  @JsonKey(name: 'net_revenue_with_tax')
-  double get netRevenueWithTax;
-  @override
-  @JsonKey(name: 'net_revenue_without_tax')
-  double get netRevenueWithoutTax;
-
-  /// Create a copy of Customer
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CustomerImplCopyWith<_$CustomerImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
 CustomerFilters _$CustomerFiltersFromJson(Map<String, dynamic> json) {
   return _CustomerFilters.fromJson(json);
 }
 
 /// @nodoc
 mixin _$CustomerFilters {
-  @JsonKey(name: 'search_query')
-  String? get searchQuery => throw _privateConstructorUsedError;
-  CustomerGender? get gender => throw _privateConstructorUsedError;
+  String? get name => throw _privateConstructorUsedError;
   String? get nationality => throw _privateConstructorUsedError;
-  @JsonKey(name: 'acquisition_channel')
-  String? get acquisitionChannel => throw _privateConstructorUsedError;
-  @JsonKey(name: 'communication_channel')
-  String? get communicationChannel => throw _privateConstructorUsedError;
-  @JsonKey(name: 'is_booker')
+  CustomerGender? get gender => throw _privateConstructorUsedError;
   bool? get isBooker => throw _privateConstructorUsedError;
-  @JsonKey(name: 'created_after')
+  String? get acquisitionChannel => throw _privateConstructorUsedError;
+  CommunicationChannel? get communicationChannel =>
+      throw _privateConstructorUsedError;
   DateTime? get createdAfter => throw _privateConstructorUsedError;
-  @JsonKey(name: 'created_before')
   DateTime? get createdBefore => throw _privateConstructorUsedError;
-  @JsonKey(name: 'min_payment_amount')
+  String? get searchQuery => throw _privateConstructorUsedError;
   double? get minPaymentAmount => throw _privateConstructorUsedError;
-  @JsonKey(name: 'max_payment_amount')
   double? get maxPaymentAmount => throw _privateConstructorUsedError;
 
   /// Serializes this CustomerFilters to a JSON map.
@@ -830,16 +52,17 @@ abstract class $CustomerFiltersCopyWith<$Res> {
   ) = _$CustomerFiltersCopyWithImpl<$Res, CustomerFilters>;
   @useResult
   $Res call({
-    @JsonKey(name: 'search_query') String? searchQuery,
-    CustomerGender? gender,
+    String? name,
     String? nationality,
-    @JsonKey(name: 'acquisition_channel') String? acquisitionChannel,
-    @JsonKey(name: 'communication_channel') String? communicationChannel,
-    @JsonKey(name: 'is_booker') bool? isBooker,
-    @JsonKey(name: 'created_after') DateTime? createdAfter,
-    @JsonKey(name: 'created_before') DateTime? createdBefore,
-    @JsonKey(name: 'min_payment_amount') double? minPaymentAmount,
-    @JsonKey(name: 'max_payment_amount') double? maxPaymentAmount,
+    CustomerGender? gender,
+    bool? isBooker,
+    String? acquisitionChannel,
+    CommunicationChannel? communicationChannel,
+    DateTime? createdAfter,
+    DateTime? createdBefore,
+    String? searchQuery,
+    double? minPaymentAmount,
+    double? maxPaymentAmount,
   });
 }
 
@@ -858,34 +81,40 @@ class _$CustomerFiltersCopyWithImpl<$Res, $Val extends CustomerFilters>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? searchQuery = freezed,
-    Object? gender = freezed,
+    Object? name = freezed,
     Object? nationality = freezed,
+    Object? gender = freezed,
+    Object? isBooker = freezed,
     Object? acquisitionChannel = freezed,
     Object? communicationChannel = freezed,
-    Object? isBooker = freezed,
     Object? createdAfter = freezed,
     Object? createdBefore = freezed,
+    Object? searchQuery = freezed,
     Object? minPaymentAmount = freezed,
     Object? maxPaymentAmount = freezed,
   }) {
     return _then(
       _value.copyWith(
-            searchQuery:
-                freezed == searchQuery
-                    ? _value.searchQuery
-                    : searchQuery // ignore: cast_nullable_to_non_nullable
+            name:
+                freezed == name
+                    ? _value.name
+                    : name // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            nationality:
+                freezed == nationality
+                    ? _value.nationality
+                    : nationality // ignore: cast_nullable_to_non_nullable
                         as String?,
             gender:
                 freezed == gender
                     ? _value.gender
                     : gender // ignore: cast_nullable_to_non_nullable
                         as CustomerGender?,
-            nationality:
-                freezed == nationality
-                    ? _value.nationality
-                    : nationality // ignore: cast_nullable_to_non_nullable
-                        as String?,
+            isBooker:
+                freezed == isBooker
+                    ? _value.isBooker
+                    : isBooker // ignore: cast_nullable_to_non_nullable
+                        as bool?,
             acquisitionChannel:
                 freezed == acquisitionChannel
                     ? _value.acquisitionChannel
@@ -895,12 +124,7 @@ class _$CustomerFiltersCopyWithImpl<$Res, $Val extends CustomerFilters>
                 freezed == communicationChannel
                     ? _value.communicationChannel
                     : communicationChannel // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            isBooker:
-                freezed == isBooker
-                    ? _value.isBooker
-                    : isBooker // ignore: cast_nullable_to_non_nullable
-                        as bool?,
+                        as CommunicationChannel?,
             createdAfter:
                 freezed == createdAfter
                     ? _value.createdAfter
@@ -911,6 +135,11 @@ class _$CustomerFiltersCopyWithImpl<$Res, $Val extends CustomerFilters>
                     ? _value.createdBefore
                     : createdBefore // ignore: cast_nullable_to_non_nullable
                         as DateTime?,
+            searchQuery:
+                freezed == searchQuery
+                    ? _value.searchQuery
+                    : searchQuery // ignore: cast_nullable_to_non_nullable
+                        as String?,
             minPaymentAmount:
                 freezed == minPaymentAmount
                     ? _value.minPaymentAmount
@@ -937,16 +166,17 @@ abstract class _$$CustomerFiltersImplCopyWith<$Res>
   @override
   @useResult
   $Res call({
-    @JsonKey(name: 'search_query') String? searchQuery,
-    CustomerGender? gender,
+    String? name,
     String? nationality,
-    @JsonKey(name: 'acquisition_channel') String? acquisitionChannel,
-    @JsonKey(name: 'communication_channel') String? communicationChannel,
-    @JsonKey(name: 'is_booker') bool? isBooker,
-    @JsonKey(name: 'created_after') DateTime? createdAfter,
-    @JsonKey(name: 'created_before') DateTime? createdBefore,
-    @JsonKey(name: 'min_payment_amount') double? minPaymentAmount,
-    @JsonKey(name: 'max_payment_amount') double? maxPaymentAmount,
+    CustomerGender? gender,
+    bool? isBooker,
+    String? acquisitionChannel,
+    CommunicationChannel? communicationChannel,
+    DateTime? createdAfter,
+    DateTime? createdBefore,
+    String? searchQuery,
+    double? minPaymentAmount,
+    double? maxPaymentAmount,
   });
 }
 
@@ -964,34 +194,40 @@ class __$$CustomerFiltersImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? searchQuery = freezed,
-    Object? gender = freezed,
+    Object? name = freezed,
     Object? nationality = freezed,
+    Object? gender = freezed,
+    Object? isBooker = freezed,
     Object? acquisitionChannel = freezed,
     Object? communicationChannel = freezed,
-    Object? isBooker = freezed,
     Object? createdAfter = freezed,
     Object? createdBefore = freezed,
+    Object? searchQuery = freezed,
     Object? minPaymentAmount = freezed,
     Object? maxPaymentAmount = freezed,
   }) {
     return _then(
       _$CustomerFiltersImpl(
-        searchQuery:
-            freezed == searchQuery
-                ? _value.searchQuery
-                : searchQuery // ignore: cast_nullable_to_non_nullable
+        name:
+            freezed == name
+                ? _value.name
+                : name // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        nationality:
+            freezed == nationality
+                ? _value.nationality
+                : nationality // ignore: cast_nullable_to_non_nullable
                     as String?,
         gender:
             freezed == gender
                 ? _value.gender
                 : gender // ignore: cast_nullable_to_non_nullable
                     as CustomerGender?,
-        nationality:
-            freezed == nationality
-                ? _value.nationality
-                : nationality // ignore: cast_nullable_to_non_nullable
-                    as String?,
+        isBooker:
+            freezed == isBooker
+                ? _value.isBooker
+                : isBooker // ignore: cast_nullable_to_non_nullable
+                    as bool?,
         acquisitionChannel:
             freezed == acquisitionChannel
                 ? _value.acquisitionChannel
@@ -1001,12 +237,7 @@ class __$$CustomerFiltersImplCopyWithImpl<$Res>
             freezed == communicationChannel
                 ? _value.communicationChannel
                 : communicationChannel // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        isBooker:
-            freezed == isBooker
-                ? _value.isBooker
-                : isBooker // ignore: cast_nullable_to_non_nullable
-                    as bool?,
+                    as CommunicationChannel?,
         createdAfter:
             freezed == createdAfter
                 ? _value.createdAfter
@@ -1017,6 +248,11 @@ class __$$CustomerFiltersImplCopyWithImpl<$Res>
                 ? _value.createdBefore
                 : createdBefore // ignore: cast_nullable_to_non_nullable
                     as DateTime?,
+        searchQuery:
+            freezed == searchQuery
+                ? _value.searchQuery
+                : searchQuery // ignore: cast_nullable_to_non_nullable
+                    as String?,
         minPaymentAmount:
             freezed == minPaymentAmount
                 ? _value.minPaymentAmount
@@ -1036,53 +272,48 @@ class __$$CustomerFiltersImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$CustomerFiltersImpl implements _CustomerFilters {
   const _$CustomerFiltersImpl({
-    @JsonKey(name: 'search_query') this.searchQuery,
-    this.gender,
+    this.name,
     this.nationality,
-    @JsonKey(name: 'acquisition_channel') this.acquisitionChannel,
-    @JsonKey(name: 'communication_channel') this.communicationChannel,
-    @JsonKey(name: 'is_booker') this.isBooker,
-    @JsonKey(name: 'created_after') this.createdAfter,
-    @JsonKey(name: 'created_before') this.createdBefore,
-    @JsonKey(name: 'min_payment_amount') this.minPaymentAmount,
-    @JsonKey(name: 'max_payment_amount') this.maxPaymentAmount,
+    this.gender,
+    this.isBooker,
+    this.acquisitionChannel,
+    this.communicationChannel,
+    this.createdAfter,
+    this.createdBefore,
+    this.searchQuery,
+    this.minPaymentAmount,
+    this.maxPaymentAmount,
   });
 
   factory _$CustomerFiltersImpl.fromJson(Map<String, dynamic> json) =>
       _$$CustomerFiltersImplFromJson(json);
 
   @override
-  @JsonKey(name: 'search_query')
-  final String? searchQuery;
-  @override
-  final CustomerGender? gender;
+  final String? name;
   @override
   final String? nationality;
   @override
-  @JsonKey(name: 'acquisition_channel')
-  final String? acquisitionChannel;
+  final CustomerGender? gender;
   @override
-  @JsonKey(name: 'communication_channel')
-  final String? communicationChannel;
-  @override
-  @JsonKey(name: 'is_booker')
   final bool? isBooker;
   @override
-  @JsonKey(name: 'created_after')
+  final String? acquisitionChannel;
+  @override
+  final CommunicationChannel? communicationChannel;
+  @override
   final DateTime? createdAfter;
   @override
-  @JsonKey(name: 'created_before')
   final DateTime? createdBefore;
   @override
-  @JsonKey(name: 'min_payment_amount')
+  final String? searchQuery;
+  @override
   final double? minPaymentAmount;
   @override
-  @JsonKey(name: 'max_payment_amount')
   final double? maxPaymentAmount;
 
   @override
   String toString() {
-    return 'CustomerFilters(searchQuery: $searchQuery, gender: $gender, nationality: $nationality, acquisitionChannel: $acquisitionChannel, communicationChannel: $communicationChannel, isBooker: $isBooker, createdAfter: $createdAfter, createdBefore: $createdBefore, minPaymentAmount: $minPaymentAmount, maxPaymentAmount: $maxPaymentAmount)';
+    return 'CustomerFilters(name: $name, nationality: $nationality, gender: $gender, isBooker: $isBooker, acquisitionChannel: $acquisitionChannel, communicationChannel: $communicationChannel, createdAfter: $createdAfter, createdBefore: $createdBefore, searchQuery: $searchQuery, minPaymentAmount: $minPaymentAmount, maxPaymentAmount: $maxPaymentAmount)';
   }
 
   @override
@@ -1090,21 +321,22 @@ class _$CustomerFiltersImpl implements _CustomerFilters {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$CustomerFiltersImpl &&
-            (identical(other.searchQuery, searchQuery) ||
-                other.searchQuery == searchQuery) &&
-            (identical(other.gender, gender) || other.gender == gender) &&
+            (identical(other.name, name) || other.name == name) &&
             (identical(other.nationality, nationality) ||
                 other.nationality == nationality) &&
+            (identical(other.gender, gender) || other.gender == gender) &&
+            (identical(other.isBooker, isBooker) ||
+                other.isBooker == isBooker) &&
             (identical(other.acquisitionChannel, acquisitionChannel) ||
                 other.acquisitionChannel == acquisitionChannel) &&
             (identical(other.communicationChannel, communicationChannel) ||
                 other.communicationChannel == communicationChannel) &&
-            (identical(other.isBooker, isBooker) ||
-                other.isBooker == isBooker) &&
             (identical(other.createdAfter, createdAfter) ||
                 other.createdAfter == createdAfter) &&
             (identical(other.createdBefore, createdBefore) ||
                 other.createdBefore == createdBefore) &&
+            (identical(other.searchQuery, searchQuery) ||
+                other.searchQuery == searchQuery) &&
             (identical(other.minPaymentAmount, minPaymentAmount) ||
                 other.minPaymentAmount == minPaymentAmount) &&
             (identical(other.maxPaymentAmount, maxPaymentAmount) ||
@@ -1115,14 +347,15 @@ class _$CustomerFiltersImpl implements _CustomerFilters {
   @override
   int get hashCode => Object.hash(
     runtimeType,
-    searchQuery,
-    gender,
+    name,
     nationality,
+    gender,
+    isBooker,
     acquisitionChannel,
     communicationChannel,
-    isBooker,
     createdAfter,
     createdBefore,
+    searchQuery,
     minPaymentAmount,
     maxPaymentAmount,
   );
@@ -1146,48 +379,43 @@ class _$CustomerFiltersImpl implements _CustomerFilters {
 
 abstract class _CustomerFilters implements CustomerFilters {
   const factory _CustomerFilters({
-    @JsonKey(name: 'search_query') final String? searchQuery,
-    final CustomerGender? gender,
+    final String? name,
     final String? nationality,
-    @JsonKey(name: 'acquisition_channel') final String? acquisitionChannel,
-    @JsonKey(name: 'communication_channel') final String? communicationChannel,
-    @JsonKey(name: 'is_booker') final bool? isBooker,
-    @JsonKey(name: 'created_after') final DateTime? createdAfter,
-    @JsonKey(name: 'created_before') final DateTime? createdBefore,
-    @JsonKey(name: 'min_payment_amount') final double? minPaymentAmount,
-    @JsonKey(name: 'max_payment_amount') final double? maxPaymentAmount,
+    final CustomerGender? gender,
+    final bool? isBooker,
+    final String? acquisitionChannel,
+    final CommunicationChannel? communicationChannel,
+    final DateTime? createdAfter,
+    final DateTime? createdBefore,
+    final String? searchQuery,
+    final double? minPaymentAmount,
+    final double? maxPaymentAmount,
   }) = _$CustomerFiltersImpl;
 
   factory _CustomerFilters.fromJson(Map<String, dynamic> json) =
       _$CustomerFiltersImpl.fromJson;
 
   @override
-  @JsonKey(name: 'search_query')
-  String? get searchQuery;
-  @override
-  CustomerGender? get gender;
+  String? get name;
   @override
   String? get nationality;
   @override
-  @JsonKey(name: 'acquisition_channel')
-  String? get acquisitionChannel;
+  CustomerGender? get gender;
   @override
-  @JsonKey(name: 'communication_channel')
-  String? get communicationChannel;
-  @override
-  @JsonKey(name: 'is_booker')
   bool? get isBooker;
   @override
-  @JsonKey(name: 'created_after')
+  String? get acquisitionChannel;
+  @override
+  CommunicationChannel? get communicationChannel;
+  @override
   DateTime? get createdAfter;
   @override
-  @JsonKey(name: 'created_before')
   DateTime? get createdBefore;
   @override
-  @JsonKey(name: 'min_payment_amount')
+  String? get searchQuery;
+  @override
   double? get minPaymentAmount;
   @override
-  @JsonKey(name: 'max_payment_amount')
   double? get maxPaymentAmount;
 
   /// Create a copy of CustomerFilters
@@ -1198,38 +426,579 @@ abstract class _CustomerFilters implements CustomerFilters {
       throw _privateConstructorUsedError;
 }
 
+Customer _$CustomerFromJson(Map<String, dynamic> json) {
+  return _Customer.fromJson(json);
+}
+
+/// @nodoc
+mixin _$Customer {
+  String? get id => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
+  String? get nationality => throw _privateConstructorUsedError;
+  CustomerGender? get gender => throw _privateConstructorUsedError;
+  DateTime? get birthDate => throw _privateConstructorUsedError;
+  double? get age => throw _privateConstructorUsedError;
+  String? get passportName => throw _privateConstructorUsedError;
+  String? get passportLastName => throw _privateConstructorUsedError;
+  String? get passportFirstName => throw _privateConstructorUsedError;
+  bool get isBooker => throw _privateConstructorUsedError;
+  String? get acquisitionChannel => throw _privateConstructorUsedError;
+  String? get booker => throw _privateConstructorUsedError;
+  String? get customerNote => throw _privateConstructorUsedError;
+  CommunicationChannel? get communicationChannel =>
+      throw _privateConstructorUsedError;
+  String? get channelAccount => throw _privateConstructorUsedError;
+  DateTime? get createdAt => throw _privateConstructorUsedError;
+  DateTime? get updatedAt => throw _privateConstructorUsedError;
+
+  /// Serializes this Customer to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of Customer
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $CustomerCopyWith<Customer> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $CustomerCopyWith<$Res> {
+  factory $CustomerCopyWith(Customer value, $Res Function(Customer) then) =
+      _$CustomerCopyWithImpl<$Res, Customer>;
+  @useResult
+  $Res call({
+    String? id,
+    String name,
+    String? nationality,
+    CustomerGender? gender,
+    DateTime? birthDate,
+    double? age,
+    String? passportName,
+    String? passportLastName,
+    String? passportFirstName,
+    bool isBooker,
+    String? acquisitionChannel,
+    String? booker,
+    String? customerNote,
+    CommunicationChannel? communicationChannel,
+    String? channelAccount,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  });
+}
+
+/// @nodoc
+class _$CustomerCopyWithImpl<$Res, $Val extends Customer>
+    implements $CustomerCopyWith<$Res> {
+  _$CustomerCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of Customer
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = freezed,
+    Object? name = null,
+    Object? nationality = freezed,
+    Object? gender = freezed,
+    Object? birthDate = freezed,
+    Object? age = freezed,
+    Object? passportName = freezed,
+    Object? passportLastName = freezed,
+    Object? passportFirstName = freezed,
+    Object? isBooker = null,
+    Object? acquisitionChannel = freezed,
+    Object? booker = freezed,
+    Object? customerNote = freezed,
+    Object? communicationChannel = freezed,
+    Object? channelAccount = freezed,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+  }) {
+    return _then(
+      _value.copyWith(
+            id:
+                freezed == id
+                    ? _value.id
+                    : id // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            name:
+                null == name
+                    ? _value.name
+                    : name // ignore: cast_nullable_to_non_nullable
+                        as String,
+            nationality:
+                freezed == nationality
+                    ? _value.nationality
+                    : nationality // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            gender:
+                freezed == gender
+                    ? _value.gender
+                    : gender // ignore: cast_nullable_to_non_nullable
+                        as CustomerGender?,
+            birthDate:
+                freezed == birthDate
+                    ? _value.birthDate
+                    : birthDate // ignore: cast_nullable_to_non_nullable
+                        as DateTime?,
+            age:
+                freezed == age
+                    ? _value.age
+                    : age // ignore: cast_nullable_to_non_nullable
+                        as double?,
+            passportName:
+                freezed == passportName
+                    ? _value.passportName
+                    : passportName // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            passportLastName:
+                freezed == passportLastName
+                    ? _value.passportLastName
+                    : passportLastName // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            passportFirstName:
+                freezed == passportFirstName
+                    ? _value.passportFirstName
+                    : passportFirstName // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            isBooker:
+                null == isBooker
+                    ? _value.isBooker
+                    : isBooker // ignore: cast_nullable_to_non_nullable
+                        as bool,
+            acquisitionChannel:
+                freezed == acquisitionChannel
+                    ? _value.acquisitionChannel
+                    : acquisitionChannel // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            booker:
+                freezed == booker
+                    ? _value.booker
+                    : booker // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            customerNote:
+                freezed == customerNote
+                    ? _value.customerNote
+                    : customerNote // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            communicationChannel:
+                freezed == communicationChannel
+                    ? _value.communicationChannel
+                    : communicationChannel // ignore: cast_nullable_to_non_nullable
+                        as CommunicationChannel?,
+            channelAccount:
+                freezed == channelAccount
+                    ? _value.channelAccount
+                    : channelAccount // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            createdAt:
+                freezed == createdAt
+                    ? _value.createdAt
+                    : createdAt // ignore: cast_nullable_to_non_nullable
+                        as DateTime?,
+            updatedAt:
+                freezed == updatedAt
+                    ? _value.updatedAt
+                    : updatedAt // ignore: cast_nullable_to_non_nullable
+                        as DateTime?,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$CustomerImplCopyWith<$Res>
+    implements $CustomerCopyWith<$Res> {
+  factory _$$CustomerImplCopyWith(
+    _$CustomerImpl value,
+    $Res Function(_$CustomerImpl) then,
+  ) = __$$CustomerImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({
+    String? id,
+    String name,
+    String? nationality,
+    CustomerGender? gender,
+    DateTime? birthDate,
+    double? age,
+    String? passportName,
+    String? passportLastName,
+    String? passportFirstName,
+    bool isBooker,
+    String? acquisitionChannel,
+    String? booker,
+    String? customerNote,
+    CommunicationChannel? communicationChannel,
+    String? channelAccount,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  });
+}
+
+/// @nodoc
+class __$$CustomerImplCopyWithImpl<$Res>
+    extends _$CustomerCopyWithImpl<$Res, _$CustomerImpl>
+    implements _$$CustomerImplCopyWith<$Res> {
+  __$$CustomerImplCopyWithImpl(
+    _$CustomerImpl _value,
+    $Res Function(_$CustomerImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of Customer
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = freezed,
+    Object? name = null,
+    Object? nationality = freezed,
+    Object? gender = freezed,
+    Object? birthDate = freezed,
+    Object? age = freezed,
+    Object? passportName = freezed,
+    Object? passportLastName = freezed,
+    Object? passportFirstName = freezed,
+    Object? isBooker = null,
+    Object? acquisitionChannel = freezed,
+    Object? booker = freezed,
+    Object? customerNote = freezed,
+    Object? communicationChannel = freezed,
+    Object? channelAccount = freezed,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+  }) {
+    return _then(
+      _$CustomerImpl(
+        id:
+            freezed == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        name:
+            null == name
+                ? _value.name
+                : name // ignore: cast_nullable_to_non_nullable
+                    as String,
+        nationality:
+            freezed == nationality
+                ? _value.nationality
+                : nationality // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        gender:
+            freezed == gender
+                ? _value.gender
+                : gender // ignore: cast_nullable_to_non_nullable
+                    as CustomerGender?,
+        birthDate:
+            freezed == birthDate
+                ? _value.birthDate
+                : birthDate // ignore: cast_nullable_to_non_nullable
+                    as DateTime?,
+        age:
+            freezed == age
+                ? _value.age
+                : age // ignore: cast_nullable_to_non_nullable
+                    as double?,
+        passportName:
+            freezed == passportName
+                ? _value.passportName
+                : passportName // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        passportLastName:
+            freezed == passportLastName
+                ? _value.passportLastName
+                : passportLastName // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        passportFirstName:
+            freezed == passportFirstName
+                ? _value.passportFirstName
+                : passportFirstName // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        isBooker:
+            null == isBooker
+                ? _value.isBooker
+                : isBooker // ignore: cast_nullable_to_non_nullable
+                    as bool,
+        acquisitionChannel:
+            freezed == acquisitionChannel
+                ? _value.acquisitionChannel
+                : acquisitionChannel // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        booker:
+            freezed == booker
+                ? _value.booker
+                : booker // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        customerNote:
+            freezed == customerNote
+                ? _value.customerNote
+                : customerNote // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        communicationChannel:
+            freezed == communicationChannel
+                ? _value.communicationChannel
+                : communicationChannel // ignore: cast_nullable_to_non_nullable
+                    as CommunicationChannel?,
+        channelAccount:
+            freezed == channelAccount
+                ? _value.channelAccount
+                : channelAccount // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        createdAt:
+            freezed == createdAt
+                ? _value.createdAt
+                : createdAt // ignore: cast_nullable_to_non_nullable
+                    as DateTime?,
+        updatedAt:
+            freezed == updatedAt
+                ? _value.updatedAt
+                : updatedAt // ignore: cast_nullable_to_non_nullable
+                    as DateTime?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$CustomerImpl implements _Customer {
+  const _$CustomerImpl({
+    this.id,
+    required this.name,
+    this.nationality,
+    this.gender,
+    this.birthDate,
+    this.age,
+    this.passportName,
+    this.passportLastName,
+    this.passportFirstName,
+    this.isBooker = true,
+    this.acquisitionChannel,
+    this.booker,
+    this.customerNote,
+    this.communicationChannel,
+    this.channelAccount,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  factory _$CustomerImpl.fromJson(Map<String, dynamic> json) =>
+      _$$CustomerImplFromJson(json);
+
+  @override
+  final String? id;
+  @override
+  final String name;
+  @override
+  final String? nationality;
+  @override
+  final CustomerGender? gender;
+  @override
+  final DateTime? birthDate;
+  @override
+  final double? age;
+  @override
+  final String? passportName;
+  @override
+  final String? passportLastName;
+  @override
+  final String? passportFirstName;
+  @override
+  @JsonKey()
+  final bool isBooker;
+  @override
+  final String? acquisitionChannel;
+  @override
+  final String? booker;
+  @override
+  final String? customerNote;
+  @override
+  final CommunicationChannel? communicationChannel;
+  @override
+  final String? channelAccount;
+  @override
+  final DateTime? createdAt;
+  @override
+  final DateTime? updatedAt;
+
+  @override
+  String toString() {
+    return 'Customer(id: $id, name: $name, nationality: $nationality, gender: $gender, birthDate: $birthDate, age: $age, passportName: $passportName, passportLastName: $passportLastName, passportFirstName: $passportFirstName, isBooker: $isBooker, acquisitionChannel: $acquisitionChannel, booker: $booker, customerNote: $customerNote, communicationChannel: $communicationChannel, channelAccount: $channelAccount, createdAt: $createdAt, updatedAt: $updatedAt)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$CustomerImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.nationality, nationality) ||
+                other.nationality == nationality) &&
+            (identical(other.gender, gender) || other.gender == gender) &&
+            (identical(other.birthDate, birthDate) ||
+                other.birthDate == birthDate) &&
+            (identical(other.age, age) || other.age == age) &&
+            (identical(other.passportName, passportName) ||
+                other.passportName == passportName) &&
+            (identical(other.passportLastName, passportLastName) ||
+                other.passportLastName == passportLastName) &&
+            (identical(other.passportFirstName, passportFirstName) ||
+                other.passportFirstName == passportFirstName) &&
+            (identical(other.isBooker, isBooker) ||
+                other.isBooker == isBooker) &&
+            (identical(other.acquisitionChannel, acquisitionChannel) ||
+                other.acquisitionChannel == acquisitionChannel) &&
+            (identical(other.booker, booker) || other.booker == booker) &&
+            (identical(other.customerNote, customerNote) ||
+                other.customerNote == customerNote) &&
+            (identical(other.communicationChannel, communicationChannel) ||
+                other.communicationChannel == communicationChannel) &&
+            (identical(other.channelAccount, channelAccount) ||
+                other.channelAccount == channelAccount) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+    runtimeType,
+    id,
+    name,
+    nationality,
+    gender,
+    birthDate,
+    age,
+    passportName,
+    passportLastName,
+    passportFirstName,
+    isBooker,
+    acquisitionChannel,
+    booker,
+    customerNote,
+    communicationChannel,
+    channelAccount,
+    createdAt,
+    updatedAt,
+  );
+
+  /// Create a copy of Customer
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$CustomerImplCopyWith<_$CustomerImpl> get copyWith =>
+      __$$CustomerImplCopyWithImpl<_$CustomerImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$CustomerImplToJson(this);
+  }
+}
+
+abstract class _Customer implements Customer {
+  const factory _Customer({
+    final String? id,
+    required final String name,
+    final String? nationality,
+    final CustomerGender? gender,
+    final DateTime? birthDate,
+    final double? age,
+    final String? passportName,
+    final String? passportLastName,
+    final String? passportFirstName,
+    final bool isBooker,
+    final String? acquisitionChannel,
+    final String? booker,
+    final String? customerNote,
+    final CommunicationChannel? communicationChannel,
+    final String? channelAccount,
+    final DateTime? createdAt,
+    final DateTime? updatedAt,
+  }) = _$CustomerImpl;
+
+  factory _Customer.fromJson(Map<String, dynamic> json) =
+      _$CustomerImpl.fromJson;
+
+  @override
+  String? get id;
+  @override
+  String get name;
+  @override
+  String? get nationality;
+  @override
+  CustomerGender? get gender;
+  @override
+  DateTime? get birthDate;
+  @override
+  double? get age;
+  @override
+  String? get passportName;
+  @override
+  String? get passportLastName;
+  @override
+  String? get passportFirstName;
+  @override
+  bool get isBooker;
+  @override
+  String? get acquisitionChannel;
+  @override
+  String? get booker;
+  @override
+  String? get customerNote;
+  @override
+  CommunicationChannel? get communicationChannel;
+  @override
+  String? get channelAccount;
+  @override
+  DateTime? get createdAt;
+  @override
+  DateTime? get updatedAt;
+
+  /// Create a copy of Customer
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$CustomerImplCopyWith<_$CustomerImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
 CustomerInput _$CustomerInputFromJson(Map<String, dynamic> json) {
   return _CustomerInput.fromJson(json);
 }
 
 /// @nodoc
 mixin _$CustomerInput {
-  @JsonKey(name: 'reservation_id')
-  String? get reservationId => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String? get nationality => throw _privateConstructorUsedError;
   CustomerGender? get gender => throw _privateConstructorUsedError;
-  double? get age => throw _privateConstructorUsedError;
-  @JsonKey(name: 'customer_note')
-  String? get customerNote => throw _privateConstructorUsedError;
-  @JsonKey(name: 'birth_date')
   DateTime? get birthDate => throw _privateConstructorUsedError;
-  @JsonKey(name: 'is_booker')
-  bool get isBooker => throw _privateConstructorUsedError;
-  String? get booker => throw _privateConstructorUsedError;
-  @JsonKey(name: 'customer_code')
-  String? get customerCode => throw _privateConstructorUsedError;
-  @JsonKey(name: 'passport_name')
+  double? get age => throw _privateConstructorUsedError;
   String? get passportName => throw _privateConstructorUsedError;
-  String? get phone => throw _privateConstructorUsedError;
-  @JsonKey(name: 'acquisition_channel')
+  String? get passportLastName => throw _privateConstructorUsedError;
+  String? get passportFirstName => throw _privateConstructorUsedError;
+  bool get isBooker => throw _privateConstructorUsedError;
   String? get acquisitionChannel => throw _privateConstructorUsedError;
-  @JsonKey(name: 'communication_channel')
-  String? get communicationChannel => throw _privateConstructorUsedError;
-  @JsonKey(name: 'channel_account')
+  String? get booker => throw _privateConstructorUsedError;
+  String? get customerNote => throw _privateConstructorUsedError;
+  CommunicationChannel? get communicationChannel =>
+      throw _privateConstructorUsedError;
   String? get channelAccount => throw _privateConstructorUsedError;
-  @JsonKey(name: 'purchase_code')
+  String? get customerCode => throw _privateConstructorUsedError;
+  String? get phone => throw _privateConstructorUsedError;
   String? get purchaseCode => throw _privateConstructorUsedError;
+  String? get reservationId => throw _privateConstructorUsedError;
 
   /// Serializes this CustomerInput to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -1249,22 +1018,24 @@ abstract class $CustomerInputCopyWith<$Res> {
   ) = _$CustomerInputCopyWithImpl<$Res, CustomerInput>;
   @useResult
   $Res call({
-    @JsonKey(name: 'reservation_id') String? reservationId,
     String name,
     String? nationality,
     CustomerGender? gender,
+    DateTime? birthDate,
     double? age,
-    @JsonKey(name: 'customer_note') String? customerNote,
-    @JsonKey(name: 'birth_date') DateTime? birthDate,
-    @JsonKey(name: 'is_booker') bool isBooker,
+    String? passportName,
+    String? passportLastName,
+    String? passportFirstName,
+    bool isBooker,
+    String? acquisitionChannel,
     String? booker,
-    @JsonKey(name: 'customer_code') String? customerCode,
-    @JsonKey(name: 'passport_name') String? passportName,
+    String? customerNote,
+    CommunicationChannel? communicationChannel,
+    String? channelAccount,
+    String? customerCode,
     String? phone,
-    @JsonKey(name: 'acquisition_channel') String? acquisitionChannel,
-    @JsonKey(name: 'communication_channel') String? communicationChannel,
-    @JsonKey(name: 'channel_account') String? channelAccount,
-    @JsonKey(name: 'purchase_code') String? purchaseCode,
+    String? purchaseCode,
+    String? reservationId,
   });
 }
 
@@ -1283,30 +1054,27 @@ class _$CustomerInputCopyWithImpl<$Res, $Val extends CustomerInput>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? reservationId = freezed,
     Object? name = null,
     Object? nationality = freezed,
     Object? gender = freezed,
-    Object? age = freezed,
-    Object? customerNote = freezed,
     Object? birthDate = freezed,
-    Object? isBooker = null,
-    Object? booker = freezed,
-    Object? customerCode = freezed,
+    Object? age = freezed,
     Object? passportName = freezed,
-    Object? phone = freezed,
+    Object? passportLastName = freezed,
+    Object? passportFirstName = freezed,
+    Object? isBooker = null,
     Object? acquisitionChannel = freezed,
+    Object? booker = freezed,
+    Object? customerNote = freezed,
     Object? communicationChannel = freezed,
     Object? channelAccount = freezed,
+    Object? customerCode = freezed,
+    Object? phone = freezed,
     Object? purchaseCode = freezed,
+    Object? reservationId = freezed,
   }) {
     return _then(
       _value.copyWith(
-            reservationId:
-                freezed == reservationId
-                    ? _value.reservationId
-                    : reservationId // ignore: cast_nullable_to_non_nullable
-                        as String?,
             name:
                 null == name
                     ? _value.name
@@ -1322,65 +1090,80 @@ class _$CustomerInputCopyWithImpl<$Res, $Val extends CustomerInput>
                     ? _value.gender
                     : gender // ignore: cast_nullable_to_non_nullable
                         as CustomerGender?,
-            age:
-                freezed == age
-                    ? _value.age
-                    : age // ignore: cast_nullable_to_non_nullable
-                        as double?,
-            customerNote:
-                freezed == customerNote
-                    ? _value.customerNote
-                    : customerNote // ignore: cast_nullable_to_non_nullable
-                        as String?,
             birthDate:
                 freezed == birthDate
                     ? _value.birthDate
                     : birthDate // ignore: cast_nullable_to_non_nullable
                         as DateTime?,
+            age:
+                freezed == age
+                    ? _value.age
+                    : age // ignore: cast_nullable_to_non_nullable
+                        as double?,
+            passportName:
+                freezed == passportName
+                    ? _value.passportName
+                    : passportName // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            passportLastName:
+                freezed == passportLastName
+                    ? _value.passportLastName
+                    : passportLastName // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            passportFirstName:
+                freezed == passportFirstName
+                    ? _value.passportFirstName
+                    : passportFirstName // ignore: cast_nullable_to_non_nullable
+                        as String?,
             isBooker:
                 null == isBooker
                     ? _value.isBooker
                     : isBooker // ignore: cast_nullable_to_non_nullable
                         as bool,
+            acquisitionChannel:
+                freezed == acquisitionChannel
+                    ? _value.acquisitionChannel
+                    : acquisitionChannel // ignore: cast_nullable_to_non_nullable
+                        as String?,
             booker:
                 freezed == booker
                     ? _value.booker
                     : booker // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            customerNote:
+                freezed == customerNote
+                    ? _value.customerNote
+                    : customerNote // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            communicationChannel:
+                freezed == communicationChannel
+                    ? _value.communicationChannel
+                    : communicationChannel // ignore: cast_nullable_to_non_nullable
+                        as CommunicationChannel?,
+            channelAccount:
+                freezed == channelAccount
+                    ? _value.channelAccount
+                    : channelAccount // ignore: cast_nullable_to_non_nullable
                         as String?,
             customerCode:
                 freezed == customerCode
                     ? _value.customerCode
                     : customerCode // ignore: cast_nullable_to_non_nullable
                         as String?,
-            passportName:
-                freezed == passportName
-                    ? _value.passportName
-                    : passportName // ignore: cast_nullable_to_non_nullable
-                        as String?,
             phone:
                 freezed == phone
                     ? _value.phone
                     : phone // ignore: cast_nullable_to_non_nullable
                         as String?,
-            acquisitionChannel:
-                freezed == acquisitionChannel
-                    ? _value.acquisitionChannel
-                    : acquisitionChannel // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            communicationChannel:
-                freezed == communicationChannel
-                    ? _value.communicationChannel
-                    : communicationChannel // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            channelAccount:
-                freezed == channelAccount
-                    ? _value.channelAccount
-                    : channelAccount // ignore: cast_nullable_to_non_nullable
-                        as String?,
             purchaseCode:
                 freezed == purchaseCode
                     ? _value.purchaseCode
                     : purchaseCode // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            reservationId:
+                freezed == reservationId
+                    ? _value.reservationId
+                    : reservationId // ignore: cast_nullable_to_non_nullable
                         as String?,
           )
           as $Val,
@@ -1398,22 +1181,24 @@ abstract class _$$CustomerInputImplCopyWith<$Res>
   @override
   @useResult
   $Res call({
-    @JsonKey(name: 'reservation_id') String? reservationId,
     String name,
     String? nationality,
     CustomerGender? gender,
+    DateTime? birthDate,
     double? age,
-    @JsonKey(name: 'customer_note') String? customerNote,
-    @JsonKey(name: 'birth_date') DateTime? birthDate,
-    @JsonKey(name: 'is_booker') bool isBooker,
+    String? passportName,
+    String? passportLastName,
+    String? passportFirstName,
+    bool isBooker,
+    String? acquisitionChannel,
     String? booker,
-    @JsonKey(name: 'customer_code') String? customerCode,
-    @JsonKey(name: 'passport_name') String? passportName,
+    String? customerNote,
+    CommunicationChannel? communicationChannel,
+    String? channelAccount,
+    String? customerCode,
     String? phone,
-    @JsonKey(name: 'acquisition_channel') String? acquisitionChannel,
-    @JsonKey(name: 'communication_channel') String? communicationChannel,
-    @JsonKey(name: 'channel_account') String? channelAccount,
-    @JsonKey(name: 'purchase_code') String? purchaseCode,
+    String? purchaseCode,
+    String? reservationId,
   });
 }
 
@@ -1431,30 +1216,27 @@ class __$$CustomerInputImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? reservationId = freezed,
     Object? name = null,
     Object? nationality = freezed,
     Object? gender = freezed,
-    Object? age = freezed,
-    Object? customerNote = freezed,
     Object? birthDate = freezed,
-    Object? isBooker = null,
-    Object? booker = freezed,
-    Object? customerCode = freezed,
+    Object? age = freezed,
     Object? passportName = freezed,
-    Object? phone = freezed,
+    Object? passportLastName = freezed,
+    Object? passportFirstName = freezed,
+    Object? isBooker = null,
     Object? acquisitionChannel = freezed,
+    Object? booker = freezed,
+    Object? customerNote = freezed,
     Object? communicationChannel = freezed,
     Object? channelAccount = freezed,
+    Object? customerCode = freezed,
+    Object? phone = freezed,
     Object? purchaseCode = freezed,
+    Object? reservationId = freezed,
   }) {
     return _then(
       _$CustomerInputImpl(
-        reservationId:
-            freezed == reservationId
-                ? _value.reservationId
-                : reservationId // ignore: cast_nullable_to_non_nullable
-                    as String?,
         name:
             null == name
                 ? _value.name
@@ -1470,65 +1252,80 @@ class __$$CustomerInputImplCopyWithImpl<$Res>
                 ? _value.gender
                 : gender // ignore: cast_nullable_to_non_nullable
                     as CustomerGender?,
-        age:
-            freezed == age
-                ? _value.age
-                : age // ignore: cast_nullable_to_non_nullable
-                    as double?,
-        customerNote:
-            freezed == customerNote
-                ? _value.customerNote
-                : customerNote // ignore: cast_nullable_to_non_nullable
-                    as String?,
         birthDate:
             freezed == birthDate
                 ? _value.birthDate
                 : birthDate // ignore: cast_nullable_to_non_nullable
                     as DateTime?,
+        age:
+            freezed == age
+                ? _value.age
+                : age // ignore: cast_nullable_to_non_nullable
+                    as double?,
+        passportName:
+            freezed == passportName
+                ? _value.passportName
+                : passportName // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        passportLastName:
+            freezed == passportLastName
+                ? _value.passportLastName
+                : passportLastName // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        passportFirstName:
+            freezed == passportFirstName
+                ? _value.passportFirstName
+                : passportFirstName // ignore: cast_nullable_to_non_nullable
+                    as String?,
         isBooker:
             null == isBooker
                 ? _value.isBooker
                 : isBooker // ignore: cast_nullable_to_non_nullable
                     as bool,
+        acquisitionChannel:
+            freezed == acquisitionChannel
+                ? _value.acquisitionChannel
+                : acquisitionChannel // ignore: cast_nullable_to_non_nullable
+                    as String?,
         booker:
             freezed == booker
                 ? _value.booker
                 : booker // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        customerNote:
+            freezed == customerNote
+                ? _value.customerNote
+                : customerNote // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        communicationChannel:
+            freezed == communicationChannel
+                ? _value.communicationChannel
+                : communicationChannel // ignore: cast_nullable_to_non_nullable
+                    as CommunicationChannel?,
+        channelAccount:
+            freezed == channelAccount
+                ? _value.channelAccount
+                : channelAccount // ignore: cast_nullable_to_non_nullable
                     as String?,
         customerCode:
             freezed == customerCode
                 ? _value.customerCode
                 : customerCode // ignore: cast_nullable_to_non_nullable
                     as String?,
-        passportName:
-            freezed == passportName
-                ? _value.passportName
-                : passportName // ignore: cast_nullable_to_non_nullable
-                    as String?,
         phone:
             freezed == phone
                 ? _value.phone
                 : phone // ignore: cast_nullable_to_non_nullable
                     as String?,
-        acquisitionChannel:
-            freezed == acquisitionChannel
-                ? _value.acquisitionChannel
-                : acquisitionChannel // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        communicationChannel:
-            freezed == communicationChannel
-                ? _value.communicationChannel
-                : communicationChannel // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        channelAccount:
-            freezed == channelAccount
-                ? _value.channelAccount
-                : channelAccount // ignore: cast_nullable_to_non_nullable
-                    as String?,
         purchaseCode:
             freezed == purchaseCode
                 ? _value.purchaseCode
                 : purchaseCode // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        reservationId:
+            freezed == reservationId
+                ? _value.reservationId
+                : reservationId // ignore: cast_nullable_to_non_nullable
                     as String?,
       ),
     );
@@ -1539,30 +1336,29 @@ class __$$CustomerInputImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$CustomerInputImpl implements _CustomerInput {
   const _$CustomerInputImpl({
-    @JsonKey(name: 'reservation_id') this.reservationId,
     required this.name,
     this.nationality,
     this.gender,
+    this.birthDate,
     this.age,
-    @JsonKey(name: 'customer_note') this.customerNote,
-    @JsonKey(name: 'birth_date') this.birthDate,
-    @JsonKey(name: 'is_booker') this.isBooker = false,
+    this.passportName,
+    this.passportLastName,
+    this.passportFirstName,
+    this.isBooker = true,
+    this.acquisitionChannel,
     this.booker,
-    @JsonKey(name: 'customer_code') this.customerCode,
-    @JsonKey(name: 'passport_name') this.passportName,
+    this.customerNote,
+    this.communicationChannel,
+    this.channelAccount,
+    this.customerCode,
     this.phone,
-    @JsonKey(name: 'acquisition_channel') this.acquisitionChannel,
-    @JsonKey(name: 'communication_channel') this.communicationChannel,
-    @JsonKey(name: 'channel_account') this.channelAccount,
-    @JsonKey(name: 'purchase_code') this.purchaseCode,
+    this.purchaseCode,
+    this.reservationId,
   });
 
   factory _$CustomerInputImpl.fromJson(Map<String, dynamic> json) =>
       _$$CustomerInputImplFromJson(json);
 
-  @override
-  @JsonKey(name: 'reservation_id')
-  final String? reservationId;
   @override
   final String name;
   @override
@@ -1570,42 +1366,40 @@ class _$CustomerInputImpl implements _CustomerInput {
   @override
   final CustomerGender? gender;
   @override
-  final double? age;
-  @override
-  @JsonKey(name: 'customer_note')
-  final String? customerNote;
-  @override
-  @JsonKey(name: 'birth_date')
   final DateTime? birthDate;
   @override
-  @JsonKey(name: 'is_booker')
+  final double? age;
+  @override
+  final String? passportName;
+  @override
+  final String? passportLastName;
+  @override
+  final String? passportFirstName;
+  @override
+  @JsonKey()
   final bool isBooker;
+  @override
+  final String? acquisitionChannel;
   @override
   final String? booker;
   @override
-  @JsonKey(name: 'customer_code')
-  final String? customerCode;
+  final String? customerNote;
   @override
-  @JsonKey(name: 'passport_name')
-  final String? passportName;
+  final CommunicationChannel? communicationChannel;
+  @override
+  final String? channelAccount;
+  @override
+  final String? customerCode;
   @override
   final String? phone;
   @override
-  @JsonKey(name: 'acquisition_channel')
-  final String? acquisitionChannel;
-  @override
-  @JsonKey(name: 'communication_channel')
-  final String? communicationChannel;
-  @override
-  @JsonKey(name: 'channel_account')
-  final String? channelAccount;
-  @override
-  @JsonKey(name: 'purchase_code')
   final String? purchaseCode;
+  @override
+  final String? reservationId;
 
   @override
   String toString() {
-    return 'CustomerInput(reservationId: $reservationId, name: $name, nationality: $nationality, gender: $gender, age: $age, customerNote: $customerNote, birthDate: $birthDate, isBooker: $isBooker, booker: $booker, customerCode: $customerCode, passportName: $passportName, phone: $phone, acquisitionChannel: $acquisitionChannel, communicationChannel: $communicationChannel, channelAccount: $channelAccount, purchaseCode: $purchaseCode)';
+    return 'CustomerInput(name: $name, nationality: $nationality, gender: $gender, birthDate: $birthDate, age: $age, passportName: $passportName, passportLastName: $passportLastName, passportFirstName: $passportFirstName, isBooker: $isBooker, acquisitionChannel: $acquisitionChannel, booker: $booker, customerNote: $customerNote, communicationChannel: $communicationChannel, channelAccount: $channelAccount, customerCode: $customerCode, phone: $phone, purchaseCode: $purchaseCode, reservationId: $reservationId)';
   }
 
   @override
@@ -1613,55 +1407,61 @@ class _$CustomerInputImpl implements _CustomerInput {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$CustomerInputImpl &&
-            (identical(other.reservationId, reservationId) ||
-                other.reservationId == reservationId) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.nationality, nationality) ||
                 other.nationality == nationality) &&
             (identical(other.gender, gender) || other.gender == gender) &&
-            (identical(other.age, age) || other.age == age) &&
-            (identical(other.customerNote, customerNote) ||
-                other.customerNote == customerNote) &&
             (identical(other.birthDate, birthDate) ||
                 other.birthDate == birthDate) &&
-            (identical(other.isBooker, isBooker) ||
-                other.isBooker == isBooker) &&
-            (identical(other.booker, booker) || other.booker == booker) &&
-            (identical(other.customerCode, customerCode) ||
-                other.customerCode == customerCode) &&
+            (identical(other.age, age) || other.age == age) &&
             (identical(other.passportName, passportName) ||
                 other.passportName == passportName) &&
-            (identical(other.phone, phone) || other.phone == phone) &&
+            (identical(other.passportLastName, passportLastName) ||
+                other.passportLastName == passportLastName) &&
+            (identical(other.passportFirstName, passportFirstName) ||
+                other.passportFirstName == passportFirstName) &&
+            (identical(other.isBooker, isBooker) ||
+                other.isBooker == isBooker) &&
             (identical(other.acquisitionChannel, acquisitionChannel) ||
                 other.acquisitionChannel == acquisitionChannel) &&
+            (identical(other.booker, booker) || other.booker == booker) &&
+            (identical(other.customerNote, customerNote) ||
+                other.customerNote == customerNote) &&
             (identical(other.communicationChannel, communicationChannel) ||
                 other.communicationChannel == communicationChannel) &&
             (identical(other.channelAccount, channelAccount) ||
                 other.channelAccount == channelAccount) &&
+            (identical(other.customerCode, customerCode) ||
+                other.customerCode == customerCode) &&
+            (identical(other.phone, phone) || other.phone == phone) &&
             (identical(other.purchaseCode, purchaseCode) ||
-                other.purchaseCode == purchaseCode));
+                other.purchaseCode == purchaseCode) &&
+            (identical(other.reservationId, reservationId) ||
+                other.reservationId == reservationId));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
     runtimeType,
-    reservationId,
     name,
     nationality,
     gender,
-    age,
-    customerNote,
     birthDate,
-    isBooker,
-    booker,
-    customerCode,
+    age,
     passportName,
-    phone,
+    passportLastName,
+    passportFirstName,
+    isBooker,
     acquisitionChannel,
+    booker,
+    customerNote,
     communicationChannel,
     channelAccount,
+    customerCode,
+    phone,
     purchaseCode,
+    reservationId,
   );
 
   /// Create a copy of CustomerInput
@@ -1680,30 +1480,29 @@ class _$CustomerInputImpl implements _CustomerInput {
 
 abstract class _CustomerInput implements CustomerInput {
   const factory _CustomerInput({
-    @JsonKey(name: 'reservation_id') final String? reservationId,
     required final String name,
     final String? nationality,
     final CustomerGender? gender,
+    final DateTime? birthDate,
     final double? age,
-    @JsonKey(name: 'customer_note') final String? customerNote,
-    @JsonKey(name: 'birth_date') final DateTime? birthDate,
-    @JsonKey(name: 'is_booker') final bool isBooker,
+    final String? passportName,
+    final String? passportLastName,
+    final String? passportFirstName,
+    final bool isBooker,
+    final String? acquisitionChannel,
     final String? booker,
-    @JsonKey(name: 'customer_code') final String? customerCode,
-    @JsonKey(name: 'passport_name') final String? passportName,
+    final String? customerNote,
+    final CommunicationChannel? communicationChannel,
+    final String? channelAccount,
+    final String? customerCode,
     final String? phone,
-    @JsonKey(name: 'acquisition_channel') final String? acquisitionChannel,
-    @JsonKey(name: 'communication_channel') final String? communicationChannel,
-    @JsonKey(name: 'channel_account') final String? channelAccount,
-    @JsonKey(name: 'purchase_code') final String? purchaseCode,
+    final String? purchaseCode,
+    final String? reservationId,
   }) = _$CustomerInputImpl;
 
   factory _CustomerInput.fromJson(Map<String, dynamic> json) =
       _$CustomerInputImpl.fromJson;
 
-  @override
-  @JsonKey(name: 'reservation_id')
-  String? get reservationId;
   @override
   String get name;
   @override
@@ -1711,38 +1510,35 @@ abstract class _CustomerInput implements CustomerInput {
   @override
   CustomerGender? get gender;
   @override
-  double? get age;
-  @override
-  @JsonKey(name: 'customer_note')
-  String? get customerNote;
-  @override
-  @JsonKey(name: 'birth_date')
   DateTime? get birthDate;
   @override
-  @JsonKey(name: 'is_booker')
+  double? get age;
+  @override
+  String? get passportName;
+  @override
+  String? get passportLastName;
+  @override
+  String? get passportFirstName;
+  @override
   bool get isBooker;
+  @override
+  String? get acquisitionChannel;
   @override
   String? get booker;
   @override
-  @JsonKey(name: 'customer_code')
-  String? get customerCode;
+  String? get customerNote;
   @override
-  @JsonKey(name: 'passport_name')
-  String? get passportName;
+  CommunicationChannel? get communicationChannel;
+  @override
+  String? get channelAccount;
+  @override
+  String? get customerCode;
   @override
   String? get phone;
   @override
-  @JsonKey(name: 'acquisition_channel')
-  String? get acquisitionChannel;
-  @override
-  @JsonKey(name: 'communication_channel')
-  String? get communicationChannel;
-  @override
-  @JsonKey(name: 'channel_account')
-  String? get channelAccount;
-  @override
-  @JsonKey(name: 'purchase_code')
   String? get purchaseCode;
+  @override
+  String? get reservationId;
 
   /// Create a copy of CustomerInput
   /// with the given fields replaced by the non-null parameter values.
@@ -1758,24 +1554,15 @@ CustomerStats _$CustomerStatsFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$CustomerStats {
-  @JsonKey(name: 'total_customers')
   int get totalCustomers => throw _privateConstructorUsedError;
-  @JsonKey(name: 'new_customers')
+  int get totalBookers => throw _privateConstructorUsedError;
+  int get totalCompanions => throw _privateConstructorUsedError;
+  int get maleCustomers => throw _privateConstructorUsedError;
+  int get femaleCustomers => throw _privateConstructorUsedError;
+  double get averageAge => throw _privateConstructorUsedError;
   int get newCustomers => throw _privateConstructorUsedError;
-  @JsonKey(name: 'returning_customers')
   int get returningCustomers => throw _privateConstructorUsedError;
-  @JsonKey(name: 'total_revenue')
   double get totalRevenue => throw _privateConstructorUsedError;
-  @JsonKey(name: 'average_revenue_per_customer')
-  double get averageRevenuePerCustomer => throw _privateConstructorUsedError;
-  @JsonKey(name: 'customers_by_nationality')
-  Map<String, int> get customersByNationality =>
-      throw _privateConstructorUsedError;
-  @JsonKey(name: 'customers_by_channel')
-  Map<String, int> get customersByChannel => throw _privateConstructorUsedError;
-  @JsonKey(name: 'customers_by_gender')
-  Map<CustomerGender, int> get customersByGender =>
-      throw _privateConstructorUsedError;
 
   /// Serializes this CustomerStats to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -1795,17 +1582,15 @@ abstract class $CustomerStatsCopyWith<$Res> {
   ) = _$CustomerStatsCopyWithImpl<$Res, CustomerStats>;
   @useResult
   $Res call({
-    @JsonKey(name: 'total_customers') int totalCustomers,
-    @JsonKey(name: 'new_customers') int newCustomers,
-    @JsonKey(name: 'returning_customers') int returningCustomers,
-    @JsonKey(name: 'total_revenue') double totalRevenue,
-    @JsonKey(name: 'average_revenue_per_customer')
-    double averageRevenuePerCustomer,
-    @JsonKey(name: 'customers_by_nationality')
-    Map<String, int> customersByNationality,
-    @JsonKey(name: 'customers_by_channel') Map<String, int> customersByChannel,
-    @JsonKey(name: 'customers_by_gender')
-    Map<CustomerGender, int> customersByGender,
+    int totalCustomers,
+    int totalBookers,
+    int totalCompanions,
+    int maleCustomers,
+    int femaleCustomers,
+    double averageAge,
+    int newCustomers,
+    int returningCustomers,
+    double totalRevenue,
   });
 }
 
@@ -1825,13 +1610,14 @@ class _$CustomerStatsCopyWithImpl<$Res, $Val extends CustomerStats>
   @override
   $Res call({
     Object? totalCustomers = null,
+    Object? totalBookers = null,
+    Object? totalCompanions = null,
+    Object? maleCustomers = null,
+    Object? femaleCustomers = null,
+    Object? averageAge = null,
     Object? newCustomers = null,
     Object? returningCustomers = null,
     Object? totalRevenue = null,
-    Object? averageRevenuePerCustomer = null,
-    Object? customersByNationality = null,
-    Object? customersByChannel = null,
-    Object? customersByGender = null,
   }) {
     return _then(
       _value.copyWith(
@@ -1840,6 +1626,31 @@ class _$CustomerStatsCopyWithImpl<$Res, $Val extends CustomerStats>
                     ? _value.totalCustomers
                     : totalCustomers // ignore: cast_nullable_to_non_nullable
                         as int,
+            totalBookers:
+                null == totalBookers
+                    ? _value.totalBookers
+                    : totalBookers // ignore: cast_nullable_to_non_nullable
+                        as int,
+            totalCompanions:
+                null == totalCompanions
+                    ? _value.totalCompanions
+                    : totalCompanions // ignore: cast_nullable_to_non_nullable
+                        as int,
+            maleCustomers:
+                null == maleCustomers
+                    ? _value.maleCustomers
+                    : maleCustomers // ignore: cast_nullable_to_non_nullable
+                        as int,
+            femaleCustomers:
+                null == femaleCustomers
+                    ? _value.femaleCustomers
+                    : femaleCustomers // ignore: cast_nullable_to_non_nullable
+                        as int,
+            averageAge:
+                null == averageAge
+                    ? _value.averageAge
+                    : averageAge // ignore: cast_nullable_to_non_nullable
+                        as double,
             newCustomers:
                 null == newCustomers
                     ? _value.newCustomers
@@ -1855,26 +1666,6 @@ class _$CustomerStatsCopyWithImpl<$Res, $Val extends CustomerStats>
                     ? _value.totalRevenue
                     : totalRevenue // ignore: cast_nullable_to_non_nullable
                         as double,
-            averageRevenuePerCustomer:
-                null == averageRevenuePerCustomer
-                    ? _value.averageRevenuePerCustomer
-                    : averageRevenuePerCustomer // ignore: cast_nullable_to_non_nullable
-                        as double,
-            customersByNationality:
-                null == customersByNationality
-                    ? _value.customersByNationality
-                    : customersByNationality // ignore: cast_nullable_to_non_nullable
-                        as Map<String, int>,
-            customersByChannel:
-                null == customersByChannel
-                    ? _value.customersByChannel
-                    : customersByChannel // ignore: cast_nullable_to_non_nullable
-                        as Map<String, int>,
-            customersByGender:
-                null == customersByGender
-                    ? _value.customersByGender
-                    : customersByGender // ignore: cast_nullable_to_non_nullable
-                        as Map<CustomerGender, int>,
           )
           as $Val,
     );
@@ -1891,17 +1682,15 @@ abstract class _$$CustomerStatsImplCopyWith<$Res>
   @override
   @useResult
   $Res call({
-    @JsonKey(name: 'total_customers') int totalCustomers,
-    @JsonKey(name: 'new_customers') int newCustomers,
-    @JsonKey(name: 'returning_customers') int returningCustomers,
-    @JsonKey(name: 'total_revenue') double totalRevenue,
-    @JsonKey(name: 'average_revenue_per_customer')
-    double averageRevenuePerCustomer,
-    @JsonKey(name: 'customers_by_nationality')
-    Map<String, int> customersByNationality,
-    @JsonKey(name: 'customers_by_channel') Map<String, int> customersByChannel,
-    @JsonKey(name: 'customers_by_gender')
-    Map<CustomerGender, int> customersByGender,
+    int totalCustomers,
+    int totalBookers,
+    int totalCompanions,
+    int maleCustomers,
+    int femaleCustomers,
+    double averageAge,
+    int newCustomers,
+    int returningCustomers,
+    double totalRevenue,
   });
 }
 
@@ -1920,13 +1709,14 @@ class __$$CustomerStatsImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? totalCustomers = null,
+    Object? totalBookers = null,
+    Object? totalCompanions = null,
+    Object? maleCustomers = null,
+    Object? femaleCustomers = null,
+    Object? averageAge = null,
     Object? newCustomers = null,
     Object? returningCustomers = null,
     Object? totalRevenue = null,
-    Object? averageRevenuePerCustomer = null,
-    Object? customersByNationality = null,
-    Object? customersByChannel = null,
-    Object? customersByGender = null,
   }) {
     return _then(
       _$CustomerStatsImpl(
@@ -1935,6 +1725,31 @@ class __$$CustomerStatsImplCopyWithImpl<$Res>
                 ? _value.totalCustomers
                 : totalCustomers // ignore: cast_nullable_to_non_nullable
                     as int,
+        totalBookers:
+            null == totalBookers
+                ? _value.totalBookers
+                : totalBookers // ignore: cast_nullable_to_non_nullable
+                    as int,
+        totalCompanions:
+            null == totalCompanions
+                ? _value.totalCompanions
+                : totalCompanions // ignore: cast_nullable_to_non_nullable
+                    as int,
+        maleCustomers:
+            null == maleCustomers
+                ? _value.maleCustomers
+                : maleCustomers // ignore: cast_nullable_to_non_nullable
+                    as int,
+        femaleCustomers:
+            null == femaleCustomers
+                ? _value.femaleCustomers
+                : femaleCustomers // ignore: cast_nullable_to_non_nullable
+                    as int,
+        averageAge:
+            null == averageAge
+                ? _value.averageAge
+                : averageAge // ignore: cast_nullable_to_non_nullable
+                    as double,
         newCustomers:
             null == newCustomers
                 ? _value.newCustomers
@@ -1950,26 +1765,6 @@ class __$$CustomerStatsImplCopyWithImpl<$Res>
                 ? _value.totalRevenue
                 : totalRevenue // ignore: cast_nullable_to_non_nullable
                     as double,
-        averageRevenuePerCustomer:
-            null == averageRevenuePerCustomer
-                ? _value.averageRevenuePerCustomer
-                : averageRevenuePerCustomer // ignore: cast_nullable_to_non_nullable
-                    as double,
-        customersByNationality:
-            null == customersByNationality
-                ? _value._customersByNationality
-                : customersByNationality // ignore: cast_nullable_to_non_nullable
-                    as Map<String, int>,
-        customersByChannel:
-            null == customersByChannel
-                ? _value._customersByChannel
-                : customersByChannel // ignore: cast_nullable_to_non_nullable
-                    as Map<String, int>,
-        customersByGender:
-            null == customersByGender
-                ? _value._customersByGender
-                : customersByGender // ignore: cast_nullable_to_non_nullable
-                    as Map<CustomerGender, int>,
       ),
     );
   }
@@ -1979,73 +1774,51 @@ class __$$CustomerStatsImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$CustomerStatsImpl implements _CustomerStats {
   const _$CustomerStatsImpl({
-    @JsonKey(name: 'total_customers') required this.totalCustomers,
-    @JsonKey(name: 'new_customers') required this.newCustomers,
-    @JsonKey(name: 'returning_customers') required this.returningCustomers,
-    @JsonKey(name: 'total_revenue') required this.totalRevenue,
-    @JsonKey(name: 'average_revenue_per_customer')
-    required this.averageRevenuePerCustomer,
-    @JsonKey(name: 'customers_by_nationality')
-    required final Map<String, int> customersByNationality,
-    @JsonKey(name: 'customers_by_channel')
-    required final Map<String, int> customersByChannel,
-    @JsonKey(name: 'customers_by_gender')
-    required final Map<CustomerGender, int> customersByGender,
-  }) : _customersByNationality = customersByNationality,
-       _customersByChannel = customersByChannel,
-       _customersByGender = customersByGender;
+    this.totalCustomers = 0,
+    this.totalBookers = 0,
+    this.totalCompanions = 0,
+    this.maleCustomers = 0,
+    this.femaleCustomers = 0,
+    this.averageAge = 0.0,
+    this.newCustomers = 0,
+    this.returningCustomers = 0,
+    this.totalRevenue = 0.0,
+  });
 
   factory _$CustomerStatsImpl.fromJson(Map<String, dynamic> json) =>
       _$$CustomerStatsImplFromJson(json);
 
   @override
-  @JsonKey(name: 'total_customers')
+  @JsonKey()
   final int totalCustomers;
   @override
-  @JsonKey(name: 'new_customers')
+  @JsonKey()
+  final int totalBookers;
+  @override
+  @JsonKey()
+  final int totalCompanions;
+  @override
+  @JsonKey()
+  final int maleCustomers;
+  @override
+  @JsonKey()
+  final int femaleCustomers;
+  @override
+  @JsonKey()
+  final double averageAge;
+  @override
+  @JsonKey()
   final int newCustomers;
   @override
-  @JsonKey(name: 'returning_customers')
+  @JsonKey()
   final int returningCustomers;
   @override
-  @JsonKey(name: 'total_revenue')
+  @JsonKey()
   final double totalRevenue;
-  @override
-  @JsonKey(name: 'average_revenue_per_customer')
-  final double averageRevenuePerCustomer;
-  final Map<String, int> _customersByNationality;
-  @override
-  @JsonKey(name: 'customers_by_nationality')
-  Map<String, int> get customersByNationality {
-    if (_customersByNationality is EqualUnmodifiableMapView)
-      return _customersByNationality;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_customersByNationality);
-  }
-
-  final Map<String, int> _customersByChannel;
-  @override
-  @JsonKey(name: 'customers_by_channel')
-  Map<String, int> get customersByChannel {
-    if (_customersByChannel is EqualUnmodifiableMapView)
-      return _customersByChannel;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_customersByChannel);
-  }
-
-  final Map<CustomerGender, int> _customersByGender;
-  @override
-  @JsonKey(name: 'customers_by_gender')
-  Map<CustomerGender, int> get customersByGender {
-    if (_customersByGender is EqualUnmodifiableMapView)
-      return _customersByGender;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_customersByGender);
-  }
 
   @override
   String toString() {
-    return 'CustomerStats(totalCustomers: $totalCustomers, newCustomers: $newCustomers, returningCustomers: $returningCustomers, totalRevenue: $totalRevenue, averageRevenuePerCustomer: $averageRevenuePerCustomer, customersByNationality: $customersByNationality, customersByChannel: $customersByChannel, customersByGender: $customersByGender)';
+    return 'CustomerStats(totalCustomers: $totalCustomers, totalBookers: $totalBookers, totalCompanions: $totalCompanions, maleCustomers: $maleCustomers, femaleCustomers: $femaleCustomers, averageAge: $averageAge, newCustomers: $newCustomers, returningCustomers: $returningCustomers, totalRevenue: $totalRevenue)';
   }
 
   @override
@@ -2055,29 +1828,22 @@ class _$CustomerStatsImpl implements _CustomerStats {
             other is _$CustomerStatsImpl &&
             (identical(other.totalCustomers, totalCustomers) ||
                 other.totalCustomers == totalCustomers) &&
+            (identical(other.totalBookers, totalBookers) ||
+                other.totalBookers == totalBookers) &&
+            (identical(other.totalCompanions, totalCompanions) ||
+                other.totalCompanions == totalCompanions) &&
+            (identical(other.maleCustomers, maleCustomers) ||
+                other.maleCustomers == maleCustomers) &&
+            (identical(other.femaleCustomers, femaleCustomers) ||
+                other.femaleCustomers == femaleCustomers) &&
+            (identical(other.averageAge, averageAge) ||
+                other.averageAge == averageAge) &&
             (identical(other.newCustomers, newCustomers) ||
                 other.newCustomers == newCustomers) &&
             (identical(other.returningCustomers, returningCustomers) ||
                 other.returningCustomers == returningCustomers) &&
             (identical(other.totalRevenue, totalRevenue) ||
-                other.totalRevenue == totalRevenue) &&
-            (identical(
-                  other.averageRevenuePerCustomer,
-                  averageRevenuePerCustomer,
-                ) ||
-                other.averageRevenuePerCustomer == averageRevenuePerCustomer) &&
-            const DeepCollectionEquality().equals(
-              other._customersByNationality,
-              _customersByNationality,
-            ) &&
-            const DeepCollectionEquality().equals(
-              other._customersByChannel,
-              _customersByChannel,
-            ) &&
-            const DeepCollectionEquality().equals(
-              other._customersByGender,
-              _customersByGender,
-            ));
+                other.totalRevenue == totalRevenue));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -2085,13 +1851,14 @@ class _$CustomerStatsImpl implements _CustomerStats {
   int get hashCode => Object.hash(
     runtimeType,
     totalCustomers,
+    totalBookers,
+    totalCompanions,
+    maleCustomers,
+    femaleCustomers,
+    averageAge,
     newCustomers,
     returningCustomers,
     totalRevenue,
-    averageRevenuePerCustomer,
-    const DeepCollectionEquality().hash(_customersByNationality),
-    const DeepCollectionEquality().hash(_customersByChannel),
-    const DeepCollectionEquality().hash(_customersByGender),
   );
 
   /// Create a copy of CustomerStats
@@ -2110,47 +1877,38 @@ class _$CustomerStatsImpl implements _CustomerStats {
 
 abstract class _CustomerStats implements CustomerStats {
   const factory _CustomerStats({
-    @JsonKey(name: 'total_customers') required final int totalCustomers,
-    @JsonKey(name: 'new_customers') required final int newCustomers,
-    @JsonKey(name: 'returning_customers') required final int returningCustomers,
-    @JsonKey(name: 'total_revenue') required final double totalRevenue,
-    @JsonKey(name: 'average_revenue_per_customer')
-    required final double averageRevenuePerCustomer,
-    @JsonKey(name: 'customers_by_nationality')
-    required final Map<String, int> customersByNationality,
-    @JsonKey(name: 'customers_by_channel')
-    required final Map<String, int> customersByChannel,
-    @JsonKey(name: 'customers_by_gender')
-    required final Map<CustomerGender, int> customersByGender,
+    final int totalCustomers,
+    final int totalBookers,
+    final int totalCompanions,
+    final int maleCustomers,
+    final int femaleCustomers,
+    final double averageAge,
+    final int newCustomers,
+    final int returningCustomers,
+    final double totalRevenue,
   }) = _$CustomerStatsImpl;
 
   factory _CustomerStats.fromJson(Map<String, dynamic> json) =
       _$CustomerStatsImpl.fromJson;
 
   @override
-  @JsonKey(name: 'total_customers')
   int get totalCustomers;
   @override
-  @JsonKey(name: 'new_customers')
+  int get totalBookers;
+  @override
+  int get totalCompanions;
+  @override
+  int get maleCustomers;
+  @override
+  int get femaleCustomers;
+  @override
+  double get averageAge;
+  @override
   int get newCustomers;
   @override
-  @JsonKey(name: 'returning_customers')
   int get returningCustomers;
   @override
-  @JsonKey(name: 'total_revenue')
   double get totalRevenue;
-  @override
-  @JsonKey(name: 'average_revenue_per_customer')
-  double get averageRevenuePerCustomer;
-  @override
-  @JsonKey(name: 'customers_by_nationality')
-  Map<String, int> get customersByNationality;
-  @override
-  @JsonKey(name: 'customers_by_channel')
-  Map<String, int> get customersByChannel;
-  @override
-  @JsonKey(name: 'customers_by_gender')
-  Map<CustomerGender, int> get customersByGender;
 
   /// Create a copy of CustomerStats
   /// with the given fields replaced by the non-null parameter values.

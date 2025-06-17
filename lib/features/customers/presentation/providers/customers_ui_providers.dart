@@ -30,7 +30,7 @@ class CustomerFiltersNotifier extends _$CustomerFiltersNotifier {
   }
 
   /// 소통채널 필터 설정
-  void setCommunicationChannel(String? channel) {
+  void setCommunicationChannel(CommunicationChannel? channel) {
     state = state.copyWith(communicationChannel: channel);
   }
 
@@ -114,7 +114,6 @@ class CustomerFormNotifier extends _$CustomerFormNotifier {
   /// 폼 데이터 설정 (수정 시 기존 고객 데이터로 초기화)
   void initializeWithCustomer(Customer customer) {
     state = CustomerInput(
-      reservationId: customer.reservationId,
       name: customer.name,
       nationality: customer.nationality,
       gender: customer.gender,
@@ -123,13 +122,12 @@ class CustomerFormNotifier extends _$CustomerFormNotifier {
       birthDate: customer.birthDate,
       isBooker: customer.isBooker,
       booker: customer.booker,
-      customerCode: customer.customerCode,
       passportName: customer.passportName,
-      phone: customer.phone,
+      passportLastName: customer.passportLastName,
+      passportFirstName: customer.passportFirstName,
       acquisitionChannel: customer.acquisitionChannel,
       communicationChannel: customer.communicationChannel,
       channelAccount: customer.channelAccount,
-      purchaseCode: customer.purchaseCode,
     );
   }
 
@@ -187,7 +185,7 @@ class CustomerFormNotifier extends _$CustomerFormNotifier {
     state = state.copyWith(acquisitionChannel: channel);
   }
 
-  void updateCommunicationChannel(String? channel) {
+  void updateCommunicationChannel(CommunicationChannel? channel) {
     state = state.copyWith(communicationChannel: channel);
   }
 

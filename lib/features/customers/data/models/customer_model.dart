@@ -3,123 +3,125 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'customer_model.freezed.dart';
 part 'customer_model.g.dart';
 
-/// 고객 성별 enum
-@JsonEnum(fieldRename: FieldRename.snake)
+/// 고객 성별
 enum CustomerGender {
-  @JsonValue('male')
-  male,
-  @JsonValue('female')
-  female,
+  @JsonValue('M')
+  male('M', '남성'),
+  @JsonValue('F')
+  female('F', '여성'),
+  @JsonValue('O')
+  other('O', '기타');
+
+  const CustomerGender(this.value, this.displayName);
+  final String value;
+  final String displayName;
+}
+
+/// 소통 채널 타입
+enum CommunicationChannel {
+  @JsonValue('instagram')
+  instagram('instagram', '인스타그램'),
+  @JsonValue('whatsapp')
+  whatsapp('whatsapp', '왓츠앱'),
+  @JsonValue('line')
+  line('line', 'LINE'),
   @JsonValue('other')
-  other,
+  other('other', '기타');
+
+  const CommunicationChannel(this.value, this.displayName);
+  final String value;
+  final String displayName;
 }
 
-/// 고객 정보 모델
-@freezed
-class Customer with _$Customer {
-  const factory Customer({
-    String? id,
-    @JsonKey(name: 'reservation_id') String? reservationId,
-    required String name,
-    String? nationality,
-    CustomerGender? gender,
-    double? age,
-    @JsonKey(name: 'customer_note') String? customerNote,
-    @JsonKey(name: 'created_at') required DateTime createdAt,
-    @JsonKey(name: 'birth_date') DateTime? birthDate,
-    @JsonKey(name: 'is_booker') @Default(false) bool isBooker,
-    String? booker,
-    @JsonKey(name: 'customer_code') String? customerCode,
-    @JsonKey(name: 'passport_name') String? passportName,
-    String? phone,
-    @JsonKey(name: 'acquisition_channel') String? acquisitionChannel,
-    @JsonKey(name: 'communication_channel') String? communicationChannel,
-    @JsonKey(name: 'channel_account') String? channelAccount,
-    @JsonKey(name: 'purchase_code') String? purchaseCode,
-    @JsonKey(name: 'total_payment_amount')
-    @Default(0.0)
-    double totalPaymentAmount,
-    @JsonKey(name: 'company_revenue_with_tax')
-    @Default(0.0)
-    double companyRevenueWithTax,
-    @JsonKey(name: 'company_revenue_without_tax')
-    @Default(0.0)
-    double companyRevenueWithoutTax,
-    @JsonKey(name: 'guide_commission') @Default(0.0) double guideCommission,
-    @JsonKey(name: 'net_revenue_with_tax')
-    @Default(0.0)
-    double netRevenueWithTax,
-    @JsonKey(name: 'net_revenue_without_tax')
-    @Default(0.0)
-    double netRevenueWithoutTax,
-  }) = _Customer;
-
-  factory Customer.fromJson(Map<String, dynamic> json) =>
-      _$CustomerFromJson(json);
-}
-
-/// 고객 필터링을 위한 모델
+/// 고객 필터 모델
 @freezed
 class CustomerFilters with _$CustomerFilters {
   const factory CustomerFilters({
-    @JsonKey(name: 'search_query') String? searchQuery,
-    CustomerGender? gender,
+    String? name,
     String? nationality,
-    @JsonKey(name: 'acquisition_channel') String? acquisitionChannel,
-    @JsonKey(name: 'communication_channel') String? communicationChannel,
-    @JsonKey(name: 'is_booker') bool? isBooker,
-    @JsonKey(name: 'created_after') DateTime? createdAfter,
-    @JsonKey(name: 'created_before') DateTime? createdBefore,
-    @JsonKey(name: 'min_payment_amount') double? minPaymentAmount,
-    @JsonKey(name: 'max_payment_amount') double? maxPaymentAmount,
+    CustomerGender? gender,
+    bool? isBooker,
+    String? acquisitionChannel,
+    CommunicationChannel? communicationChannel,
+    DateTime? createdAfter,
+    DateTime? createdBefore,
+    String? searchQuery,
+    double? minPaymentAmount,
+    double? maxPaymentAmount,
   }) = _CustomerFilters;
 
   factory CustomerFilters.fromJson(Map<String, dynamic> json) =>
       _$CustomerFiltersFromJson(json);
 }
 
-/// 고객 생성/수정을 위한 입력 모델
+/// 고객 모델
 @freezed
-class CustomerInput with _$CustomerInput {
-  const factory CustomerInput({
-    @JsonKey(name: 'reservation_id') String? reservationId,
+class Customer with _$Customer {
+  const factory Customer({
+    String? id,
     required String name,
     String? nationality,
     CustomerGender? gender,
+    DateTime? birthDate,
     double? age,
-    @JsonKey(name: 'customer_note') String? customerNote,
-    @JsonKey(name: 'birth_date') DateTime? birthDate,
-    @JsonKey(name: 'is_booker') @Default(false) bool isBooker,
+    String? passportName,
+    String? passportLastName,
+    String? passportFirstName,
+    @Default(true) bool isBooker,
+    String? acquisitionChannel,
     String? booker,
-    @JsonKey(name: 'customer_code') String? customerCode,
-    @JsonKey(name: 'passport_name') String? passportName,
+    String? customerNote,
+    CommunicationChannel? communicationChannel,
+    String? channelAccount,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) = _Customer;
+
+  factory Customer.fromJson(Map<String, dynamic> json) =>
+      _$CustomerFromJson(json);
+}
+
+/// 고객 입력 모델
+@freezed
+class CustomerInput with _$CustomerInput {
+  const factory CustomerInput({
+    required String name,
+    String? nationality,
+    CustomerGender? gender,
+    DateTime? birthDate,
+    double? age,
+    String? passportName,
+    String? passportLastName,
+    String? passportFirstName,
+    @Default(true) bool isBooker,
+    String? acquisitionChannel,
+    String? booker,
+    String? customerNote,
+    CommunicationChannel? communicationChannel,
+    String? channelAccount,
+    String? customerCode,
     String? phone,
-    @JsonKey(name: 'acquisition_channel') String? acquisitionChannel,
-    @JsonKey(name: 'communication_channel') String? communicationChannel,
-    @JsonKey(name: 'channel_account') String? channelAccount,
-    @JsonKey(name: 'purchase_code') String? purchaseCode,
+    String? purchaseCode,
+    String? reservationId,
   }) = _CustomerInput;
 
   factory CustomerInput.fromJson(Map<String, dynamic> json) =>
       _$CustomerInputFromJson(json);
 }
 
-/// 고객 통계 정보 모델
+/// 고객 통계 모델
 @freezed
 class CustomerStats with _$CustomerStats {
   const factory CustomerStats({
-    @JsonKey(name: 'total_customers') required int totalCustomers,
-    @JsonKey(name: 'new_customers') required int newCustomers,
-    @JsonKey(name: 'returning_customers') required int returningCustomers,
-    @JsonKey(name: 'total_revenue') required double totalRevenue,
-    @JsonKey(name: 'average_revenue_per_customer')
-    required double averageRevenuePerCustomer,
-    @JsonKey(name: 'customers_by_nationality')
-    required Map<String, int> customersByNationality,
-    @JsonKey(name: 'customers_by_channel')
-    required Map<String, int> customersByChannel,
-    @JsonKey(name: 'customers_by_gender')
-    required Map<CustomerGender, int> customersByGender,
+    @Default(0) int totalCustomers,
+    @Default(0) int totalBookers,
+    @Default(0) int totalCompanions,
+    @Default(0) int maleCustomers,
+    @Default(0) int femaleCustomers,
+    @Default(0.0) double averageAge,
+    @Default(0) int newCustomers,
+    @Default(0) int returningCustomers,
+    @Default(0.0) double totalRevenue,
   }) = _CustomerStats;
 
   factory CustomerStats.fromJson(Map<String, dynamic> json) =>

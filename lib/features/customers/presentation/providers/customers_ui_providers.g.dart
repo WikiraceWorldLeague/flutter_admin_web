@@ -7,7 +7,7 @@ part of 'customers_ui_providers.dart';
 // **************************************************************************
 
 String _$customerFiltersNotifierHash() =>
-    r'621a517d7e772b9b00ec6e01b5c670c06339de22';
+    r'c6c72800ff687be8c8673606375086463a39cbfd';
 
 /// 고객 목록 필터 상태 Provider
 ///
@@ -52,7 +52,7 @@ final customerPaginationNotifierProvider = AutoDisposeNotifierProvider<
 typedef _$CustomerPaginationNotifier =
     AutoDisposeNotifier<CustomerPaginationState>;
 String _$customerFormNotifierHash() =>
-    r'a502561e9163764b771c6fa91b6c04b97396ae01';
+    r'25d8da1f88cbfc6cd6fbf2a64511b97a139ae58a';
 
 /// 고객 폼 상태 Provider
 ///
