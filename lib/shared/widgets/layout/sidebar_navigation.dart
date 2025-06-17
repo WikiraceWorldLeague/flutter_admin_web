@@ -14,9 +14,7 @@ class SidebarNavigation extends StatelessWidget {
       width: 260,
       decoration: const BoxDecoration(
         color: AppColors.surface,
-        border: Border(
-          right: BorderSide(color: AppColors.grey200, width: 1),
-        ),
+        border: Border(right: BorderSide(color: AppColors.grey200, width: 1)),
       ),
       child: Column(
         children: [
@@ -47,14 +45,14 @@ class SidebarNavigation extends StatelessWidget {
                 const SizedBox(width: 12),
                 Text(
                   'Admin Web',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
               ],
             ),
           ),
-          
+
           // Navigation Items
           Expanded(
             child: ListView(
@@ -67,6 +65,14 @@ class SidebarNavigation extends StatelessWidget {
                   path: '/dashboard',
                   isActive: currentLocation == '/dashboard',
                   onTap: () => context.go('/dashboard'),
+                ),
+                _NavigationItem(
+                  icon: Icons.person_outline,
+                  activeIcon: Icons.person,
+                  label: '고객 관리',
+                  path: '/customers',
+                  isActive: currentLocation == '/customers',
+                  onTap: () => context.go('/customers'),
                 ),
                 _NavigationItem(
                   icon: Icons.event_note_outlined,
@@ -103,7 +109,7 @@ class SidebarNavigation extends StatelessWidget {
               ],
             ),
           ),
-          
+
           // Bottom Section (Logout, etc.)
           Container(
             padding: const EdgeInsets.all(16),
@@ -149,7 +155,8 @@ class _NavigationItem extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       child: Material(
-        color: isActive ? AppColors.primary.withOpacity(0.1) : Colors.transparent,
+        color:
+            isActive ? AppColors.primary.withOpacity(0.1) : Colors.transparent,
         borderRadius: BorderRadius.circular(8),
         child: InkWell(
           onTap: onTap,
@@ -178,4 +185,4 @@ class _NavigationItem extends StatelessWidget {
       ),
     );
   }
-} 
+}

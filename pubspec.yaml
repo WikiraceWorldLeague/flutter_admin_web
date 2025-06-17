@@ -68,6 +68,12 @@ dependencies:
   
   # Local Storage
   shared_preferences: ^2.3.3
+  
+  # JSON Serialization
+  json_annotation: ^4.9.0
+  
+  # Code Generation (Runtime)
+  freezed_annotation: ^2.4.4
 
 dev_dependencies:
   flutter_test:
@@ -84,7 +90,7 @@ dev_dependencies:
   riverpod_generator: ^2.4.3
   build_runner: ^2.4.13
   json_serializable: ^6.8.0
-  json_annotation: ^4.9.0
+  freezed: ^2.5.7
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

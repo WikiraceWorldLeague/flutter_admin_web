@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/dashboard/presentation/pages/dashboard_page.dart';
+import '../../features/customers/presentation/pages/customers_page.dart';
 import '../../features/reservations/presentation/pages/reservations_page.dart';
 import '../../features/guides/presentation/pages/guides_page.dart';
 import '../../features/guides/presentation/pages/guide_form_page.dart';
@@ -21,7 +22,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         name: 'login',
         builder: (context, state) => const LoginPage(),
       ),
-      
+
       // Main App Routes with Layout
       ShellRoute(
         builder: (context, state, child) => MainLayout(child: child),
@@ -30,6 +31,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             path: '/dashboard',
             name: 'dashboard',
             builder: (context, state) => const DashboardPage(),
+          ),
+          GoRoute(
+            path: '/customers',
+            name: 'customers',
+            builder: (context, state) => const CustomersPage(),
           ),
           GoRoute(
             path: '/reservations',
@@ -76,10 +82,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
 extension AppRouterExtension on GoRouter {
   void goToLogin() => go('/login');
   void goToDashboard() => go('/dashboard');
+  void goToCustomers() => go('/customers');
   void goToReservations() => go('/reservations');
   void goToGuides() => go('/guides');
   void goToGuideNew() => go('/guides/new');
   void goToGuideEdit(String guideId) => go('/guides/edit/$guideId');
   void goToSettlements() => go('/settlements');
   void goToReviews() => go('/reviews');
-} 
+}
